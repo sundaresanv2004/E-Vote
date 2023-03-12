@@ -6,9 +6,7 @@ COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
 RUN mkdir /app
-COPY ./app /app
+COPY . /app
 WORKDIR /app
-
-COPY ./scripts /scripts
 
 CMD [ "python", "main.py" ]
