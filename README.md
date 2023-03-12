@@ -1,2 +1,44 @@
 # E-Vote
+
 E-Vote is an election application designed for desktop and laptop computers. Built on the `flet` library in the Python programming language, it allows users to conduct elections quickly and easily. The application is primarily designed for use in schools and colleges, but it can also be used in other fields that require elections.
+
+### Features
+
+- Simple and easy setup: E-Vote offers a user-friendly interface for easy setup and operation.
+- Secure data storage: Data is stored in JSON and CSV formats with encryption for added security.
+- Efficient data analysis: E-Vote provides accurate and timely analysis of election results.
+- Two-Step Verification: To ensure that only authorized voters participate in the election, E-Vote uses a two-step verification process.
+- Candidate management: The application allows users to manage candidate data easily.
+- Multi-field usage: E-Vote can be used in various fields requiring secure and efficient elections.
+
+### Requirements
+
+To use E-Vote, you will need a desktop or laptop with the following specifications:
+
+- A Windows, macOS, or Linux operating system
+- Python 3 installed on your system
+- The `flet`, `pandas`, `cryptography` librarys installed on your system
+- An active internet connection
+
+### Installation
+
+To install E-Vote, follow these simple steps:
+
+1. Clone the repository to your local machine.
+2. Install following library (using "pip install library_name" command).
+- `flet`
+- `pandas`
+- `cryptography`
+3. Open the command prompt/terminal and navigate to the directory where the application is stored.
+4. Run the `main.py` file to launch the application.
+
+### Usage
+
+Using E-Vote is simple and straightforward. Once the application is launched, follow the on-screen instructions to set up an election. You can manage candidates, set up a two-step verification process, and analyze results. E-Vote makes it easy to conduct an election in just a few clicks.
+
+### Contributing
+
+If you are interested in contributing to E-Vote, please fork the repository and submit a pull request. We welcome any suggestions, feedback, or bug reports.
+
+### License
+E-Vote is licensed under the **MIT License**.
