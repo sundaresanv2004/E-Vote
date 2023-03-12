@@ -1,0 +1,9 @@
+{
+  "name": "Election-Settings",
+  "version": "0.06",
+  "election-name": null,
+  "registration": false,
+  "vote": false,
+  "created-date": null,
+  "created-time": null
+}
