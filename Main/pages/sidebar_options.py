@@ -23,6 +23,10 @@ def admin_sidebar(page: ft.Page):
         sidebar_icon.on_click = expand
         page.update()
 
+    def profile_icon_on_click(e):
+        admin_option_rail.selected_index = 3
+        clicked(3)
+
     def clicked(e):
         page.splash = ft.ProgressBar()
         content_column.scroll = None
@@ -44,9 +48,25 @@ def admin_sidebar(page: ft.Page):
             page.splash = None
             page.update()
             staff_home_page(page, content_column, page_title_text)
+        elif e == 3:
+            from Main.pages.profile import profile_home_page
+            page.splash = None
+            page.update()
+            profile_home_page(page, content_column, page_title_text)
+        elif e == 4:
+            from Main.pages.election_home import election_home_page
+            page.splash = None
+            page.update()
+            election_home_page(page, content_column, page_title_text)
+        elif e == 5:
+            from Main.pages.settings_home import settings_home_page
+            page.splash = None
+            page.update()
+            settings_home_page(page, content_column, page_title_text)
         elif e == 6:
             from main import main
             from Main.functions.dialogs import loading_dialogs
+            page_title_text.value = "Loging out..."
             loading_dialogs(page, "Loging out...", 4)
             page.splash = None
             page.clean()
@@ -79,7 +99,8 @@ def admin_sidebar(page: ft.Page):
                 content=ft.IconButton(
                     icon=ft.icons.ACCOUNT_CIRCLE_ROUNDED,
                     icon_size=25,
-                    tooltip="Profile"
+                    tooltip="Profile",
+                    on_click=profile_icon_on_click,
                 ),
             ),
             ft.Text(" "),
