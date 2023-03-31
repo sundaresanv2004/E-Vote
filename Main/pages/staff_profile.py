@@ -137,8 +137,11 @@ def staff_profile_page(page: ft.Page, content_column: ft.Column, title_text: ft.
         if staff_login_df.loc[index_val].values[1] == False:
             last_login_text.value = "Last Login: No Data"
         else:
-            date_ = staff_login_df.loc[index_val].values[1].split("T00:00:00.00")
-            last_login_text.value = f"Last Login: {date_[0]} - {staff_login_df.loc[index_val].values[2]}"
+            date_1 = ''
+            read_val = str(staff_login_df.loc[index_val].values[1])
+            for i in range(10):
+                date_1 += read_val[i]
+            last_login_text.value = f"Last Login: {date_1} - {str(staff_login_df.loc[index_val].values[2])}"
 
     content_change()
 
