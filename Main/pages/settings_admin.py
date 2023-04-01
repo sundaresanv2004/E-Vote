@@ -1,38 +1,38 @@
 import flet as ft
 
-from Main.functions.animations import settings_user_options_animation
+from Main.functions.animations import settings_admin_options_animation
 
 
-class SettingsUserOptions(ft.UserControl):
+class SettingsAdminOptions(ft.UserControl):
     def __init__(self, page: ft.Page, content_column: ft.Column):
         super().__init__()
         self.button_container = None
-        self.user_expand = True
+        self.admin_expand = False
         self.main_column = ft.Column()
         self.main_container = ft.Container(
             border_radius=5,
             content=self.main_column,
             margin=3,
             border=ft.border.all(0.5, ft.colors.SECONDARY),
-            height=350,
+            height=45,
             animate=ft.animation.Animation(400, ft.AnimationCurve.DECELERATE)
         )
         self.icon_election = ft.Icon(
-            name=ft.icons.KEYBOARD_ARROW_UP_ROUNDED,
+            name=ft.icons.KEYBOARD_ARROW_DOWN_ROUNDED,
             size=25,
         )
 
     # Functions
     def election_settings_option(self, e):
-        settings_user_options_animation(self.main_container)
-        if not self.user_expand:
-            self.user_expand = True
+        settings_admin_options_animation(self.main_container)
+        if not self.admin_expand:
+            self.admin_expand = True
             self.icon_election.name = ft.icons.KEYBOARD_ARROW_UP_ROUNDED
             self.main_container.update()
         else:
             self.icon_election.name = ft.icons.KEYBOARD_ARROW_DOWN_ROUNDED
             self.main_column.controls = [self.button_container]
-            self.user_expand = False
+            self.admin_expand = False
             self.main_container.update()
 
     def build(self):
@@ -46,7 +46,7 @@ class SettingsUserOptions(ft.UserControl):
                                 width=20
                             ),
                             ft.Text(
-                                value="User Settings",
+                                value="Admin Settings",
                                 size=20,
                             ),
                             ft.Column(

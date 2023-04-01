@@ -28,8 +28,10 @@ def admin_sidebar(page: ft.Page):
         clicked(3)
 
     def clicked(e):
+        old_index = e
         page.splash = ft.ProgressBar()
         content_column.scroll = None
+        content_column.alignment = ft.MainAxisAlignment.CENTER
         if e != 6:
             content_column.clean()
         page.update()
@@ -176,6 +178,7 @@ def admin_sidebar(page: ft.Page):
                 ft.VerticalDivider(width=1),
                 content_column,
             ],
+            vertical_alignment=ft.CrossAxisAlignment.START,
             expand=True,
         )
     )

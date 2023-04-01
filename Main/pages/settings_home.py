@@ -1,5 +1,6 @@
 import flet as ft
 
+from .settings_admin import SettingsAdminOptions
 from .settings_election import SettingsElectionOptions
 from .settings_user import SettingsUserOptions
 
@@ -17,11 +18,13 @@ def settings_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
 
     settings_column_data = ft.Column(
         [
+            ft.Row(
+                height=10
+            ),
             SettingsUserOptions(page, content_column),
-            SettingsElectionOptions(page, content_column)
-        ],
-        expand=True,
-        scroll=ft.ScrollMode.ADAPTIVE,
+            SettingsElectionOptions(page, content_column),
+            SettingsAdminOptions(page, content_column),
+        ]
     )
 
     content_column.controls = [
@@ -42,4 +45,6 @@ def settings_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
         )
     ]
 
+    content_column.scroll = ft.ScrollMode.ADAPTIVE
+    content_column.alignment = ft.MainAxisAlignment.START
     page.update()

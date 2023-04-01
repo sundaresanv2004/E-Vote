@@ -24,7 +24,7 @@ def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft
         italic=True,
     )
 
-    add_staff_button = ft.FloatingActionButton(
+    add_candidate_button = ft.FloatingActionButton(
         icon=ft.icons.PERSON_ADD_ALT_1_ROUNDED,
         tooltip="Add new Candidate",
         on_click=add_candidate_page_fun,
@@ -134,7 +134,7 @@ def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft
                 ),
                 ft.Row(
                     [
-                        add_staff_button,
+                        add_candidate_button,
                     ],
                     alignment=ft.MainAxisAlignment.END,
                 ),

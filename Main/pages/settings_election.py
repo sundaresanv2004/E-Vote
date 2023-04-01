@@ -7,6 +7,7 @@ from Main.functions.animations import settings_election_options_animation
 class SettingsElectionOptions(ft.UserControl):
     def __init__(self, page: ft.Page, content_column: ft.Column):
         super().__init__()
+        self.create_new_election = None
         self.add_category_option = None
         self.button_container = None
         self.election_expand = False
@@ -32,7 +33,9 @@ class SettingsElectionOptions(ft.UserControl):
             self.election_expand = True
 
             self.icon_election.name = ft.icons.KEYBOARD_ARROW_UP_ROUNDED
-            self.main_column.controls.append(self.add_category_option)
+            temp_list: list = [self.add_category_option, self.create_new_election]
+            for i in temp_list:
+                self.main_column.controls.append(i)
             self.main_container.update()
         else:
             self.icon_election.name = ft.icons.KEYBOARD_ARROW_DOWN_ROUNDED
@@ -48,9 +51,6 @@ class SettingsElectionOptions(ft.UserControl):
                     ft.Row(
                         [
                             ft.Column(
-                                [
-                                    ft.Divider(),
-                                ],
                                 width=20
                             ),
                             ft.Text(
@@ -58,16 +58,10 @@ class SettingsElectionOptions(ft.UserControl):
                                 size=20,
                             ),
                             ft.Column(
-                                [
-                                    ft.Divider(),
-                                ],
                                 expand=True,
                             ),
                             self.icon_election,
                             ft.Column(
-                                [
-                                    ft.Divider(),
-                                ],
                                 width=30
                             ),
                         ]
@@ -101,6 +95,36 @@ class SettingsElectionOptions(ft.UserControl):
                             ft.TextButton(
                                 text="Manage",
                                 icon=ft.icons.SETTINGS_SUGGEST_ROUNDED,
+                            )
+                        ]
+                    )
+                ],
+                vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            ),
+            padding=15,
+            alignment=ft.alignment.center,
+            height=70,
+            border=ft.border.all(0.1, ft.colors.SECONDARY)
+        )
+
+        self.create_new_election = ft.Container(
+            content=ft.Row(
+                [
+                    ft.Row(
+                        [
+                            ft.Text(
+                                value="Create an Election",
+                                size=20,
+                            )
+                        ],
+                        expand=True,
+                        alignment=ft.MainAxisAlignment.START,
+                    ),
+                    ft.Row(
+                        [
+                            ft.TextButton(
+                                text="Create",
+                                icon=ft.icons.ADD_ROUNDED,
                             )
                         ]
                     )
