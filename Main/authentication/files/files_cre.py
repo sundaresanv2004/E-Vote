@@ -68,11 +68,11 @@ def new_election_creation_folder(tittle: str):
     os.makedirs(election_path + rf'\{file_data["vote_data"]}')
     ser1 = pd.Series(default_election_setting_data)
     ser1.loc["election-name"] = tittle
-    ser1.loc["created-date"] = date.today()
-    ser1.loc["created-time"] = datetime.now().strftime("%H:%M:%S")
+    ser1.loc["created-date"] = datetime.date.today()
+    ser1.loc["created-time"] = datetime.datetime.now().strftime("%H:%M:%S")
     ser1.to_json(election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
 
-    category_df = pd.DataFrame(columns=["id", "category", 'qualification'])
+    category_df = pd.DataFrame(columns=["id", "category", 'qualification', 'records'])
     candidate_df = pd.DataFrame(
         columns=['id', 'candidate_name', 'category', 'verification', 'qualification', 'image', 'date-time',
                  'created_by']

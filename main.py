@@ -1,9 +1,10 @@
 import flet as ft
 
-from Main.authentication.scr.check_installation import installation_requirement
+from Main.authentication.scr.check_installation import installation_requirement, os_sys
 from Main.functions.theme import start_theme
 from Main.functions.window_close import close_true
 from Main.pages.menu import menu_page
+from Main.pages.unsupported import UnsupportedPage
 
 
 def main(page: ft.Page):
@@ -57,8 +58,40 @@ def main(page: ft.Page):
     admin_sidebar(page)
 
 
-if __name__ == "__main__":
-    installation_requirement()
-    ft.app(
-        target=main,
+def unsupported_page(page: ft.Page):
+    # Width and height of the window.
+    page.window_width = 700
+    page.window_height = 440
+
+    # Windows Center
+    page.window_center()
+
+    # Windows options
+    page.window_always_on_top = True
+    page.window_title_bar_buttons_hidden = True
+    page.window_title_bar_hidden = True
+    page.window_resizable = False
+
+    # Container
+    menu_container = ft.Container(
+        content=UnsupportedPage(page),
+        expand=True,
     )
+
+    # Add to Page
+    page.add(
+        menu_container
+    )
+    page.update()
+
+
+if __name__ == "__main__":
+    if os_sys == "Windows":
+        installation_requirement()
+        ft.app(
+            target=main,
+        )
+    else:
+        ft.app(
+            target=unsupported_page,
+        )

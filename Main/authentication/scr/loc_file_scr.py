@@ -2,6 +2,11 @@ import json
 
 from Main.assets.loc_file_path import assert_loc_path
 
+with open(assert_loc_path + r"\messages\unsupported_message.txt", "r") as file:
+    unsupported_message_contents = file.read()
+    file.close()
+
+
 read_app_data = open(assert_loc_path + r"\data\app_data.json")
 app_data: dict = json.load(read_app_data)
 read_app_data.close()

@@ -6,8 +6,12 @@ from Main.authentication.scr.loc_file_scr import file_path, default_setting_data
 
 
 path = None
+os_sys = None
 if platform.system() == "Windows":
+    os_sys = "Windows"
     path = os.getenv('APPDATA') + r'\E Vote'
+else:
+    os_sys = platform.system()
 
 
 def installation_requirement():
