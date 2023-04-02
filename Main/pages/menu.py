@@ -3,11 +3,11 @@ import flet as ft
 import numpy as np
 import pandas as pd
 
-from Main.authentication.scr.check_installation import start, path
+from ..authentication.scr.check_installation import start, path
 import Main.authentication.scr.election_scr as ee
-from Main.authentication.scr.loc_file_scr import app_data, file_path, file_data
+from ..authentication.scr.loc_file_scr import app_data, file_path, file_data
 import Main.functions.theme as tt
-from Main.functions.animations import menu_container_animation
+from ..functions.animations import menu_container_animation
 
 
 def menu_page(page: ft.Page, menu_container: ft.Container):

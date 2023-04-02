@@ -36,38 +36,38 @@ def admin_sidebar(page: ft.Page):
             content_column.clean()
         page.update()
         if e == 0:
-            from Main.pages.home import home_page
+            from .home import home_page
             page.splash = None
             page.update()
             home_page(page, content_column, admin_option_rail, page_title_text)
         elif e == 1:
-            from Main.pages.candidate_home import candidate_home_page
+            from .candidate_home import candidate_home_page
             page.splash = None
             page.update()
             candidate_home_page(page, content_column, page_title_text)
         elif e == 2:
-            from Main.pages.staff_home import staff_home_page
+            from .staff_home import staff_home_page
             page.splash = None
             page.update()
             staff_home_page(page, content_column, page_title_text)
         elif e == 3:
-            from Main.pages.profile import profile_home_page
+            from .profile import profile_home_page
             page.splash = None
             page.update()
             profile_home_page(page, content_column, page_title_text)
         elif e == 4:
-            from Main.pages.election_home import election_home_page
+            from .election_home import election_home_page
             page.splash = None
             page.update()
             election_home_page(page, content_column, page_title_text)
         elif e == 5:
-            from Main.pages.settings_home import settings_home_page
+            from .settings_home import settings_home_page
             page.splash = None
             page.update()
             settings_home_page(page, content_column, page_title_text)
         elif e == 6:
             from main import main
-            from Main.functions.dialogs import loading_dialogs
+            from ..functions.dialogs import loading_dialogs
             page_title_text.value = "Loging out..."
             loading_dialogs(page, "Loging out...", 4)
             page.splash = None

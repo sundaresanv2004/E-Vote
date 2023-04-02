@@ -37,7 +37,6 @@ class CandidateHomePage(ft.UserControl):
         )
 
         self.name_entry = ft.TextField(
-            # label="Enter the Candidate name",
             hint_text="Enter the Candidate name",
             width=450,
             border=ft.InputBorder.OUTLINE,
@@ -50,7 +49,6 @@ class CandidateHomePage(ft.UserControl):
         )
 
         self.qualification_dropdown = ft.Dropdown(
-            # label="Choose Candidate Qualification",
             hint_text="Choose Candidate Qualification",
             width=450,
             border=ft.InputBorder.OUTLINE,
@@ -61,7 +59,6 @@ class CandidateHomePage(ft.UserControl):
         )
 
         self.category_dropdown = ft.Dropdown(
-            # label="Choose Candidate Category",
             hint_text="Choose Candidate Category",
             width=450,
             border=ft.InputBorder.OUTLINE,
@@ -134,7 +131,7 @@ def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft
         content_column.update()
         candidate_home_page(page, content_column, title_text)
     def can(e):
-        from .category_home import category_home_page
+        from .category import category_home_page
         content_column.clean()
         content_column.update()
         category_home_page(page, content_column, title_text)
@@ -150,7 +147,7 @@ def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft
     )
 
     # Button
-    back_staff_home_button = ft.IconButton(
+    back_candidate_home_button = ft.IconButton(
         icon=ft.icons.ARROW_BACK_ROUNDED,
         tooltip="Back",
         on_click=back_candidate_add_page,
@@ -173,7 +170,7 @@ def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft
             [
                 ft.Row(
                     [
-                        back_staff_home_button,
+                        back_candidate_home_button,
                     ],
                     alignment=ft.MainAxisAlignment.START,
                 ),

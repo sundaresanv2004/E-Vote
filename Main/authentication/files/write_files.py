@@ -18,9 +18,9 @@ def admin_data_in(admin_data_new_in_list: list):
         max_index += 1
 
     staff_df.loc[max_index] = [max_index, encrypter(admin_data_new_in_list[0]),
-                                         encrypter(admin_data_new_in_list[1]),
-                                         encrypter(admin_data_new_in_list[2]),
-                                         admin_data_new_in_list[3], 'system', np.nan]
+                               encrypter(admin_data_new_in_list[1]),
+                               encrypter(admin_data_new_in_list[2]),
+                               admin_data_new_in_list[3], 'system', np.nan]
     staff_login_df.loc[max_index] = [max_index, False, False]
     staff_df.to_json(path + file_path['admin_data'], orient='table', index=False)
     staff_login_df.to_json(path + file_path['admin_login_data'], orient='table', index=False)
@@ -67,3 +67,16 @@ def theme_on_change(theme_mod: str):
     staff_df.at[index_val, "theme"] = theme_mod
 
     staff_df.to_json(path + file_path['admin_data'], orient='table', index=False)
+
+
+def category_add_new(list_data: list):
+    from ..scr.loc_file_scr import file_data
+    import Main.authentication.scr.election_scr as ee
+
+    category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
+    index_val = category_df['id'].max()
+    print(index_val)
+    if index_val is np.nan:
+        index_val = 1
+    else:
+        index_val += 1

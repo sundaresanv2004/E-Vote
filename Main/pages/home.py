@@ -1,9 +1,9 @@
 import flet as ft
 import pandas as pd
 
-from Main.authentication.scr.check_installation import path
-from Main.authentication.scr.loc_file_scr import file_path, file_data
-from Main.functions.date_time import current_time
+from ..authentication.scr.check_installation import path
+from ..authentication.scr.loc_file_scr import file_path, file_data
+from ..functions.date_time import current_time
 import Main.authentication.scr.election_scr as ee
 
 

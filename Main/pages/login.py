@@ -2,7 +2,7 @@ from time import sleep
 import flet as ft
 
 import Main.functions.theme as tt
-from Main.functions.animations import menu_container_animation
+from ..functions.animations import menu_container_animation
 
 
 def login_page(page: ft.Page, menu_container: ft.Container):
