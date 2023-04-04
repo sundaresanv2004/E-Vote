@@ -26,7 +26,7 @@ def delete_staff_dialogs(page: ft.Page, content_column: ft.Column, index_df, tit
             page.splash = ft.ProgressBar()
             page.update()
             from main import main
-            loading_dialogs(page, "Loging out...", 7)
+            loading_dialogs(page, "Logging out...", 7)
             sleep(0.5)
             page.splash = None
             page.update()

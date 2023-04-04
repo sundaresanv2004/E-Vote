@@ -30,3 +30,7 @@ read_file_path.close()
 read_message_data = open(assert_loc_path + r"\messages\message.json")
 message_data: dict = json.load(read_message_data)
 read_message_data.close()
+
+f3_1 = open(assert_loc_path + r"\messages\error.json")
+error_data: dict = json.load(f3_1)
+f3_1.close()

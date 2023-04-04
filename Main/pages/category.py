@@ -37,7 +37,6 @@ def category_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
 
     # Read candidate data
     category_data_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
-    print(category_data_df)
 
     # Table
     category_data_table = ft.DataTable(
@@ -47,7 +46,6 @@ def category_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
             ft.DataColumn(ft.Text("#")),
             ft.DataColumn(ft.Text("Category")),
             ft.DataColumn(ft.Text("Qualification")),
-            ft.DataColumn(ft.Text("No.of Records")),
             ft.DataColumn(ft.Text(""))
         ],
     )
@@ -58,10 +56,10 @@ def category_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
             category_data_row.append(
                 ft.DataRow(
                     cells=[
-                        ft.DataCell(ft.Text(i + 1)),
-                        ft.DataCell(ft.Text()),
-                        ft.DataCell(ft.Text()),
-                        ft.DataCell(ft.Text()),
+                        ft.DataCell(ft.Text(value=f"{i + 1}")),
+                        ft.DataCell(ft.Text(value=f"{category_data_df.loc[i].values[1]}")),
+                        ft.DataCell(ft.Text(value=f"{category_data_df.loc[i].values[2]}")),
+                        ft.DataCell(ft.Text(value=f"{category_data_df.loc[i].values[2]}")),
                         # ft.DataCell(ViewStaffRecord(page, content_column, i, title_text))
                     ],
                 )
@@ -148,31 +146,45 @@ def category_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.T
         add_category_alertdialog.open = False
         page.update()
 
+    category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
+    category_list = category_df['category'].values
+
     def add_new_category(e):
-        category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
         if len(category_entry.value) != 0:
-            category_entry.error_text = None
-            category_entry.update()
-            category_df1 = category_df[category_df.category == category_entry.value.upper()]
-            if category_df1.empty is True:
+            if category_entry.value not in category_list:
+                category_entry.error_text = None
+                category_entry.update()
                 if len(qualification_entry.value) != 0:
                     qualification_entry.error_text = None
                     qualification_entry.update()
                     from ..authentication.files.write_files import category_add_new
                     from ..functions.snack_bar import snack_bar1
                     category_add_new([category_entry.value.upper(), qualification_entry.value])
-                    on_close(e)
                     if home_page is True:
                         content_column.clean()
                         content_column.update()
                         category_home_page(page, content_column, title_text)
+                    on_close(e)
                     snack_bar1(page, "Successfully Added")
                 else:
                     qualification_entry.error_text = "Enter the Category"
+                    qualification_entry.focus()
                     qualification_entry.update()
+            else:
+                category_entry.error_text = "It looks like this category has already been created."
+                category_entry.focus()
+                category_entry.update()
         else:
             category_entry.error_text = "Enter the Category"
+            category_entry.focus()
             category_entry.update()
+
+    def on_change_category(e):
+        if category_entry.value in category_list:
+            category_entry.error_text = "It looks like this category has already been created."
+        else:
+            category_entry.error_text = None
+        category_entry.update()
 
     qualification_entry = ft.TextField(
         hint_text="Enter Qualification for above Category",
@@ -188,14 +200,16 @@ def category_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.T
         hint_text="Enter the Category",
         width=420,
         border=ft.InputBorder.OUTLINE,
+        autofocus=True,
         border_radius=9,
         capitalization=ft.TextCapitalization.CHARACTERS,
         border_color=ft.colors.SECONDARY,
         prefix_icon=ft.icons.CATEGORY_ROUNDED,
         on_submit=add_new_category,
+        on_change=on_change_category,
     )
 
-    content_column = ft.Column(
+    content_column1 = ft.Column(
         [
             ft.Row(
                 [
@@ -203,7 +217,7 @@ def category_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.T
                         [
                             ft.Text(
                                 value="Add new Category",
-                                weight='bold',
+                                weight=ft.FontWeight.BOLD,
                                 size=25,
                             )
                         ],
@@ -244,7 +258,7 @@ def category_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.T
     # AlertDialog data
     add_category_alertdialog = ft.AlertDialog(
         modal=True,
-        content=content_column,
+        content=content_column1,
         actions=[
             ft.TextButton(
                 text="Add",

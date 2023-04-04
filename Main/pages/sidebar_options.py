@@ -68,8 +68,8 @@ def admin_sidebar(page: ft.Page):
         elif e == 6:
             from main import main
             from ..functions.dialogs import loading_dialogs
-            page_title_text.value = "Loging out..."
-            loading_dialogs(page, "Loging out...", 4)
+            page_title_text.value = "Logging out..."
+            loading_dialogs(page, "Logging out...", 4)
             page.splash = None
             page.clean()
             page.update()

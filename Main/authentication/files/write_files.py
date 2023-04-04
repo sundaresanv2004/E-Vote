@@ -75,8 +75,11 @@ def category_add_new(list_data: list):
 
     category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
     index_val = category_df['id'].max()
-    print(index_val)
+
     if index_val is np.nan:
         index_val = 1
     else:
         index_val += 1
+
+    category_df.loc[index_val] = [index_val, list_data[0], list_data[1]]
+    category_df.to_csv(ee.current_election_path + rf'\{file_data["category_data"]}', index=False)
