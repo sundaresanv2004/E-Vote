@@ -68,7 +68,7 @@ def start_info_page(page: ft.Page, menu_container: ft.Container, input_data1: li
             type_dropdown.error_text = 'Choose the type'
             type_dropdown.update()
 
-    # Main tittle
+    # Main title
     main_text = ft.Text(
         value="School/College Details",
         size=30,

@@ -1,6 +1,7 @@
 import os
+import random
 from time import sleep
-
+import string
 import flet as ft
 import pandas as pd
 
@@ -28,7 +29,7 @@ class CandidateHomePage:
             border_color=ft.colors.SECONDARY,
             autofocus=True,
             prefix_icon=ft.icons.ACCOUNT_CIRCLE_ROUNDED,
-            # on_change=on_change_button,
+            on_change=self.disable_save_button,
             # on_submit=save_candidate,
         )
 
@@ -37,7 +38,7 @@ class CandidateHomePage:
             width=450,
             border=ft.InputBorder.OUTLINE,
             border_radius=9,
-            # on_change=qualification_change,
+            on_change=self.on_change_qualification,
             prefix_icon=ft.icons.CATEGORY_ROUNDED,
             border_color=ft.colors.SECONDARY,
         )
@@ -45,6 +46,7 @@ class CandidateHomePage:
         self.category_dropdown = ft.Dropdown(
             hint_text="Choose Candidate Category",
             width=450,
+            on_change=self.disable_save_button,
             border=ft.InputBorder.OUTLINE,
             border_radius=9,
             options=[
@@ -81,6 +83,27 @@ class CandidateHomePage:
 
         self.qualification_dropdown.options = option_list1
 
+    def on_change_qualification(self, e):
+        option_list2: list = []
+        temp_list1: list = []
+
+        if self.qualification_dropdown.value is not None:
+            if self.qualification_dropdown.value != "No Category Records":
+                cur_val = self.category_df[self.category_df.qualification == self.qualification_dropdown.value].values
+                for j in range(len(cur_val)):
+                    if cur_val[j][1] not in temp_list1:
+                        option_list2.append(ft.dropdown.Option(cur_val[j][1]))
+                        temp_list1.append(cur_val[j][1])
+            else:
+                from ..functions.dialogs import message_dialogs
+                message_dialogs(self.page, "No Category Recodes")
+        else:
+            option_list2.append(ft.dropdown.Option("Select Candidate Qualification"))
+
+        self.category_dropdown.options = option_list2
+        self.category_dropdown.update()
+        self.disable_save_button(e)
+
     def pick_files_result(self, e: ft.FilePickerResultEvent):
         from ..functions.dialogs import error_dialogs
         if self.candidate_selected_image_name is not False:
@@ -89,12 +112,13 @@ class CandidateHomePage:
             except FileNotFoundError:
                 pass
 
-        self.candidate_selected_image_name = ", ".join(map(lambda f: f.name, e.files)) if e.files else False
+        source = string.ascii_letters + string.digits
+        rand = ''.join((random.choice(source)) for i in range(5))
+        self.candidate_selected_image_name = f'{rand}'+"".join(map(lambda f: f.name, e.files)) if e.files else False
         self.candidate_selected_file_path = ", ".join(map(lambda f: f.path, e.files)) if e.files else False
 
         if self.candidate_selected_image_name is not False:
-            self.candidate_image_destination += rf'\{self.candidate_selected_image_name}'
-
+            self.candidate_image_destination = ee.current_election_path + rf'\images\{self.candidate_selected_image_name}'
             try:
                 if not os.path.exists(self.candidate_image_destination):
                     os.replace(self.candidate_selected_file_path, self.candidate_image_destination)
@@ -136,13 +160,50 @@ class CandidateHomePage:
             self.content_column.update()
             candidate_home_page(self.page, self.content_column, self.title_text)
 
+    def disable_save_button(self, e):
+        if len(self.name_entry.value) != 0:
+            if self.qualification_dropdown.value is not None:
+                if self.qualification_dropdown.value != "No Category Records":
+                    if self.category_dropdown.value is not None:
+                        if self.category_dropdown.value != "Select Candidate Qualification":
+                            self.save_button.disabled = False
+                        else:
+                            self.save_button.disabled = True
+                    else:
+                        self.save_button.disabled = True
+                else:
+                    self.save_button.disabled = True
+            else:
+                self.save_button.disabled = True
+        else:
+            self.save_button.disabled = True
+        self.save_button.update()
+
+    def save_data(self, e):
+        self.page.splash = ft.ProgressBar()
+        self.page.update()
+        from ..authentication.files.write_files import add_candidate
+        from ..functions.snack_bar import snack_bar1
+        from ..functions.dialogs import loading_dialogs
+        from .candidate_home import candidate_home_page
+        sleep(0.2)
+        loading_dialogs(self.page, "Saving...", 2)
+        add_candidate([self.name_entry.value, self.category_dropdown.value, True, self.qualification_dropdown.value,
+                       self.candidate_selected_image_name])
+        self.page.splash = None
+        self.page.update()
+        self.content_column.clean()
+        self.content_column.update()
+        candidate_home_page(self.page, self.content_column, self.title_text)
+        snack_bar1(self.page, "Successfully Added")
+
     def build(self):
         self.save_button = ft.ElevatedButton(
             text="Save",
             height=50,
             width=150,
             disabled=True,
-            # on_click=save_candidate,
+            on_click=self.save_data,
         )
 
         pick_files_dialog = ft.FilePicker(on_result=self.pick_files_result)
@@ -277,11 +338,11 @@ def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft
 
     question_button = ft.PopupMenuButton(
         icon=ft.icons.QUESTION_ANSWER_ROUNDED,
-        tooltip="Questions?",
+        tooltip="Help",
         items=[
             ft.PopupMenuItem(
-                icon=ft.icons.ADD_ROUNDED,
-                text="Add new Category",
+                icon=ft.icons.CATEGORY_ROUNDED,
+                text="How to add a new category?",
                 on_click=can
             ),
         ]

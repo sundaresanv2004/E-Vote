@@ -17,11 +17,11 @@ def admin_data_in(admin_data_new_in_list: list):
     else:
         max_index += 1
 
-    staff_df.loc[max_index] = [max_index, encrypter(admin_data_new_in_list[0]),
+    staff_df.loc['a'] = [max_index, encrypter(admin_data_new_in_list[0]),
                                encrypter(admin_data_new_in_list[1]),
                                encrypter(admin_data_new_in_list[2]),
                                admin_data_new_in_list[3], 'system', np.nan]
-    staff_login_df.loc[max_index] = [max_index, False, False]
+    staff_login_df.loc['a'] = [max_index, False, False]
     staff_df.to_json(path + file_path['admin_data'], orient='table', index=False)
     staff_login_df.to_json(path + file_path['admin_login_data'], orient='table', index=False)
 
@@ -33,19 +33,19 @@ def login_details_update(index_val):
     staff_login_df.to_json(path + file_path['admin_login_data'], orient='table', index=False)
 
 
-def new_election_creation(tittle: str):
+def new_election_creation(title: str):
     from Main.authentication.files.files_cre import new_election_creation_folder
 
     election_data = pd.read_csv(path + file_path["election_data"])
     settings_df = pd.read_json(path + file_path['settings'], orient='table')
 
     if election_data.empty is True:
-        election_data.loc['0'] = [tittle, path + file_path['candidate_data'] + rf'\{tittle}']
-        settings_df.loc['Election'] = tittle
+        election_data.loc['0'] = [title, path + file_path['candidate_data'] + rf'\{title}']
+        settings_df.loc['Election'] = title
         settings_df.to_json(path + file_path['settings'], orient='table', index=True)
 
     election_data.to_csv(path + file_path["election_data"], index=False)
-    new_election_creation_folder(tittle)
+    new_election_creation_folder(title)
 
 
 def delete_staff_data(index_df):
@@ -81,5 +81,27 @@ def category_add_new(list_data: list):
     else:
         index_val += 1
 
-    category_df.loc[index_val] = [index_val, list_data[0], list_data[1]]
+    category_df.loc['a'] = [index_val, list_data[0], list_data[1]]
     category_df.to_csv(ee.current_election_path + rf'\{file_data["category_data"]}', index=False)
+
+
+def add_candidate(list1_data: list):
+    from Main.authentication.scr.loc_file_scr import file_data
+    import Main.authentication.scr.election_scr as ee
+    import Main.authentication.user.login_enc as cc
+
+    candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+
+    index_val = candidate_data_df['id'].max()
+
+    if index_val is np.nan:
+        index_val = 1
+    else:
+        index_val += 1
+
+    candidate_data_df.loc['a'] = [index_val, list1_data[0], list1_data[1], list1_data[2], list1_data[3],
+                                  list1_data[4],
+                                  f'{datetime.date.today()} ' + f'{datetime.datetime.now().strftime("%H:%M:%S")}',
+                                  cc.teme_data[1]]
+
+    candidate_data_df.to_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table', index=False)

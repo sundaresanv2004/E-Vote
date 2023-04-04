@@ -364,9 +364,9 @@ def permission_y_dialogs(page: ft.Page, content_column: ft.Column, list1: list, 
 def save(page: ft.Page, content_column: ft.Column, list1: list, title_text: ft.Text):
     page.splash = ft.ProgressBar()
     page.update()
-    from Main.functions.snack_bar import snack_bar1
-    from Main.pages.staff_home import staff_home_page
-    from Main.functions.dialogs import loading_dialogs
+    from ..functions.snack_bar import snack_bar1
+    from .staff_home import staff_home_page
+    from ..functions.dialogs import loading_dialogs
     sleep(0.2)
     loading_dialogs(page, "Saving...", 2)
     admin_data_in([list1[0], list1[1], list1[2], list1[3]])

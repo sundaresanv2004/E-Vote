@@ -9,7 +9,7 @@ def settings_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
     title_text.value = "Settings"
 
     # Text & Buttons
-    main_tittle_text = ft.Text(
+    main_title_text = ft.Text(
         value="Settings",
         size=35,
         weight=ft.FontWeight.BOLD,
@@ -32,7 +32,7 @@ def settings_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
             [
                 ft.Row(
                     [
-                        main_tittle_text
+                        main_title_text
                     ],
                     alignment=ft.MainAxisAlignment.CENTER,
                 ),

@@ -20,7 +20,7 @@ def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft
         candidate_home_page(page, content_column, title_text)
 
     # Text & Buttons
-    main_tittle_text = ft.Text(
+    main_title_text = ft.Text(
         value="Records",
         size=35,
         weight=ft.FontWeight.BOLD,
@@ -38,15 +38,17 @@ def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft
 
     # Table
     candidate_data_table = ft.DataTable(
-        column_spacing=50,
+        column_spacing=10,
         width=page.window_width - 150,
         columns=[
-            ft.DataColumn(ft.Text("#")),
-            ft.DataColumn(ft.Text("Name")),
-            ft.DataColumn(ft.Text("Category")),
-            ft.DataColumn(ft.Text("Verification")),
-            ft.DataColumn(ft.Text("Image")),
-            ft.DataColumn(ft.Text(" "))
+            ft.DataColumn(ft.Text(value="#")),
+            ft.DataColumn(ft.Text(value="Name")),
+            ft.DataColumn(ft.Text(value="Category")),
+            ft.DataColumn(ft.Text(value="Qualification")),
+            ft.DataColumn(ft.Text(value="Verification")),
+            ft.DataColumn(ft.Text(value="Added on")),
+            ft.DataColumn(ft.Text(value="Image")),
+            ft.DataColumn(ft.Text(value=" "))
         ],
     )
 
@@ -80,12 +82,14 @@ def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft
             candidate_data_row.append(
                 ft.DataRow(
                     cells=[
-                        ft.DataCell(ft.Text(i + 1)),
-                        ft.DataCell(ft.Text(f'{candidate_data_df.loc[i].values[2]}')),
-                        ft.DataCell(ft.Text(f'{candidate_data_df.loc[i].values[3]}')),
+                        ft.DataCell(ft.Text(value=f'{i + 1}')),
+                        ft.DataCell(ft.Text(value=f'{candidate_data_df.loc[i].values[1]}')),
+                        ft.DataCell(ft.Text(value=f'{candidate_data_df.loc[i].values[2]}')),
+                        ft.DataCell(ft.Text(value=f'{candidate_data_df.loc[i].values[4]}')),
                         ft.DataCell(verification_icon),
+                        ft.DataCell(ft.Text(value=f'{candidate_data_df.loc[i].values[6]}')),
                         ft.DataCell(image_icon),
-                        # ft.DataCell(ViewStaffRecord(page, content_column, i, title_text))
+                        ft.DataCell(ViewCandidateRecord(page, content_column, i, title_text))
                     ],
                 )
             )
@@ -130,7 +134,7 @@ def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft
             [
                 ft.Row(
                     [
-                        main_tittle_text,
+                        main_title_text,
                     ],
                     alignment=ft.MainAxisAlignment.CENTER,
                     expand=True,
@@ -153,3 +157,50 @@ def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft
 
     page.on_resize = page_resize
     page.update()
+
+
+class ViewCandidateRecord(ft.UserControl):
+
+    def __init__(self, page: ft.Page, content_column: ft.Column, index_val: int, title_text: ft.Text):
+        super().__init__()
+        self.page = page
+        self.column = content_column
+        self.index_val = index_val
+        self.title_text = title_text
+        self.candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}',
+                                              orient='table')
+
+    def edit(self, e):
+        pass
+
+    def delete(self, e):
+        pass
+
+    def profile(self, e):
+        from .candidate_profile import candidate_profile_page
+        candidate_profile_page(self.page, self.column, self.title_text, self.index_val)
+
+    def build(self):
+        options = ft.PopupMenuButton(
+            tooltip="Options",
+            icon=ft.icons.MORE_VERT_ROUNDED,
+            items=[
+                ft.PopupMenuItem(
+                    text="View Profile",
+                    icon=ft.icons.STREETVIEW_ROUNDED,
+                    on_click=self.profile
+                ),
+                ft.PopupMenuItem(
+                    text="Edit",
+                    icon=ft.icons.EDIT_ROUNDED,
+                    on_click=self.edit
+                ),
+                ft.PopupMenuItem(
+                    text="Delete",
+                    icon=ft.icons.DELETE_ROUNDED,
+                    on_click=self.delete
+                ),
+            ],
+        )
+
+        return options

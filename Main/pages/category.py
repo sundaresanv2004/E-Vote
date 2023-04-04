@@ -6,7 +6,7 @@ import Main.authentication.scr.election_scr as ee
 
 
 def category_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
-    title_text.value = "Category"
+    title_text.value = "Election > Category"
 
     # Functions
     def back_category(e):

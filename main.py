@@ -1,6 +1,6 @@
 import flet as ft
 
-from Main.authentication.scr.check_installation import installation_requirement, os_sys
+from Main.authentication.scr.check_installation import installation_requirement, os_sys, path
 from Main.functions.theme import start_theme
 from Main.functions.window_close import close_true
 from Main.pages.menu import menu_page
@@ -12,7 +12,7 @@ def main(page: ft.Page):
     page.window_min_width = 900
     page.window_min_height = 550
 
-    # tittle
+    # title
     page.title = "E Vote"
 
     # center
@@ -90,6 +90,8 @@ if __name__ == "__main__":
         installation_requirement()
         ft.app(
             target=main,
+            assets_dir=path,
+            upload_dir=path,
         )
     else:
         ft.app(

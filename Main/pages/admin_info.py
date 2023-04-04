@@ -101,7 +101,7 @@ def admin_info_page(page: ft.Page, menu_container: ft.Container, input_data1: li
             username_entry.focus()
             username_entry.update()
 
-    # Main tittle
+    # Main title
     text1 = ft.Text(
         value="Admin Details",
         size=30,

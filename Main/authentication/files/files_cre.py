@@ -61,13 +61,13 @@ def app_start(app_start_data_list1: list):
     admin_login.to_json(path + file_path['admin_login_data'], orient='table', index=False)
 
 
-def new_election_creation_folder(tittle: str):
-    election_path = path + file_path['candidate_data'] + rf'\{tittle}'
+def new_election_creation_folder(title: str):
+    election_path = path + file_path['candidate_data'] + rf'\{title}'
     os.makedirs(election_path)
     os.makedirs(election_path + r'\images')
     os.makedirs(election_path + rf'\{file_data["vote_data"]}')
     ser1 = pd.Series(default_election_setting_data)
-    ser1.loc["election-name"] = tittle
+    ser1.loc["election-name"] = title
     ser1.loc["created-date"] = datetime.date.today()
     ser1.loc["created-time"] = datetime.datetime.now().strftime("%H:%M:%S")
     ser1.to_json(election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
