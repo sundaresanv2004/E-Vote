@@ -1,4 +1,5 @@
 import datetime
+import os
 import numpy as np
 import pandas as pd
 
@@ -105,3 +106,41 @@ def add_candidate(list1_data: list):
                                   cc.teme_data[1]]
 
     candidate_data_df.to_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table', index=False)
+
+
+def delete_candidate(index_val):
+    from Main.authentication.scr.loc_file_scr import file_data
+    import Main.authentication.scr.election_scr as ee
+
+    candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+    user_data = candidate_data_df.loc[index_val].values
+    if user_data[5] != False:
+        candidate_image_destination = ee.current_election_path + r'\images'
+        try:
+            os.remove(candidate_image_destination + fr'\{user_data[5]}')
+        except FileNotFoundError:
+            pass
+
+    candidate_data_df.drop(index_val, axis=0, inplace=True)
+    candidate_data_df.to_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table',
+                              index=False)
+
+
+def change_verification(page, id_val):
+    from Main.authentication.scr.loc_file_scr import file_data
+    import Main.authentication.scr.election_scr as ee
+    from ...functions.snack_bar import snack_bar1
+
+    candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+    user_data = candidate_data_df.loc[id_val].values
+
+    if user_data[3] == True:
+        candidate_data_df.at[id_val, "verification"] = False
+        snack_bar1(page, "Disapproved")
+    else:
+        candidate_data_df.at[id_val, "verification"] = True
+        snack_bar1(page, "Approved")
+
+    candidate_data_df.to_json(
+        ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table', index=False
+    )

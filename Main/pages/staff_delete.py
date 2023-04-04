@@ -1,7 +1,7 @@
 from time import sleep
 import flet as ft
 
-from Main.functions.dialogs import loading_dialogs
+from ..functions.dialogs import loading_dialogs
 
 
 def delete_staff_dialogs(page: ft.Page, content_column: ft.Column, index_df, title_text, view):

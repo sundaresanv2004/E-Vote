@@ -180,6 +180,7 @@ class CandidateHomePage:
         self.save_button.update()
 
     def save_data(self, e):
+        self.save_button.disabled = True
         self.page.splash = ft.ProgressBar()
         self.page.update()
         from ..authentication.files.write_files import add_candidate

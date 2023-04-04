@@ -9,7 +9,7 @@ import Main.authentication.scr.election_scr as ee
 index_val, ver_val = None, None
 
 
-def candidate_profile_page(page: ft.Page, info_column: ft.Column, title_text: ft.Text, id_val):
+def candidate_profile_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text, id_val):
     global index_val
 
     candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
@@ -19,9 +19,9 @@ def candidate_profile_page(page: ft.Page, info_column: ft.Column, title_text: ft
         from Main.pages.candidate_home import candidate_home_page
         alertdialog.open = False
         page.update()
-        info_column.clean()
-        info_column.update()
-        candidate_home_page(page, info_column, title_text)
+        content_column.clean()
+        content_column.update()
+        candidate_home_page(page, content_column, title_text)
 
     index_val = id_val
 
@@ -73,17 +73,17 @@ def candidate_profile_page(page: ft.Page, info_column: ft.Column, title_text: ft
     def delete_on_click(e):
         alertdialog.open = False
         page.update()
-        sleep(0.3)
-        # from Main.functions.dialogs import delete_conform_candidate------------------------
-        # delete_conform_candidate(page, info_column, index_val)
+        sleep(0.2)
+        from .candidate_delete_approve import delete_candidate_dialogs
+        delete_candidate_dialogs(page, content_column, index_val, title_text, True)
 
     def edit_on_click(e):
         alertdialog.open = False
         page.update()
-        sleep(0.3)
+        sleep(0.2)
         # from Main.pages.candidate_edit import candidate_edit_page -------------------------------------------
-        info_column.clean()
-        info_column.update()
+        content_column.clean()
+        content_column.update()
         # candidate_edit_page(page, info_column, index_val)
 
     title1 = ft.Text(
@@ -116,10 +116,11 @@ def candidate_profile_page(page: ft.Page, info_column: ft.Column, title_text: ft
     )
 
     def on_click_ver(e):
+        from .candidate_delete_approve import approve_dialogs
         alertdialog.open = False
         page.update()
         sleep(0.3)
-        # approve_dialogs(page, index_val, ver_val, info_column)
+        approve_dialogs(page, content_column, title_text, index_val, ver_val)
 
     verify_text = ft.TextButton(
         on_click=on_click_ver

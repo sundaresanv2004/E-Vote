@@ -164,7 +164,7 @@ class ViewCandidateRecord(ft.UserControl):
     def __init__(self, page: ft.Page, content_column: ft.Column, index_val: int, title_text: ft.Text):
         super().__init__()
         self.page = page
-        self.column = content_column
+        self.content_column = content_column
         self.index_val = index_val
         self.title_text = title_text
         self.candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}',
@@ -174,11 +174,12 @@ class ViewCandidateRecord(ft.UserControl):
         pass
 
     def delete(self, e):
-        pass
+        from .candidate_delete_approve import delete_candidate_dialogs
+        delete_candidate_dialogs(self.page, self.content_column, self.index_val, self.title_text, False)
 
     def profile(self, e):
         from .candidate_profile import candidate_profile_page
-        candidate_profile_page(self.page, self.column, self.title_text, self.index_val)
+        candidate_profile_page(self.page, self.content_column, self.title_text, self.index_val)
 
     def build(self):
         options = ft.PopupMenuButton(

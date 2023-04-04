@@ -51,11 +51,11 @@ def main(page: ft.Page):
         alignment=ft.MainAxisAlignment.CENTER,
     )
 
-    # page.add(menu_column)
-    # menu_page(page, menu_container)
+    page.add(menu_column)
+    menu_page(page, menu_container)
 
-    from Main.pages.sidebar_options import admin_sidebar
-    admin_sidebar(page)
+    # from Main.pages.sidebar_options import admin_sidebar
+    # admin_sidebar(page)
 
 
 def unsupported_page(page: ft.Page):
