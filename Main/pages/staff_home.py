@@ -171,13 +171,13 @@ class ViewStaffRecord(ft.UserControl):
             if cc.teme_data[0] == 1:
                 self.column.clean()
                 self.column.update()
-                staff_edit_page(self.page, self.column, self.title_text, self.index_val)
+                staff_edit_page(self.page, self.column, self.title_text, self.index_val, False)
             else:
                 message_dialogs(self.page, "Edit this record?")
         else:
             self.column.clean()
             self.column.update()
-            staff_edit_page(self.page, self.column, self.title_text, self.index_val)
+            staff_edit_page(self.page, self.column, self.title_text, self.index_val, False)
 
     def profile(self, e):
         from Main.pages.staff_profile import staff_profile_page

@@ -18,7 +18,7 @@ def menu_page(page: ft.Page, menu_container: ft.Container):
         menu_container.clean()
         page.update()
         menu_container_animation(menu_container)
-        sleep(0.2)
+        sleep(0.1)
         start_info_page(page, menu_container, [])
 
     def user_login_fun(e):
@@ -26,7 +26,7 @@ def menu_page(page: ft.Page, menu_container: ft.Container):
         menu_container.clean()
         page.update()
         menu_container_animation(menu_container)
-        sleep(0.2)
+        sleep(0.1)
         login_page(page, menu_container)
 
     # Buttons

@@ -16,8 +16,8 @@ def delete_candidate_dialogs(page: ft.Page, content_column: ft.Column, index_df,
         delete_candidate(index_df)
         alertdialog.open = False
         page.update()
-        sleep(0.1)
-        loading_dialogs(page, "Deleting...", 2)
+        sleep(0.2)
+        loading_dialogs(page, "Deleting...", 1)
         sleep(0.1)
         page.snack_bar = False
         snack_bar1(page, "Successfully Deleted.")
@@ -38,7 +38,7 @@ def delete_candidate_dialogs(page: ft.Page, content_column: ft.Column, index_df,
         alertdialog.open = False
         page.update()
         if view is True:
-            sleep(0.2)
+            sleep(0.1)
             from .candidate_profile import candidate_profile_page
             candidate_profile_page(page, content_column, title_text, index_df)
 
@@ -75,7 +75,7 @@ def approve_dialogs(page: ft.Page, content_column: ft.Column, title_text, id_val
     def on_no(e):
         alertdialog.open = False
         page.update()
-        sleep(0.3)
+        sleep(0.1)
         candidate_profile_page(page, content_column, title_text, id_val)
 
     def on_yes(e):

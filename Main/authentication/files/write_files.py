@@ -61,6 +61,19 @@ def delete_staff_data(index_df):
     staff_login_df1.to_json(path + file_path['admin_login_data'], orient='table', index=False)
 
 
+def edit_staff_data(data_list: list, index_user):
+    staff_df = pd.read_json(path + file_path['admin_data'], orient='table')
+
+    index_val = staff_df[staff_df.id == index_user].index.values[0]
+    staff_df.at[index_val, 'name'] = encrypter(data_list[0])
+    staff_df.at[index_val, 'mail_id'] = encrypter(data_list[1])
+    staff_df.at[index_val, 'password'] = encrypter(data_list[2])
+    staff_df.at[index_val, 'permission'] = data_list[3]
+
+    staff_df.to_json(path + file_path['admin_data'], orient='table', index=False)
+
+
+
 def theme_on_change(theme_mod: str):
     import Main.authentication.user.login_enc as cc
     staff_df = pd.read_json(path + file_path['admin_data'], orient='table')

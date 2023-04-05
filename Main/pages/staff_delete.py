@@ -15,19 +15,19 @@ def delete_staff_dialogs(page: ft.Page, content_column: ft.Column, index_df, tit
         alertdialog.open = False
         page.update()
         sleep(0.2)
-        loading_dialogs(page, "Deleting...", 2)
+        loading_dialogs(page, "Deleting...", 1)
         sleep(0.1)
         content_column.clean()
         content_column.update()
         snack_bar1(page, "Successfully Deleted.")
         staff_home_page(page, content_column, title_text)
-        sleep(0.5)
+        sleep(0.3)
         if cc.teme_data[0] == index_df:
             page.splash = ft.ProgressBar()
             page.update()
             from main import main
-            loading_dialogs(page, "Logging out...", 7)
-            sleep(0.5)
+            loading_dialogs(page, "Logging out...", 4)
+            sleep(0.2)
             page.splash = None
             page.update()
             page.clean()
@@ -37,7 +37,7 @@ def delete_staff_dialogs(page: ft.Page, content_column: ft.Column, index_df, tit
         alertdialog.open = False
         page.update()
         if view is True:
-            sleep(0.2)
+            sleep(0.1)
             from Main.pages.staff_profile import staff_profile_page
             staff_profile_page(page, content_column, title_text, index_df)
 

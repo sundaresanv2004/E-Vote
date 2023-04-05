@@ -187,8 +187,8 @@ class CandidateHomePage:
         from ..functions.snack_bar import snack_bar1
         from ..functions.dialogs import loading_dialogs
         from .candidate_home import candidate_home_page
-        sleep(0.2)
-        loading_dialogs(self.page, "Saving...", 2)
+        sleep(0.1)
+        loading_dialogs(self.page, "Saving...", 1)
         add_candidate([self.name_entry.value, self.category_dropdown.value, True, self.qualification_dropdown.value,
                        self.candidate_selected_image_name])
         self.page.splash = None
@@ -308,7 +308,7 @@ class CandidateHomePage:
         self.page.update()
 
 
-def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
+def candidate_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
     obj = CandidateHomePage(page, content_column, title_text)
 
     def back_candidate_add_page(e):

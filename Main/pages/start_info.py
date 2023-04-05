@@ -13,14 +13,14 @@ def start_info_page(page: ft.Page, menu_container: ft.Container, input_data1: li
         page.update()
         from Main.pages.menu import menu_page
         menu_container_animation(menu_container)
-        sleep(0.2)
+        sleep(0.1)
         menu_page(page, menu_container)
 
     def type_dropdown_change(e):
         progressbar_column.controls = [progressbar]
         type_dropdown.error_text = ''
         page.update()
-        sleep(1.2)
+        sleep(0.8)
         main_text.value = f"{e.data} Details"
         type_name_entry.hint_text = f"Enter the {e.data} name"
         progressbar_column.controls = []

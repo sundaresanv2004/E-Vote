@@ -13,7 +13,7 @@ def login_page(page: ft.Page, menu_container: ft.Container):
         page.update()
         from Main.pages.menu import menu_page
         menu_container_animation(menu_container)
-        sleep(0.2)
+        sleep(0.1)
         menu_page(page, menu_container)
 
     def check_username_input(e):
@@ -45,14 +45,14 @@ def login_page(page: ft.Page, menu_container: ft.Container):
                 page.update()
                 import Main.authentication.user.login_enc as cc
                 val = cc.login_checker(entry_name.value, entry_password.value)
-                sleep(1.5)
+                sleep(1)
                 if val is True:
-                    from Main.pages.sidebar_options import admin_sidebar, staff_sidebar
+                    from Main.pages.sidebar_options import admin_sidebar
                     page.clean()
                     if cc.teme_data[2] == True:
-                        admin_sidebar(page)
+                        admin_sidebar(page, True)
                     else:
-                        staff_sidebar(page)
+                        admin_sidebar(page, False)
                 else:
                     progressbar_column.controls = None
                     menu_container.disabled = False

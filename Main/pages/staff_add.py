@@ -131,6 +131,10 @@ def staff_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text
         on_click=back_staff_add_page,
     )
 
+    def on_admin_permission(e):
+        from ..functions.dialogs import message_dialogs
+        message_dialogs(page, "Admin Permission?")
+
     question_button = ft.PopupMenuButton(
         icon=ft.icons.QUESTION_ANSWER_ROUNDED,
         tooltip="Questions?",
@@ -138,7 +142,7 @@ def staff_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text
             ft.PopupMenuItem(
                 icon=ft.icons.ADMIN_PANEL_SETTINGS_ROUNDED,
                 text="What is Admin Permission?",
-                # on_click=
+                on_click=on_admin_permission,
             ),
         ]
     )
@@ -325,6 +329,13 @@ def permission_y_dialogs(page: ft.Page, content_column: ft.Column, list1: list, 
         page.update()
         save(page, content_column, list1, title_text)
 
+    def on_admin_permission(e):
+        alertdialog.open = False
+        page.update()
+        sleep(0.2)
+        from ..functions.dialogs import message_dialogs
+        message_dialogs(page, "Admin Permission?")
+
     alertdialog = ft.AlertDialog(
         modal=True,
         title=ft.Text(
@@ -337,10 +348,10 @@ def permission_y_dialogs(page: ft.Page, content_column: ft.Column, list1: list, 
                 ),
                 ft.TextButton(
                     text="Learn more.",
-                    # on_click=
+                    on_click=on_admin_permission
                 )
             ],
-            height=40,
+            height=70,
             width=340,
         ),
         actions=[
@@ -367,8 +378,8 @@ def save(page: ft.Page, content_column: ft.Column, list1: list, title_text: ft.T
     from ..functions.snack_bar import snack_bar1
     from .staff_home import staff_home_page
     from ..functions.dialogs import loading_dialogs
-    sleep(0.2)
-    loading_dialogs(page, "Saving...", 2)
+    sleep(0.1)
+    loading_dialogs(page, "Saving...", 1)
     admin_data_in([list1[0], list1[1], list1[2], list1[3]])
     page.splash = None
     page.update()

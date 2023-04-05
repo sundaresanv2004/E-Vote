@@ -73,14 +73,14 @@ def candidate_profile_page(page: ft.Page, content_column: ft.Column, title_text:
     def delete_on_click(e):
         alertdialog.open = False
         page.update()
-        sleep(0.2)
+        sleep(0.1)
         from .candidate_delete_approve import delete_candidate_dialogs
         delete_candidate_dialogs(page, content_column, index_val, title_text, True)
 
     def edit_on_click(e):
         alertdialog.open = False
         page.update()
-        sleep(0.2)
+        sleep(0.1)
         # from Main.pages.candidate_edit import candidate_edit_page -------------------------------------------
         content_column.clean()
         content_column.update()
@@ -119,7 +119,7 @@ def candidate_profile_page(page: ft.Page, content_column: ft.Column, title_text:
         from .candidate_delete_approve import approve_dialogs
         alertdialog.open = False
         page.update()
-        sleep(0.3)
+        sleep(0.1)
         approve_dialogs(page, content_column, title_text, index_val, ver_val)
 
     verify_text = ft.TextButton(

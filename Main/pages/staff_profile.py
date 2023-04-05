@@ -22,7 +22,7 @@ def staff_profile_page(page: ft.Page, content_column: ft.Column, title_text: ft.
     def delete_on_click(e):
         alertdialog.open = False
         page.update()
-        sleep(0.3)
+        sleep(0.1)
         from Main.functions.dialogs import message_dialogs
         from Main.pages.staff_delete import delete_staff_dialogs
         if index_val == 0:
@@ -40,13 +40,13 @@ def staff_profile_page(page: ft.Page, content_column: ft.Column, title_text: ft.
             if cc.teme_data[0] == 1:
                 content_column.clean()
                 content_column.update()
-                staff_edit_page(page, content_column, title_text, index_val)
+                staff_edit_page(page, content_column, title_text, index_val, False)
             else:
                 message_dialogs(page, "Edit this record?")
         else:
             content_column.clean()
             content_column.update()
-            staff_edit_page(page, content_column, title_text, index_val)
+            staff_edit_page(page, content_column, title_text, index_val, False)
 
     def on_close(e):
         alertdialog.open = False
@@ -111,6 +111,7 @@ def staff_profile_page(page: ft.Page, content_column: ft.Column, title_text: ft.
     permission_icon = ft.Icon(
         size=30,
     )
+
     last_login_text = ft.Text(
         size=25,
     )

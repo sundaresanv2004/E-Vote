@@ -14,10 +14,10 @@ def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft
         page.update()
 
     def add_candidate_page_fun(e):
-        from .candidate_add import candidate_home_page
+        from .candidate_add import candidate_add_page
         content_column.clean()
         content_column.update()
-        candidate_home_page(page, content_column, title_text)
+        candidate_add_page(page, content_column, title_text)
 
     # Text & Buttons
     main_title_text = ft.Text(

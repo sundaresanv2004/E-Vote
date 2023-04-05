@@ -70,15 +70,15 @@ def admin_info_page(page: ft.Page, menu_container: ft.Container, input_data1: li
                             page.update()
                             from Main.authentication.files.files_cre import start_folder
                             start_folder()
-                            sleep(1)
+                            sleep(0.5)
                             from Main.authentication.files.files_cre import app_start
                             app_start(input_data1)
-                            sleep(2)
+                            sleep(1)
                             from Main.authentication.files.write_files import admin_data_in
                             admin_data_in([username_entry.value, mail_id_entry.value,
                                            password_entry.value, True])
                             from Main.functions.snack_bar import snack_bar1
-                            sleep(1.5)
+                            sleep(1)
                             menu_container.clean()
                             page.update()
                             from Main.pages.all_done import all_done_page

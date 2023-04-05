@@ -7,5 +7,6 @@
   "Delete this record?": "This record can't be deleted.",
   "Edit this record?": "You can't edit this record.",
   "Election Filed not Selected": "You must select or create an election filed to add data.\n\nTo add or select. navigate to settings>Admin settings \nyou will find the option to select or create election filed.",
-  "No Category Recodes": "To view Category data, please add a new category. For more information on \nhow to do this, please check the 'Help' section located at the top-right \ncorner of the page."
+  "No Category Recodes": "To view Category data, please add a new category. For more information on \nhow to do this, please check the 'Help' section located at the top-right \ncorner of the page.",
+  "Admin Permission?": "Granting admin permission means that the recipient will have access to the admin options, including \nthe ability to create, delete, and manage election data. If a staff member does not require \nthese permissions, please choose 'No' to assign them basic options, such as adding, editing, \ndeleting, and viewing old election records, and managing some election settings. \n\nNote that we do not recommend granting admin permission to every staff member."
 }

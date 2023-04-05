@@ -34,6 +34,28 @@ def home_page(page: ft.Page, content_column: ft.Column, rail_name: ft.Navigation
         page.update()
         staff_add_page(page, content_column, title_text)
 
+    def candidate_view(e):
+        page.splash = ft.ProgressBar()
+        page.update()
+        rail_name.selected_index = 1
+        from .candidate_home import candidate_home_page
+        content_column.clean()
+        page.splash = None
+        content_column.scroll = None
+        page.update()
+        candidate_home_page(page, content_column, title_text)
+
+    def candidate_add(e):
+        page.splash = ft.ProgressBar()
+        page.update()
+        rail_name.selected_index = 1
+        from .candidate_add import candidate_add_page
+        content_column.clean()
+        page.splash = None
+        content_column.scroll = None
+        page.update()
+        candidate_add_page(page, content_column, title_text)
+
     app_data_df = pd.read_json(path + file_path['app_data'], orient='table')
     institution_name_text = ft.Text(
         value=app_data_df[app_data_df.topic == 'institution_name'].values[0][1],
@@ -71,12 +93,12 @@ def home_page(page: ft.Page, content_column: ft.Column, rail_name: ft.Navigation
                                     ft.PopupMenuItem(
                                         icon=ft.icons.PERSON_ADD_ALT_1_ROUNDED,
                                         text="Add Candidate",
-                                        # on_click=candidate_add
+                                        on_click=candidate_add
                                     ),
                                     ft.PopupMenuItem(
                                         icon=ft.icons.VIEW_LIST_ROUNDED,
                                         text="View Records",
-                                        # on_click=candidate_view,
+                                        on_click=candidate_view,
                                     ),
                                 ]
                             )
@@ -93,6 +115,27 @@ def home_page(page: ft.Page, content_column: ft.Column, rail_name: ft.Navigation
             padding=10,
         )
     )
+
+    # Staff PopupMenuButton
+    staff_popup_menu = ft.PopupMenuButton(
+        icon=ft.icons.MORE_VERT_ROUNDED,
+        items=[
+            ft.PopupMenuItem(
+                icon=ft.icons.PERSON_ADD_ALT_1_ROUNDED,
+                text="Add Staff",
+                on_click=staff_add,
+            ),
+            ft.PopupMenuItem(
+                icon=ft.icons.VIEW_LIST_ROUNDED,
+                text="View Records",
+                on_click=staff_view,
+            ),
+        ]
+    )
+
+    if cc.teme_data[2] != True:
+        staff_popup_menu.disabled = True
+        staff_popup_menu.tooltip = 'Disabled'
 
     # staff info card
     staff_df = pd.read_json(path + file_path['admin_data'], orient='table')
@@ -116,21 +159,7 @@ def home_page(page: ft.Page, content_column: ft.Column, rail_name: ft.Navigation
                                 ),
                                 width=150,
                             ),
-                            ft.PopupMenuButton(
-                                icon=ft.icons.MORE_VERT_ROUNDED,
-                                items=[
-                                    ft.PopupMenuItem(
-                                        icon=ft.icons.PERSON_ADD_ALT_1_ROUNDED,
-                                        text="Add Staff",
-                                        on_click=staff_add,
-                                    ),
-                                    ft.PopupMenuItem(
-                                        icon=ft.icons.VIEW_LIST_ROUNDED,
-                                        text="View Records",
-                                        on_click=staff_view,
-                                    ),
-                                ]
-                            )
+                            staff_popup_menu
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
