@@ -61,7 +61,7 @@ def loading_dialogs(page: ft.Page, text: str, time_sleep: float):
                 ),
             ],
             expand=True,
-            alignment='center',
+            alignment=ft.MainAxisAlignment.CENTER,
             spacing=8,
             height=180,
             width=100,

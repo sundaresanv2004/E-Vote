@@ -3,7 +3,11 @@
   "version": "0.06",
   "election-name": null,
   "registration": false,
+  "registration_from": null,
+  "registration_to": null,
   "vote": false,
+  "completed": false,
+  "lock_data": false,
   "created-date": null,
   "created-time": null
 }

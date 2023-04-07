@@ -83,7 +83,7 @@ class SettingsElectionOptions(ft.UserControl):
                     ft.Row(
                         [
                             ft.Text(
-                                value="Manage Category Details",
+                                value="Manage Election Details",
                                 size=20,
                             )
                         ],
