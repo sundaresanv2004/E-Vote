@@ -102,7 +102,6 @@ def category_add_new(list_data: list):
 def add_candidate(list1_data: list):
     from Main.authentication.scr.loc_file_scr import file_data
     import Main.authentication.scr.election_scr as ee
-    import Main.authentication.user.login_enc as cc
 
     candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
 
@@ -114,9 +113,7 @@ def add_candidate(list1_data: list):
         index_val += 1
 
     candidate_data_df.loc['a'] = [index_val, list1_data[0], list1_data[1], list1_data[2], list1_data[3],
-                                  list1_data[4],
-                                  f'{datetime.date.today()} ' + f'{datetime.datetime.now().strftime("%H:%M:%S")}',
-                                  cc.teme_data[1]]
+                                  list1_data[4], f'{datetime.date.today()}', list1_data[5]]
 
     candidate_data_df.to_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table', index=False)
 
@@ -157,3 +154,18 @@ def change_verification(page, id_val):
     candidate_data_df.to_json(
         ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table', index=False
     )
+
+
+def candidate_edit(list_data: list, index_val):
+    from Main.authentication.scr.loc_file_scr import file_data
+    import Main.authentication.scr.election_scr as ee
+
+    candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+
+    candidate_data_df.at[index_val, 'candidate_name'] = list_data[0]
+    candidate_data_df.at[index_val, 'category'] = list_data[1]
+    candidate_data_df.at[index_val, 'qualification'] = list_data[2]
+    if list_data[3] != False:
+        candidate_data_df.at[index_val, 'image'] = list_data[3]
+    candidate_data_df.to_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table', index=False)
+

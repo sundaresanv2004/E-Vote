@@ -81,10 +81,10 @@ def candidate_profile_page(page: ft.Page, content_column: ft.Column, title_text:
         alertdialog.open = False
         page.update()
         sleep(0.1)
-        # from Main.pages.candidate_edit import candidate_edit_page -------------------------------------------
+        from .candidate_edit import candidate_edit_page
         content_column.clean()
         content_column.update()
-        # candidate_edit_page(page, info_column, index_val)
+        candidate_edit_page(page, content_column, title_text, index_val)
 
     title1 = ft.Text(
         weight=ft.FontWeight.BOLD,

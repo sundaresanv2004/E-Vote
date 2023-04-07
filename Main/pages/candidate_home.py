@@ -171,7 +171,10 @@ class ViewCandidateRecord(ft.UserControl):
                                               orient='table')
 
     def edit(self, e):
-        pass
+        from .candidate_edit import candidate_edit_page
+        self.content_column.clean()
+        self.content_column.update()
+        candidate_edit_page(self.page, self.content_column, self.title_text, self.index_val)
 
     def delete(self, e):
         from .candidate_delete_approve import delete_candidate_dialogs

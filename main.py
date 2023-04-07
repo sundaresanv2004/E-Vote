@@ -55,7 +55,7 @@ def main(page: ft.Page):
     menu_page(page, menu_container)
 
     # from Main.pages.sidebar_options import admin_sidebar
-    # admin_sidebar(page)
+    # admin_sidebar(page, True)
 
 
 def unsupported_page(page: ft.Page):
