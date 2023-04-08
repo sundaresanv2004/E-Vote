@@ -1,24 +1,202 @@
 import os
 import random
-from time import sleep
 import string
-import flet as ft
+from time import sleep
 import pandas as pd
+import flet as ft
+from datetime import date
 
+import Main.functions.theme as tt
+from ..authentication.scr.loc_file_scr import registration_text_data
+from ..functions.animations import register_container_animation
+from ..functions.date_time import months_
 from Main.authentication.scr.loc_file_scr import file_data
 import Main.authentication.scr.election_scr as ee
-import Main.authentication.user.login_enc as cc
 
-obj = None
+
+def register_home_page(page: ft.Page, menu_container: ft.Container):
+    import Main.authentication.scr.election_scr as ee
+    from Main.authentication.scr.loc_file_scr import file_data
+
+    def on_change_button(e):
+        if checkbox_terms1.value is True and checkbox_terms2.value is True:
+            submit_button.disabled = False
+        else:
+            submit_button.disabled = True
+        submit_button.update()
+
+    def back(e):
+        back_button.disabled = True
+        menu_container.clean()
+        page.update()
+        from Main.pages.menu import menu_page
+        register_container_animation(menu_container)
+        sleep(0.1)
+        menu_page(page, menu_container)
+
+    def submit_on_clicked(e):
+        page.clean()
+        register_page(page)
+
+    # Buttons
+    back_button = ft.IconButton(
+        icon=ft.icons.ARROW_BACK_ROUNDED,
+        tooltip='Back',
+        on_click=back,
+    )
+
+    ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+
+    submit_button = ft.ElevatedButton(
+        text="Next",
+        height=50,
+        width=120,
+        disabled=True,
+        on_click=submit_on_clicked,
+    )
+
+    # Input Filed
+    checkbox_terms1 = ft.Checkbox(
+        label="I have carefully reviewed and understood the information provided above.",
+        value=False,
+        on_change=on_change_button,
+    )
+
+    checkbox_terms2 = ft.Checkbox(
+        label="I assure you that I will answer all details truthfully and to the best of my knowledge.",
+        value=False,
+        on_change=on_change_button,
+    )
+
+    container_data = ft.Container(
+        margin=20,
+        padding=10,
+        alignment=ft.alignment.center
+    )
+
+    column_data1 = ft.Column()
+
+    temp_a = ele_ser.loc['registration_from'].values[0]
+    day1, month1, year1 = [x for x in temp_a.split('/')]
+    d1 = date(int(year1), months_.index(month1) + 1, int(day1))
+
+    temp_a = ele_ser.loc['registration_to'].values[0]
+    day2, month2, year2 = [x for x in temp_a.split('/')]
+    d2 = date(int(year2), months_.index(month2) + 1, int(day2))
+
+    td = date.today()
+
+    if d1 <= td <= d2:
+        container_data.content = ft.Column(
+            [
+                ft.Markdown(
+                    registration_text_data,
+                )
+            ],
+            width=700,
+        )
+        column_data1.controls = [
+            ft.Column(
+                [
+                    checkbox_terms1,
+                    checkbox_terms2,
+                ],
+            ),
+            ft.Row(
+                [
+                    submit_button,
+                ],
+                alignment=ft.MainAxisAlignment.END,
+                width=790,
+            )
+        ]
+    elif td < d1:
+        container_data.content = ft.Column(
+            [
+                ft.Text(
+                    value=f"Please note that the registration for the election has not started yet. You will be able "
+                          f"to register for the election from {ele_ser.loc['registration_from'].values[0]} onwards.",
+                    size=20,
+                )
+            ],
+            width=700,
+        )
+    elif td > d2:
+        container_data.content = ft.Column(
+            [
+                ft.Text(
+                    value="The registration for the election has ended, and we are no longer accepting any new "
+                          "registrations. Please get in touch with the election department if you require any more "
+                          "information.",
+                    size=20,
+                )
+            ],
+            width=700,
+        )
+
+    # alignment and data
+    all_done_data_column = ft.Column(
+        [
+            ft.Row(
+                [
+                    ft.Row(
+                        [
+                            back_button,
+                        ],
+                    ),
+                    ft.Row(
+                        [
+                            ft.Text(
+                                value="Make a Difference",
+                                size=30,
+                                weight=ft.FontWeight.BOLD,
+                            ),
+                        ],
+                        expand=True,
+                        alignment=ft.MainAxisAlignment.CENTER,
+                    ),
+                    ft.Row(
+                        [
+                            tt.ThemeIcon(page),
+                        ],
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+            ),
+            ft.Column(
+                height=5,
+            ),
+            ft.Column(
+                [
+                    container_data,
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            ),
+            ft.Column(
+                height=10,
+            ),
+            column_data1,
+            ft.Column(
+                height=40,
+            ),
+        ],
+        expand=True,
+        alignment=ft.MainAxisAlignment.START,
+        scroll=ft.ScrollMode.ADAPTIVE,
+    )
+
+    menu_container.content = all_done_data_column
+    menu_container.padding = 10
+    menu_container.disabled = False
+    menu_container.update()
 
 
 class CandidateAddPage:
 
-    def __init__(self, page: ft.Page, content_column: ft.Column, title_text: ft.Text):
+    def __init__(self, page: ft.Page):
         super().__init__()
         self.page = page
-        self.content_column = content_column
-        self.title_text = title_text
         self.candidate_selected_image_name = False
         self.candidate_selected_file_path = None
         self.candidate_image_destination = ee.current_election_path + r'\images'
@@ -75,7 +253,6 @@ class CandidateAddPage:
     def qualification_dropdown_values(self):
         option_list1: list = []
         temp_list: list = []
-        self.category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
 
         if self.category_df.empty is not True:
             for i in range(len(self.category_df)):
@@ -99,8 +276,7 @@ class CandidateAddPage:
                         option_list2.append(ft.dropdown.Option(cur_val[j][1]))
                         temp_list1.append(cur_val[j][1])
             else:
-                from ..functions.dialogs import message_dialogs
-                message_dialogs(self.page, "No Category Recodes")
+                self.went_wrong()
         else:
             option_list2.append(ft.dropdown.Option("Select Candidate Qualification"))
 
@@ -154,15 +330,15 @@ class CandidateAddPage:
         self.candidate_image_destination = ee.current_election_path + r'\images'
 
     def back_candidate_home(self):
-        from .candidate_home import candidate_home_page
+        from main import main
         if len(self.name_entry.value) != 0:
             self.unsaved_dialogs()
         elif self.candidate_selected_image_name is not False:
             self.unsaved_dialogs()
         else:
-            self.content_column.clean()
-            self.content_column.update()
-            candidate_home_page(self.page, self.content_column, self.title_text)
+            self.page.clean()
+            self.page.update()
+            main(self.page)
 
     def disable_save_button(self, e):
         if len(self.name_entry.value) != 0:
@@ -183,24 +359,24 @@ class CandidateAddPage:
             self.save_button.disabled = True
         self.save_button.update()
 
-    def save_data(self, e):
+    def save_data(self):
         self.save_button.disabled = True
         self.page.splash = ft.ProgressBar()
         self.page.update()
         from ..authentication.files.write_files import add_candidate
-        from ..functions.snack_bar import snack_bar1
         from ..functions.dialogs import loading_dialogs
-        from .candidate_home import candidate_home_page
+        from main import main
         sleep(0.1)
-        loading_dialogs(self.page, "Saving...", 1)
-        add_candidate([self.name_entry.value, self.category_dropdown.value, True, self.qualification_dropdown.value,
-                       self.candidate_selected_image_name, cc.teme_data[1]])
+        loading_dialogs(self.page, "Saving...", 2)
+        add_candidate([self.name_entry.value, self.category_dropdown.value, False, self.qualification_dropdown.value,
+                       self.candidate_selected_image_name, "Registered"])
         self.page.splash = None
         self.page.update()
-        self.content_column.clean()
-        self.content_column.update()
-        candidate_home_page(self.page, self.content_column, self.title_text)
-        snack_bar1(self.page, "Successfully Added")
+        self.page.clean()
+        self.page.update()
+        main(self.page)
+        sleep(0.5)
+        self.success()
 
     def build(self):
         self.save_button = ft.ElevatedButton(
@@ -208,7 +384,7 @@ class CandidateAddPage:
             height=50,
             width=150,
             disabled=True,
-            on_click=self.save_data,
+            on_click=self.make_sure,
         )
 
         pick_files_dialog = ft.FilePicker(on_result=self.pick_files_result)
@@ -280,13 +456,13 @@ class CandidateAddPage:
             self.page.update()
 
         def discard(e):
-            from .candidate_home import candidate_home_page
+            from main import main
             alertdialog.open = False
             self.page.update()
             sleep(0.2)
-            self.content_column.clean()
-            self.content_column.update()
-            candidate_home_page(self.page, self.content_column, self.title_text)
+            self.page.clean()
+            self.page.update()
+            main(self.page)
             self.change_values()
 
         alertdialog = ft.AlertDialog(
@@ -311,93 +487,138 @@ class CandidateAddPage:
         alertdialog.open = True
         self.page.update()
 
+    def went_wrong(self):
+        def on_close(e):
+            from main import main
+            alertdialog.open = False
+            self.page.update()
+            self.page.clean()
+            self.page.update()
+            main(self.page)
 
-def candidate_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
-    global obj
-    obj = CandidateAddPage(page, content_column, title_text)
+        alertdialog = ft.AlertDialog(
+            modal=True,
+            title=ft.Text("Something went wrong"),
+            content=ft.Text(
+                value="Oops! Something went wrong. Please try again later or \n"
+                      "please reach out to the election department.",
+            ),
+            actions=[
+                ft.TextButton(
+                    text="Ok",
+                    on_click=on_close,
+                ),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
 
-    def back_candidate_add_page(e):
+        self.page.dialog = alertdialog
+        alertdialog.open = True
+        self.page.update()
+
+    def make_sure(self, e):
+        def on_close(e):
+            alertdialog.open = False
+            self.page.update()
+
+        def on_save(e):
+            alertdialog.open = False
+            self.page.update()
+            sleep(0.1)
+            self.save_data()
+
+        alertdialog = ft.AlertDialog(
+            modal=True,
+            title=ft.Text("Make Sure"),
+            content=ft.Text(
+                value="Please ensure that all inputs are correct before submitting your form,\n "
+                      "as changes cannot be made once it has been submitted.",
+            ),
+            actions=[
+                ft.TextButton(
+                    text="Cancel",
+                    on_click=on_close,
+                ),
+                ft.TextButton(
+                    text="Save",
+                    on_click=on_save,
+                ),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+
+        self.page.dialog = alertdialog
+        alertdialog.open = True
+        self.page.update()
+
+    def success(self):
+        def on_close(e):
+            alertdialog.open = False
+            self.page.update()
+
+        alertdialog = ft.AlertDialog(
+            modal=True,
+            title=ft.Text("Successfully Registered"),
+            content=ft.Text("Thank you for registering for the election.\n"
+                            "Your submission has been successfully processed."),
+            actions=[
+                ft.TextButton(
+                    text="Ok",
+                    on_click=on_close,
+                )
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+
+        self.page.dialog = alertdialog
+        alertdialog.open = True
+        self.page.update()
+
+
+def register_page(page: ft.Page):
+    obj = CandidateAddPage(page)
+
+    def back_candidate_page(e):
         obj.back_candidate_home()
-
-    def can(e):
-        from .category import category_add_page
-        category_add_page(page, content_column, title_text, False)
-
-    title_text.value = "Candidate > Add Candidate"
-
-    # Main Text
-    main_candidate_add_text = ft.Text(
-        value="Add Candidate",
-        size=35,
-        weight=ft.FontWeight.BOLD,
-        italic=True,
-    )
 
     # Button
     back_candidate_home_button = ft.IconButton(
         icon=ft.icons.ARROW_BACK_ROUNDED,
         tooltip="Back",
-        on_click=back_candidate_add_page,
+        on_click=back_candidate_page,
     )
 
-    question_button = ft.PopupMenuButton(
-        icon=ft.icons.QUESTION_ANSWER_ROUNDED,
-        tooltip="Help",
-        items=[
-            ft.PopupMenuItem(
-                icon=ft.icons.CATEGORY_ROUNDED,
-                text="Add a New category",
-                on_click=can
-            ),
+    appbar = ft.AppBar(
+        center_title=False,
+        leading=back_candidate_home_button,
+        title=ft.Text(value="Candidate Registration", size=20, weight=ft.FontWeight.BOLD),
+        leading_width=50,
+        bgcolor=ft.colors.SURFACE_VARIANT,
+        actions=[
+            tt.ThemeIcon(page)
+        ],
+    )
+
+    content_column = ft.Column(
+        [
+            ft.Column(
+                [
+                    ft.Row(
+                        height=40,
+                    ),
+                    obj.build(),
+                    ft.Row(
+                        height=10,
+                    )
+                ],
+                expand=True,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                scroll=ft.ScrollMode.ADAPTIVE,
+            )
         ]
     )
 
-    content_column.controls = [
-        ft.Row(
-            [
-                ft.Row(
-                    [
-                        back_candidate_home_button,
-                    ],
-                    alignment=ft.MainAxisAlignment.START,
-                ),
-                ft.Row(
-                    [
-                        main_candidate_add_text,
-                    ],
-                    expand=True,
-                    alignment=ft.MainAxisAlignment.CENTER,
-                ),
-                ft.Row(
-                    [
-                        question_button,
-                    ],
-                    alignment=ft.MainAxisAlignment.END,
-                ),
-            ]
-        ),
-        ft.Divider(
-            thickness=3,
-            height=5,
-        ),
-        ft.Column(
-            [
-                ft.Row(
-                    height=40,
-                ),
-                obj.build(),
-                ft.Row(
-                    height=10,
-                )
-            ],
-            expand=True,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-            scroll=ft.ScrollMode.ADAPTIVE,
-        )
-    ]
-
-    page.update()
-
-
-def change_check():
-    obj.qualification_dropdown_values()
+    page.add(
+        appbar,
+        content_column,
+    )

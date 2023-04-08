@@ -2,6 +2,8 @@ import datetime
 import os
 import numpy as np
 import pandas as pd
+import string
+import random
 
 from Main.authentication.encrypter.encryption import encrypter
 from Main.authentication.scr.check_installation import path
@@ -39,14 +41,16 @@ def new_election_creation(title: str):
 
     election_data = pd.read_csv(path + file_path["election_data"])
     settings_df = pd.read_json(path + file_path['settings'], orient='table')
-
+    source = string.ascii_letters + string.digits
+    rand = ''.join((random.choice(source)) for i in range(8))
+    folder_name = rand + title
     if election_data.empty is True:
-        election_data.loc['0'] = [title, path + file_path['candidate_data'] + rf'\{title}']
+        election_data.loc['0'] = [title, path + file_path['candidate_data'] + rf'\{folder_name}']
         settings_df.loc['Election'] = title
         settings_df.to_json(path + file_path['settings'], orient='table', index=True)
 
     election_data.to_csv(path + file_path["election_data"], index=False)
-    new_election_creation_folder(title)
+    new_election_creation_folder(title, folder_name)
 
 
 def delete_staff_data(index_df):
@@ -169,3 +173,21 @@ def candidate_edit(list_data: list, index_val):
         candidate_data_df.at[index_val, 'image'] = list_data[3]
     candidate_data_df.to_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table', index=False)
 
+
+def category_edit(list_data: list, index_val):
+    import Main.authentication.scr.election_scr as ee
+    from ..scr.loc_file_scr import file_data
+
+    category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
+    category_df.loc[index_val, 'category'] = list_data[0]
+    category_df.loc[index_val, 'qualification'] = list_data[1]
+    category_df.to_csv(ee.current_election_path + rf'\{file_data["category_data"]}', index=False)
+
+
+def delete_category(index_val):
+    import Main.authentication.scr.election_scr as ee
+    from ..scr.loc_file_scr import file_data
+
+    category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
+    category_df.drop(index_val, axis=0, inplace=True)
+    category_df.to_csv(ee.current_election_path + rf'\{file_data["category_data"]}', index=False)

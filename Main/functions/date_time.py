@@ -72,9 +72,6 @@ class DateTimeField:
             day_list.append(ft.dropdown.Option(i))
         self.days_drop_down.options = day_list
 
-    def save(self, from_val, to_val):
-        pass
-
 
 def datetime_field(page: ft.Page):
     import Main.authentication.scr.election_scr as ee
@@ -101,9 +98,12 @@ def datetime_field(page: ft.Page):
                     to_year = to_obj.year_drop_down.value
                     to_month = to_obj.months_drop_down.value
                     to_day = to_obj.days_drop_down.value
-                    from_date = f"{from_year}/{from_month}/{from_day}"
-                    to_date = f"{to_year}/{to_month}/{to_day}"
-                    if from_date <= to_date:
+                    from_date = f"{from_day}/{from_month}/{from_year}"
+                    to_date = f"{to_day}/{to_month}/{to_year}"
+                    d1 = date(int(from_year), months_.index(from_month)+1, int(from_day))
+                    d2 = date(int(to_year), months_.index(to_month)+1, int(to_day))
+
+                    if d1 <= d2:
                         from ..authentication.files.settings_write import registration_date
                         registration_date(from_date, to_date)
                         alertdialog.open = False
@@ -128,31 +128,17 @@ def datetime_field(page: ft.Page):
         from_obj.days_drop_down.value = present_day
     else:
         temp_b = ele_ser.loc['registration_from'].values[0]
-        from_obj.year_drop_down.value = temp_b[0: 4]
-        j = 5
-        month_val1 = ''
-        for i in temp_b[5:]:
-            j += 1
-            if i != '/':
-                month_val1 += i
-            else:
-                break
-        from_obj.months_drop_down.value = month_val1
-        from_obj.days_drop_down.value = temp_b[j:]
+        from_day1, from_month1, from_year1 = [x for x in temp_b.split('/')]
+        from_obj.year_drop_down.value = from_year1
+        from_obj.months_drop_down.value = from_month1
+        from_obj.days_drop_down.value = from_day1
 
     if pd.isna(ele_ser.loc['registration_to'].values[0]) is False:
         temp_a = ele_ser.loc['registration_to'].values[0]
-        to_obj.year_drop_down.value = temp_a[0: 4]
-        month_val2 = ''
-        k = 5
-        for i in temp_a[5:]:
-            k += 1
-            if i != '/':
-                month_val2 += i
-            else:
-                break
-        to_obj.months_drop_down.value = month_val2
-        to_obj.days_drop_down.value = temp_a[k:]
+        to_day2, to_month2, to_year2 = [x for x in temp_a.split('/')]
+        to_obj.year_drop_down.value = to_year2
+        to_obj.months_drop_down.value = to_month2
+        to_obj.days_drop_down.value = to_day2
 
     alertdialog = ft.AlertDialog(
         modal=True,
@@ -170,9 +156,10 @@ def datetime_field(page: ft.Page):
                         ),
                         ft.Row(
                             [
-                                from_obj.year_drop_down,
+                                from_obj.days_drop_down,
                                 from_obj.months_drop_down,
-                                from_obj.days_drop_down
+                                from_obj.year_drop_down,
+
                             ]
                         )
                     ],
@@ -185,9 +172,9 @@ def datetime_field(page: ft.Page):
                         ),
                         ft.Row(
                             [
-                                to_obj.year_drop_down,
+                                to_obj.days_drop_down,
                                 to_obj.months_drop_down,
-                                to_obj.days_drop_down
+                                to_obj.year_drop_down,
                             ]
                         )
                     ],

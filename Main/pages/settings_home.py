@@ -8,14 +8,6 @@ from .settings_user import SettingsUserOptions
 def settings_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
     title_text.value = "Settings"
 
-    # Text & Buttons
-    main_title_text = ft.Text(
-        value="Settings",
-        size=35,
-        weight=ft.FontWeight.BOLD,
-        italic=True,
-    )
-
     settings_column_data = ft.Column(
         [
             ft.Row(
@@ -28,21 +20,7 @@ def settings_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
     )
 
     content_column.controls = [
-        ft.Column(
-            [
-                ft.Row(
-                    [
-                        main_title_text
-                    ],
-                    alignment=ft.MainAxisAlignment.CENTER,
-                ),
-                ft.Divider(
-                    height=5,
-                    thickness=3,
-                ),
-                settings_column_data,
-            ],
-        )
+            settings_column_data,
     ]
 
     content_column.scroll = ft.ScrollMode.ADAPTIVE

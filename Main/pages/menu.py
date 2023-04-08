@@ -7,14 +7,14 @@ from ..authentication.scr.check_installation import start, path
 import Main.authentication.scr.election_scr as ee
 from ..authentication.scr.loc_file_scr import app_data, file_path, file_data
 import Main.functions.theme as tt
-from ..functions.animations import menu_container_animation
+from ..functions.animations import menu_container_animation, register_container_animation
 
 
 def menu_page(page: ft.Page, menu_container: ft.Container):
 
     # functions
     def get_started_fun(e):
-        from Main.pages.start_info import start_info_page
+        from .start_info import start_info_page
         menu_container.clean()
         page.update()
         menu_container_animation(menu_container)
@@ -22,12 +22,22 @@ def menu_page(page: ft.Page, menu_container: ft.Container):
         start_info_page(page, menu_container, [])
 
     def user_login_fun(e):
-        from Main.pages.login import login_page
+        from .login import login_page
         menu_container.clean()
         page.update()
         menu_container_animation(menu_container)
         sleep(0.1)
         login_page(page, menu_container)
+
+    def register_fun(e):
+        register_button.disabled = True
+        page.update()
+        from .register import register_home_page
+        menu_container.clean()
+        page.update()
+        register_container_animation(menu_container)
+        sleep(0.25)
+        register_home_page(page, menu_container)
 
     # Buttons
     # Get Started button
@@ -63,6 +73,7 @@ def menu_page(page: ft.Page, menu_container: ft.Container):
         icon=ft.icons.PERSON_ADD_ALT_ROUNDED,
         height=50,
         width=200,
+        on_click=register_fun,
     )
 
     # vote button

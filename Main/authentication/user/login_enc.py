@@ -5,9 +5,9 @@ from Main.authentication.files.write_files import login_details_update
 from Main.authentication.scr.check_installation import path
 from Main.authentication.scr.loc_file_scr import file_path
 
-admin_login_df = pd.read_json(path + file_path['admin_data'], orient='table')
-admin_data_df1 = admin_login_df.loc[0].values
-teme_data = [admin_data_df1[0], decrypter(admin_data_df1[1]), admin_data_df1[4], admin_data_df1[5]]
+# admin_login_df = pd.read_json(path + file_path['admin_data'], orient='table')
+# admin_data_df1 = admin_login_df.loc[0].values
+teme_data = None  # [admin_data_df1[0], decrypter(admin_data_df1[1]), admin_data_df1[4], admin_data_df1[5]]
 
 
 def login_checker(entry1: str, entry2: str):

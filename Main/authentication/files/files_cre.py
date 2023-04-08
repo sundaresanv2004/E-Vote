@@ -61,8 +61,9 @@ def app_start(app_start_data_list1: list):
     admin_login.to_json(path + file_path['admin_login_data'], orient='table', index=False)
 
 
-def new_election_creation_folder(title: str):
-    election_path = path + file_path['candidate_data'] + rf'\{title}'
+def new_election_creation_folder(title: str, folder_path):
+
+    election_path = path + file_path['candidate_data'] + rf'\{folder_path}'
     os.makedirs(election_path)
     os.makedirs(election_path + r'\images')
     os.makedirs(election_path + rf'\{file_data["vote_data"]}')

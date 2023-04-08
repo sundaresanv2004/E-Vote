@@ -6,6 +6,10 @@ with open(assert_loc_path + r"\messages\unsupported_message.txt", "r") as file:
     unsupported_message_contents = file.read()
     file.close()
 
+with open(assert_loc_path + r"\messages\registration_text.txt", "r") as file1:
+    registration_text_data = file1.read()
+    file1.close()
+
 
 read_app_data = open(assert_loc_path + r"\data\app_data.json")
 app_data: dict = json.load(read_app_data)
@@ -34,3 +38,5 @@ read_message_data.close()
 f3_1 = open(assert_loc_path + r"\messages\error.json")
 error_data: dict = json.load(f3_1)
 f3_1.close()
+
+

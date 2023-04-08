@@ -1,5 +1,5 @@
+from time import sleep
 import flet as ft
-import numpy as np
 import pandas as pd
 
 import Main.authentication.scr.election_scr as ee
@@ -16,6 +16,7 @@ class ElectionData:
 
     def __init__(self, page: ft.Page):
         super().__init__()
+        self.election_title_text = None
         self.from_date_text = ft.Text(size=20)
         self.to_date_text = ft.Text(size=20)
         self.lock_switch = None
@@ -27,43 +28,17 @@ class ElectionData:
         self.page = page
         self.ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
         self.election_title_option = None
-        self.manage_category_option = None
 
-    def category_container(self):
-        self.manage_category_option = ft.Container(
-            content=ft.Row(
-                [
-                    ft.Row(
-                        [
-                            ft.Text(
-                                value="Category",
-                                size=20,
-                            )
-                        ],
-                        expand=True,
-                        alignment=ft.MainAxisAlignment.START,
-                    ),
-                    ft.Row(
-                        [
-                            ft.IconButton(
-                                icon=ft.icons.NAVIGATE_NEXT_ROUNDED,
-                            )
-                        ]
-                    )
-                ],
-                vertical_alignment=ft.CrossAxisAlignment.CENTER,
-            ),
-            padding=15,
-            alignment=ft.alignment.center,
-            height=70,
-            border_radius=10,
-            ink=True,
-            on_click=lambda e: print("clicked!"),
-            border=ft.border.all(0.3, ft.colors.SECONDARY)
-        )
-        return self.manage_category_option
+    def on_election_title(self, e):
+        sleep(0.1)
+        from ..functions.dialogs_election import edit_election_name
+        edit_election_name(self.page)
 
     def election_title(self):
+        self.election_title_text = ft.Text(
+            value=f"{self.ele_ser.loc['election-name'].values[0]}",
+            size=20,
+        )
         self.election_title_option = ft.Container(
             content=ft.Row(
                 [
@@ -73,10 +48,7 @@ class ElectionData:
                                 value="Election Name:",
                                 size=20,
                             ),
-                            ft.Text(
-                                value=f"{self.ele_ser.loc['election-name'].values[0]}",
-                                size=20,
-                            ),
+                            self.election_title_text,
                         ],
                         spacing=20,
                         expand=True,
@@ -84,9 +56,9 @@ class ElectionData:
                     ),
                     ft.Row(
                         [
-                            ft.TextButton(
-                                text="Edit",
-                                icon=ft.icons.EDIT_ROUNDED,
+                            ft.IconButton(
+                                icon=ft.icons.NAVIGATE_NEXT_ROUNDED,
+                                on_click=self.on_election_title,
                             )
                         ]
                     )
@@ -97,9 +69,9 @@ class ElectionData:
             alignment=ft.alignment.center,
             height=70,
             ink=True,
-            on_click=lambda e: print("clicked!"),
-            border_radius=10,
-            border=ft.border.all(0.3, ft.colors.SECONDARY)
+            on_click=self.on_election_title,
+            border_radius=5,
+            border=ft.border.all(0.5, ft.colors.SECONDARY)
         )
         return self.election_title_option
 
@@ -128,8 +100,8 @@ class ElectionData:
             padding=15,
             alignment=ft.alignment.center,
             height=70,
-            border_radius=10,
-            border=ft.border.all(0.3, ft.colors.SECONDARY)
+            border_radius=5,
+            border=ft.border.all(0.5, ft.colors.SECONDARY)
         )
 
         if self.ele_ser.loc['registration'].values == False:
@@ -171,8 +143,8 @@ class ElectionData:
             height=70,
             ink=True,
             on_click=lambda e: print("clicked!"),
-            border_radius=10,
-            border=ft.border.all(0.3, ft.colors.SECONDARY)
+            border_radius=5,
+            border=ft.border.all(0.5, ft.colors.SECONDARY)
         )
 
         if self.ele_ser.loc['lock_data'].values == False:
@@ -185,6 +157,7 @@ class ElectionData:
         return self.lock_container_option
 
     def registration_date_oc_click(self, e):
+        sleep(0.1)
         from ..functions.date_time import datetime_field
         datetime_field(self.page)
 
@@ -207,9 +180,8 @@ class ElectionData:
                     ),
                     ft.Row(
                         [
-                            ft.TextButton(
-                                text="Edit",
-                                icon=ft.icons.EDIT_ROUNDED,
+                            ft.IconButton(
+                                icon=ft.icons.NAVIGATE_NEXT_ROUNDED,
                                 on_click=self.registration_date_oc_click,
                             )
                         ]
@@ -220,8 +192,10 @@ class ElectionData:
             padding=15,
             alignment=ft.alignment.center,
             height=70,
-            border_radius=10,
-            border=ft.border.all(0.3, ft.colors.SECONDARY)
+            on_click=self.registration_date_oc_click,
+            ink=True,
+            border_radius=5,
+            border=ft.border.all(0.5, ft.colors.SECONDARY)
         )
 
         if self.ele_ser.loc['registration'].values == False:
@@ -232,6 +206,7 @@ class ElectionData:
         return self.registration_date_option
 
     def check_date(self):
+
         self.ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
         if pd.isna(self.ele_ser.loc['registration_from'].values[0]) is True:
             self.from_date_text.value = f"From: -"
@@ -239,7 +214,7 @@ class ElectionData:
         else:
             self.from_date_text.value = f"From: {self.ele_ser.loc['registration_from'].values[0]}"
             self.to_date_text.value = f"To: {self.ele_ser.loc['registration_to'].values[0]}"
-
+        self.election_title_text.value = f"{self.ele_ser.loc['election-name'].values[0]}"
         try:
             self.registration_date_option.update()
         except AttributeError:
@@ -262,11 +237,47 @@ def election_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
     title_text.value = "Election"
     obj = ElectionData(page)
 
-    main_profile_text = ft.Text(
-        value="Election",
-        size=35,
-        weight=ft.FontWeight.BOLD,
-        italic=True,
+    def on_category_container(e):
+        content_column.scroll = None
+        content_column.alignment = ft.MainAxisAlignment.CENTER
+        page.update()
+        from .category import category_home_page
+        sleep(0.2)
+        content_column.clean()
+        content_column.update()
+        category_home_page(page, content_column, title_text)
+
+    manage_category_option = ft.Container(
+        content=ft.Row(
+            [
+                ft.Row(
+                    [
+                        ft.Text(
+                            value="Category",
+                            size=20,
+                        )
+                    ],
+                    expand=True,
+                    alignment=ft.MainAxisAlignment.START,
+                ),
+                ft.Row(
+                    [
+                        ft.IconButton(
+                            icon=ft.icons.NAVIGATE_NEXT_ROUNDED,
+                            on_click=on_category_container,
+                        )
+                    ]
+                )
+            ],
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        ),
+        padding=15,
+        alignment=ft.alignment.center,
+        height=70,
+        border_radius=5,
+        ink=True,
+        on_click=on_category_container,
+        border=ft.border.all(0.5, ft.colors.SECONDARY)
     )
 
     generate_result_option = ft.Container(
@@ -295,10 +306,10 @@ def election_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
         padding=15,
         alignment=ft.alignment.center,
         height=70,
-        border_radius=10,
+        border_radius=5,
         ink=True,
         on_click=lambda e: print("clicked!"),
-        border=ft.border.all(0.3, ft.colors.SECONDARY)
+        border=ft.border.all(0.5, ft.colors.SECONDARY)
     )
 
     view_result_option = ft.Container(
@@ -327,10 +338,10 @@ def election_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
         padding=15,
         alignment=ft.alignment.center,
         height=70,
-        border_radius=10,
+        border_radius=5,
         ink=True,
         on_click=lambda e: print("clicked!"),
-        border=ft.border.all(0.3, ft.colors.SECONDARY)
+        border=ft.border.all(0.5, ft.colors.SECONDARY)
     )
 
     view_winners_option = ft.Container(
@@ -359,10 +370,10 @@ def election_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
         padding=15,
         alignment=ft.alignment.center,
         height=70,
-        border_radius=10,
+        border_radius=5,
         ink=True,
         on_click=lambda e: print("clicked!"),
-        border=ft.border.all(0.3, ft.colors.SECONDARY)
+        border=ft.border.all(0.5, ft.colors.SECONDARY)
     )
 
     """
@@ -387,7 +398,7 @@ def election_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
             view_result_option,
             view_winners_option,
             obj.election_title(),
-            obj.category_container(),
+            manage_category_option,
             obj.registration_container(),
             obj.registration_date_container(),
             obj.lock_container(),

@@ -31,6 +31,7 @@ class CandidateEditPage:
             border_radius=9,
             border_color=ft.colors.SECONDARY,
             autofocus=True,
+            capitalization=ft.TextCapitalization.WORDS,
             prefix_icon=ft.icons.ACCOUNT_CIRCLE_ROUNDED,
             on_change=self.disable_save_button,
             value=self.candidate_data[1]
@@ -236,23 +237,7 @@ class CandidateEditPage:
     def save_data(self, e):
         if len(self.name_entry.value) != 0:
             if len(self.category_dropdown.value) != 0:
-                self.save_button.disabled = True
-                self.page.splash = ft.ProgressBar()
-                self.page.update()
-                from ..authentication.files.write_files import candidate_edit
-                from ..functions.snack_bar import snack_bar1
-                from ..functions.dialogs import loading_dialogs
-                from .candidate_home import candidate_home_page
-                sleep(0.1)
-                loading_dialogs(self.page, "Saving Changes...", 1)
-                candidate_edit([self.name_entry.value, self.category_dropdown.value, self.qualification_dropdown.value,
-                                self.candidate_selected_image_name], self.index_val)
-                self.page.splash = None
-                self.page.update()
-                self.content_column.clean()
-                self.content_column.update()
-                candidate_home_page(self.page, self.content_column, self.title_text)
-                snack_bar1(self.page, "Successfully Updated")
+                self.edit_save_dialogs()
             else:
                 self.category_dropdown.error_text = "Select a Category"
                 self.category_dropdown.update()
@@ -365,6 +350,57 @@ class CandidateEditPage:
                 ft.TextButton(
                     text="Keep editing",
                     on_click=on_close,
+                ),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+
+        self.page.dialog = alertdialog
+        alertdialog.open = True
+        self.page.update()
+
+    def edit_save_dialogs(self):
+        def on_close(e):
+            alertdialog.open = False
+            self.page.update()
+
+        def save_changes(e):
+            alertdialog.open = False
+            self.page.update()
+            self.save_button.disabled = True
+            self.page.splash = ft.ProgressBar()
+            self.page.update()
+            from ..authentication.files.write_files import candidate_edit
+            from ..functions.snack_bar import snack_bar1
+            from ..functions.dialogs import loading_dialogs
+            from .candidate_home import candidate_home_page
+            sleep(0.1)
+            loading_dialogs(self.page, "Saving Changes...", 1)
+            candidate_edit([self.name_entry.value, self.category_dropdown.value, self.qualification_dropdown.value,
+                            self.candidate_selected_image_name], self.index_val)
+            self.page.splash = None
+            self.page.update()
+            self.content_column.clean()
+            self.content_column.update()
+            candidate_home_page(self.page, self.content_column, self.title_text)
+            snack_bar1(self.page, "Successfully Updated")
+
+        alertdialog = ft.AlertDialog(
+            modal=True,
+            title=ft.Text(
+                value="Save your changes?",
+            ),
+            content=ft.Text(
+                value="This record will be updated.",
+            ),
+            actions=[
+                ft.TextButton(
+                    text="Cancel",
+                    on_click=on_close,
+                ),
+                ft.TextButton(
+                    text="Ok",
+                    on_click=save_changes,
                 ),
             ],
             actions_alignment=ft.MainAxisAlignment.END,
