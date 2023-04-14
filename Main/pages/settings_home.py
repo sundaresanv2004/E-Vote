@@ -216,8 +216,8 @@ class ElectionData:
 
     def on_lock_click(self, e):
         from ..functions.dialogs_election import passcode_election
-
-        if self.registration_switch.value is False:
+        print(self.lock.value)
+        if self.lock.value is True:
             passcode_election(self.page, self.lock)
         else:
             pass
