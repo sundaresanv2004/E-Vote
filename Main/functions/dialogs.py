@@ -1,7 +1,7 @@
 from time import sleep
 import flet as ft
 
-from Main.authentication.scr.loc_file_scr import message_data, error_data
+from Main.authentication.scr.loc_file_scr import warnings, error_data
 
 
 def message_dialogs(page: ft.Page, message_key: str):
@@ -19,7 +19,7 @@ def message_dialogs(page: ft.Page, message_key: str):
             value=f"{message_key}",
         ),
         content=ft.Text(
-            value=f"{message_data[message_key]}",
+            value=f"{warnings[message_key]}",
         ),
         actions=[
             ft.TextButton(

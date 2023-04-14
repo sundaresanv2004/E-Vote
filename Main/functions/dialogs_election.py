@@ -75,3 +75,106 @@ def edit_election_name(page: ft.Page):
     page.dialog = message_alertdialog
     message_alertdialog.open = True
     page.update()
+
+
+def passcode_election(page: ft.Page, switch_data: ft.Switch):
+    from ..authentication.scr.loc_file_scr import messages
+    # Functions
+    def on_ok(e):
+        switch_data.value = False
+        message_alertdialog.open = False
+        page.update()
+
+    ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+
+    entry1 = ft.TextField(
+        hint_text="Enter the Code",
+        width=350,
+        border=ft.InputBorder.OUTLINE,
+        border_radius=9,
+        max_length=5,
+        password=True,
+        can_reveal_password=True,
+        prefix_icon=ft.icons.LOCK_ROUNDED,
+        border_color=ft.colors.SECONDARY,
+        autofocus=True,
+        keyboard_type=ft.KeyboardType.NUMBER,
+        capitalization=ft.TextCapitalization.WORDS,
+    )
+
+    def on_next1(e):
+        message_alertdialog.title = ft.Text(value="2-Step Verification")
+        message_alertdialog.content = ft.Column(
+            [
+                entry1
+            ],
+            height=70,
+            width=350,
+        )
+
+        message_alertdialog.actions = [
+            ft.TextButton(
+                text="Cancel",
+                on_click=on_ok,
+            ),
+            ft.TextButton(
+                text="Save",
+                # on_click=on_next1,
+            ),
+        ]
+        page.update()
+
+    def on_next(e):
+        message_alertdialog.title = ft.Text(value="Make Sure?")
+        message_alertdialog.content = ft.Column(
+            [
+                ft.Text(value=messages["code_text2"],
+                        size=15),
+            ],
+            height=100,
+        )
+
+        message_alertdialog.actions = [
+            ft.TextButton(
+                text="Cancel",
+                on_click=on_ok,
+            ),
+            ft.TextButton(
+                text="Next",
+                on_click=on_next1,
+            ),
+        ]
+        page.update()
+
+    # AlertDialog data
+    message_alertdialog = ft.AlertDialog(
+        modal=True,
+        title=ft.Text(
+            value=f"2-Step Verification",
+        ),
+        content=ft.Column(
+            [
+                ft.Text(
+                    value=messages["code_text1"],
+                    size=15,
+                ),
+            ],
+            height=100,
+        ),
+        actions=[
+            ft.TextButton(
+                text="Cancel",
+                on_click=on_ok,
+            ),
+            ft.TextButton(
+                text="Next",
+                on_click=on_next,
+            ),
+        ],
+        actions_alignment=ft.MainAxisAlignment.END,
+    )
+
+    # Open dialog
+    page.dialog = message_alertdialog
+    message_alertdialog.open = True
+    page.update()

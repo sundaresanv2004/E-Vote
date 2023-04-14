@@ -35,9 +35,9 @@ def admin_sidebar(page: ft.Page, staff_val: bool):
     def admin_clicked(e):
         old_index = e
         page.splash = ft.ProgressBar()
-        content_column.scroll = None
-        content_column.alignment = ft.MainAxisAlignment.CENTER
         if e != 6:
+            content_column.scroll = None
+            content_column.alignment = ft.MainAxisAlignment.CENTER
             content_column.clean()
         page.update()
         if e == 0:
@@ -83,9 +83,9 @@ def admin_sidebar(page: ft.Page, staff_val: bool):
     def staff_clicked(e):
         old_index = e
         page.splash = ft.ProgressBar()
-        content_column.scroll = None
-        content_column.alignment = ft.MainAxisAlignment.CENTER
-        if e != 5:
+        if e != 4:
+            content_column.scroll = None
+            content_column.alignment = ft.MainAxisAlignment.CENTER
             content_column.clean()
         page.update()
         if e == 0:
@@ -109,11 +109,6 @@ def admin_sidebar(page: ft.Page, staff_val: bool):
             page.update()
             election_home_page(page, content_column, page_title_text)
         elif e == 4:
-            from .settings_home import settings_home_page
-            page.splash = None
-            page.update()
-            settings_home_page(page, content_column, page_title_text)
-        elif e == 5:
             from main import main
             from ..functions.dialogs import loading_dialogs
             loading_dialogs(page, "Logging out...", 2)
@@ -227,7 +222,7 @@ def admin_sidebar(page: ft.Page, staff_val: bool):
 
     admin_list: list = [home_button, candidate_button, staff_button, profile_button, election_button, setting_button,
                         logout_button]
-    staff_list: list = [home_button, candidate_button, profile_button, election_button, setting_button, logout_button]
+    staff_list: list = [home_button, candidate_button, profile_button, election_button, logout_button]
 
     # NavigationRail
     option_rail = ft.NavigationRail(

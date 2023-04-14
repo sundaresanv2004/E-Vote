@@ -10,10 +10,13 @@ with open(assert_loc_path + r"\messages\registration_text.txt", "r") as file1:
     registration_text_data = file1.read()
     file1.close()
 
-
 read_app_data = open(assert_loc_path + r"\data\app_data.json")
 app_data: dict = json.load(read_app_data)
 read_app_data.close()
+
+file0 = open(assert_loc_path + r"\messages\message.json")
+messages: dict = json.load(file0)
+file0.close()
 
 read_file_data = open(assert_loc_path + r"\data\file_data.json")
 file_data: dict = json.load(read_file_data)
@@ -31,8 +34,8 @@ read_file_path = open(assert_loc_path + r"\data\file_path.json")
 file_path: dict = json.load(read_file_path)
 read_file_path.close()
 
-read_message_data = open(assert_loc_path + r"\messages\message.json")
-message_data: dict = json.load(read_message_data)
+read_message_data = open(assert_loc_path + r"\messages\warning.json")
+warnings: dict = json.load(read_message_data)
 read_message_data.close()
 
 f3_1 = open(assert_loc_path + r"\messages\error.json")
