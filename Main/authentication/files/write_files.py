@@ -21,9 +21,9 @@ def admin_data_in(admin_data_new_in_list: list):
         max_index += 1
 
     staff_df.loc['a'] = [max_index, encrypter(admin_data_new_in_list[0]),
-                               encrypter(admin_data_new_in_list[1]),
-                               encrypter(admin_data_new_in_list[2]),
-                               admin_data_new_in_list[3], 'system', np.nan]
+                         encrypter(admin_data_new_in_list[1]),
+                         encrypter(admin_data_new_in_list[2]),
+                         admin_data_new_in_list[3], 'system', np.nan]
     staff_login_df.loc['a'] = [max_index, False, False]
     staff_df.to_json(path + file_path['admin_data'], orient='table', index=False)
     staff_login_df.to_json(path + file_path['admin_login_data'], orient='table', index=False)
@@ -77,7 +77,6 @@ def edit_staff_data(data_list: list, index_user):
     staff_df.to_json(path + file_path['admin_data'], orient='table', index=False)
 
 
-
 def theme_on_change(theme_mod: str):
     import Main.authentication.user.login_enc as cc
     staff_df = pd.read_json(path + file_path['admin_data'], orient='table')
@@ -119,7 +118,8 @@ def add_candidate(list1_data: list):
     candidate_data_df.loc['a'] = [index_val, list1_data[0], list1_data[1], list1_data[2], list1_data[3],
                                   list1_data[4], f'{datetime.date.today()}', list1_data[5]]
 
-    candidate_data_df.to_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table', index=False)
+    candidate_data_df.to_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table',
+                              index=False)
 
 
 def delete_candidate(index_val):
@@ -171,7 +171,8 @@ def candidate_edit(list_data: list, index_val):
     candidate_data_df.at[index_val, 'qualification'] = list_data[2]
     if list_data[3] != False:
         candidate_data_df.at[index_val, 'image'] = list_data[3]
-    candidate_data_df.to_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table', index=False)
+    candidate_data_df.to_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table',
+                              index=False)
 
 
 def category_edit(list_data: list, index_val):

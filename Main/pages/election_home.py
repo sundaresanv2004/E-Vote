@@ -1,19 +1,27 @@
 import flet as ft
+import pandas as pd
 
 import Main.authentication.user.login_enc as cc
+import Main.authentication.scr.election_scr as ee
+from ..authentication.scr.loc_file_scr import file_data
+from ..functions.dialogs import message_dialogs
 
 
 def election_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
     title_text.value = "Election"
 
     def on_category_container(e):
-        content_column.scroll = None
-        content_column.alignment = ft.MainAxisAlignment.CENTER
-        page.update()
-        from .category import category_home_page
-        content_column.clean()
-        content_column.update()
-        category_home_page(page, content_column, title_text)
+        ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+        if not ele_ser.loc['lock_data'].values[0]:
+            content_column.scroll = None
+            content_column.alignment = ft.MainAxisAlignment.CENTER
+            page.update()
+            from .category import category_home_page
+            content_column.clean()
+            content_column.update()
+            category_home_page(page, content_column, title_text)
+        else:
+            message_dialogs(page, "Data is Locked")
 
     manage_category_option = ft.Container(
         content=ft.Row(

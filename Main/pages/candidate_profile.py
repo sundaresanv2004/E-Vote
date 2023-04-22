@@ -5,7 +5,6 @@ import pandas as pd
 from ..authentication.scr.loc_file_scr import file_data
 import Main.authentication.scr.election_scr as ee
 
-
 index_val, ver_val = None, None
 
 
@@ -179,6 +178,25 @@ def candidate_profile_page(page: ft.Page, content_column: ft.Column, title_text:
 
     content_change()
 
+    edit_button = ft.TextButton(
+        text="Edit",
+        icon=ft.icons.EDIT_ROUNDED,
+        tooltip="Edit",
+        on_click=edit_on_click,
+    )
+
+    delete_button = ft.TextButton(
+        text="Delete",
+        icon=ft.icons.DELETE_ROUNDED,
+        tooltip='Delete',
+        on_click=delete_on_click,
+    )
+    ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+    if ele_ser.loc['lock_data'].values[0]:
+        edit_button.disabled = True
+        delete_button.disabled = True
+        verify_text.disabled = True
+
     alertdialog = ft.AlertDialog(
         modal=True,
         content=ft.Column(
@@ -245,18 +263,8 @@ def candidate_profile_page(page: ft.Page, content_column: ft.Column, title_text:
             width=650,
         ),
         actions=[
-            ft.TextButton(
-                text="Edit",
-                icon=ft.icons.EDIT_ROUNDED,
-                tooltip="Edit",
-                on_click=edit_on_click,
-            ),
-            ft.TextButton(
-                text="Delete",
-                icon=ft.icons.DELETE_ROUNDED,
-                tooltip='Delete',
-                on_click=delete_on_click,
-            ),
+            edit_button,
+            delete_button,
             verify_text,
         ],
         actions_alignment=ft.MainAxisAlignment.END,

@@ -1,8 +1,9 @@
 import flet as ft
 import pandas as pd
 
-from Main.authentication.scr.loc_file_scr import file_data
+from ..authentication.scr.loc_file_scr import file_data
 import Main.authentication.scr.election_scr as ee
+from ..functions.dialogs import message_dialogs
 
 
 def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
@@ -14,10 +15,14 @@ def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft
         page.update()
 
     def add_candidate_page_fun(e):
-        from .candidate_add import candidate_add_page
-        content_column.clean()
-        content_column.update()
-        candidate_add_page(page, content_column, title_text)
+        ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+        if not ele_ser.loc['lock_data'].values[0]:
+            from .candidate_add import candidate_add_page
+            content_column.clean()
+            content_column.update()
+            candidate_add_page(page, content_column, title_text)
+        else:
+            message_dialogs(page, "Data is Locked")
 
     # Text & Buttons
     main_title_text = ft.Text(
@@ -169,16 +174,23 @@ class ViewCandidateRecord(ft.UserControl):
         self.title_text = title_text
         self.candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}',
                                               orient='table')
+        self.ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
 
     def edit(self, e):
-        from .candidate_edit import candidate_edit_page
-        self.content_column.clean()
-        self.content_column.update()
-        candidate_edit_page(self.page, self.content_column, self.title_text, self.index_val)
+        if not self.ele_ser.loc['lock_data'].values[0]:
+            from .candidate_edit import candidate_edit_page
+            self.content_column.clean()
+            self.content_column.update()
+            candidate_edit_page(self.page, self.content_column, self.title_text, self.index_val)
+        else:
+            message_dialogs(self.page, "Data is Locked")
 
     def delete(self, e):
-        from .candidate_delete_approve import delete_candidate_dialogs
-        delete_candidate_dialogs(self.page, self.content_column, self.index_val, self.title_text, False)
+        if not self.ele_ser.loc['lock_data'].values[0]:
+            from .candidate_delete_approve import delete_candidate_dialogs
+            delete_candidate_dialogs(self.page, self.content_column, self.index_val, self.title_text, False)
+        else:
+            message_dialogs(self.page, "Data is Locked")
 
     def profile(self, e):
         from .candidate_profile import candidate_profile_page
@@ -186,8 +198,8 @@ class ViewCandidateRecord(ft.UserControl):
 
     def build(self):
         options = ft.PopupMenuButton(
-            tooltip="Options",
             icon=ft.icons.MORE_VERT_ROUNDED,
+            tooltip="Options",
             items=[
                 ft.PopupMenuItem(
                     text="View Profile",

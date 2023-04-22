@@ -4,6 +4,7 @@ import pandas as pd
 
 import Main.authentication.scr.election_scr as ee
 from Main.authentication.scr.loc_file_scr import file_data
+from Main.functions.dialogs import message_dialogs
 
 obj = None
 
@@ -21,7 +22,24 @@ class ElectionData:
         self.to_date_text = ft.Text(size=20)
         self.lock_switch = None
         self.lock_container_option = None
-        self.registration_date_option = None
+        self.registration_date_option = ft.Container(
+            padding=15,
+            alignment=ft.alignment.center,
+            height=70,
+            on_click=self.registration_date_oc_click,
+            ink=True,
+            border_radius=5,
+            border=ft.border.all(0.5, ft.colors.SECONDARY)
+        )
+        self.final_nomination_option = ft.Container(
+            padding=15,
+            alignment=ft.alignment.center,
+            height=70,
+            # on_click=self.registration_date_oc_click,
+            ink=True,
+            border_radius=5,
+            border=ft.border.all(0.5, ft.colors.SECONDARY)
+        )
         self.registration_container_option = None
         self.election_date_option = None
         self.registration_switch = ft.Switch(on_change=self.registration_on_change)
@@ -104,12 +122,6 @@ class ElectionData:
             border_radius=5,
             border=ft.border.all(0.5, ft.colors.SECONDARY)
         )
-
-        if self.ele_ser.loc['registration'].values == False:
-            self.registration_switch.value = False
-        else:
-            self.registration_switch.value = True
-
         self.check_date()
 
         return self.registration_container_option
@@ -121,8 +133,8 @@ class ElectionData:
                     ft.Row(
                         [
                             ft.Text(
-                                value=f"Lock Data",
                                 size=20,
+                                value=f"Lock Data",
                             )
                         ],
                         expand=True,
@@ -143,7 +155,7 @@ class ElectionData:
             border=ft.border.all(0.5, ft.colors.SECONDARY)
         )
 
-        if self.ele_ser.loc['lock_data'].values == False:
+        if not self.ele_ser.loc['lock_data'].values[0]:
             self.lock.value = False
         else:
             self.lock.value = True
@@ -156,43 +168,34 @@ class ElectionData:
         datetime_field(self.page)
 
     def registration_date_container(self):
-        self.registration_date_option = ft.Container(
-            content=ft.Row(
-                [
-                    ft.Row(
-                        [
-                            ft.Text(
-                                value=f"Registration Date",
-                                size=20,
-                            ),
-                            self.from_date_text,
-                            self.to_date_text,
-                        ],
-                        spacing=30,
-                        expand=True,
-                        alignment=ft.MainAxisAlignment.START,
-                    ),
-                    ft.Row(
-                        [
-                            ft.IconButton(
-                                icon=ft.icons.NAVIGATE_NEXT_ROUNDED,
-                                on_click=self.registration_date_oc_click,
-                            )
-                        ]
-                    )
-                ],
-                vertical_alignment=ft.CrossAxisAlignment.CENTER,
-            ),
-            padding=15,
-            alignment=ft.alignment.center,
-            height=70,
-            on_click=self.registration_date_oc_click,
-            ink=True,
-            border_radius=5,
-            border=ft.border.all(0.5, ft.colors.SECONDARY)
+        self.registration_date_option.content = ft.Row(
+            [
+                ft.Row(
+                    [
+                        ft.Text(
+                            value=f"Registration Date",
+                            size=20,
+                        ),
+                        self.from_date_text,
+                        self.to_date_text,
+                    ],
+                    spacing=30,
+                    expand=True,
+                    alignment=ft.MainAxisAlignment.START,
+                ),
+                ft.Row(
+                    [
+                        ft.IconButton(
+                            icon=ft.icons.NAVIGATE_NEXT_ROUNDED,
+                            on_click=self.registration_date_oc_click,
+                        )
+                    ]
+                )
+            ],
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
-        if self.ele_ser.loc['registration'].values == False:
+        if not self.ele_ser.loc['registration'].values:
             self.registration_date_option.disabled = True
         else:
             self.registration_date_option.disabled = False
@@ -200,7 +203,6 @@ class ElectionData:
         return self.registration_date_option
 
     def check_date(self):
-
         self.ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
         if pd.isna(self.ele_ser.loc['registration_from'].values[0]) is True:
             self.from_date_text.value = f"From: -"
@@ -209,30 +211,78 @@ class ElectionData:
             self.from_date_text.value = f"From: {self.ele_ser.loc['registration_from'].values[0]}"
             self.to_date_text.value = f"To: {self.ele_ser.loc['registration_to'].values[0]}"
         self.election_title_text.value = f"{self.ele_ser.loc['election-name'].values[0]}"
+
+        if not self.ele_ser.loc['registration'].values[0]:
+            self.registration_switch.value = False
+            self.registration_date_option.disabled = True
+        else:
+            self.registration_switch.value = True
+            self.registration_date_option.disabled = False
+
+        if not self.ele_ser.loc['lock_data'].values[0]:
+            self.final_nomination_option.disabled = True
+        else:
+            self.final_nomination_option.disabled = False
+
         try:
-            self.registration_date_option.update()
+            self.page.update()
         except AttributeError:
             pass
 
     def on_lock_click(self, e):
-        from ..functions.dialogs_election import passcode_election
-        print(self.lock.value)
-        if self.lock.value is True:
-            passcode_election(self.page, self.lock)
+        from ..functions.dialogs_election import passcode_election, lock_unlock_data
+        if pd.isna(self.ele_ser.loc['code'].values[0]):
+            if self.lock.value:
+                passcode_election(self.page, self.lock)
         else:
-            pass
+            lock_unlock_data(self.page, self.lock)
+
         self.page.update()
 
     def registration_on_change(self, e):
         from ..functions.date_time import datetime_field
         from ..authentication.files.settings_write import registration
-        registration(self.registration_switch.value)
-        if self.registration_switch.value is True:
-            self.registration_date_option.disabled = False
-            datetime_field(self.page)
+        if not self.ele_ser.loc['lock_data'].values[0]:
+            registration(self.registration_switch.value)
+            if self.registration_switch.value:
+                self.registration_date_option.disabled = False
+                datetime_field(self.page)
+            else:
+                self.registration_date_option.disabled = True
         else:
-            self.registration_date_option.disabled = True
+            message_dialogs(self.page, "Data is Locked")
+            self.registration_switch.value = False
+
         self.page.update()
+
+    def final_nomination_list(self):
+        self.final_nomination_option.content = ft.Row(
+            [
+                ft.Row(
+                    [
+                        ft.Text(
+                            value=f"Generate Nomination List",
+                            size=20,
+                        ),
+                    ],
+                    spacing=30,
+                    expand=True,
+                    alignment=ft.MainAxisAlignment.START,
+                ),
+                ft.Row(
+                    [
+                        ft.IconButton(
+                            icon=ft.icons.NAVIGATE_NEXT_ROUNDED,
+                            # on_click=self.registration_date_oc_click,
+                        )
+                    ]
+                )
+            ],
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        )
+
+        self.check_date()
+        return self.final_nomination_option
 
 
 def settings_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
@@ -249,6 +299,7 @@ def settings_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
             obj.registration_container(),
             obj.registration_date_container(),
             obj.lock_container(),
+            obj.final_nomination_list(),
         ]
     )
 

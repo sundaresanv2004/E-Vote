@@ -79,13 +79,13 @@ def edit_election_name(page: ft.Page):
 
 def passcode_election(page: ft.Page, switch_data: ft.Switch):
     from ..authentication.scr.loc_file_scr import messages
+    from ..authentication.files.settings_write import first_lock
+
     # Functions
     def on_ok(e):
         switch_data.value = False
         message_alertdialog.open = False
         page.update()
-
-    ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
 
     entry1 = ft.TextField(
         hint_text="Enter the Code",
@@ -101,6 +101,17 @@ def passcode_election(page: ft.Page, switch_data: ft.Switch):
         keyboard_type=ft.KeyboardType.NUMBER,
         capitalization=ft.TextCapitalization.WORDS,
     )
+
+    def save_on(e):
+        if len(entry1.value) == 5:
+            entry1.error_text = None
+            message_alertdialog.open = False
+            page.update()
+            first_lock(entry1.value)
+        else:
+            entry1.error_text = "Enter the Code"
+            entry1.focus()
+            entry1.update()
 
     def on_next1(e):
         message_alertdialog.title = ft.Text(value="2-Step Verification")
@@ -119,7 +130,7 @@ def passcode_election(page: ft.Page, switch_data: ft.Switch):
             ),
             ft.TextButton(
                 text="Save",
-                # on_click=on_next1,
+                on_click=save_on,
             ),
         ]
         page.update()
@@ -169,6 +180,84 @@ def passcode_election(page: ft.Page, switch_data: ft.Switch):
             ft.TextButton(
                 text="Next",
                 on_click=on_next,
+            ),
+        ],
+        actions_alignment=ft.MainAxisAlignment.END,
+    )
+
+    # Open dialog
+    page.dialog = message_alertdialog
+    message_alertdialog.open = True
+    page.update()
+
+
+def lock_unlock_data(page: ft.Page, switch_data: ft.Switch):
+    from ..authentication.encrypter.encryption import decrypter
+    from ..authentication.files.settings_write import lock_and_unlock
+
+    # Functions
+    def on_ok(e):
+        if switch_data.value:
+            switch_data.value = False
+        else:
+            switch_data.value = True
+        message_alertdialog.open = False
+        page.update()
+
+    def save_on(e):
+        ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+        if len(entry1.value) != 0:
+            if entry1.value == decrypter(ele_ser.loc['code'].values[0]):
+                entry1.error_text = None
+                message_alertdialog.open = False
+                page.update()
+                lock_and_unlock()
+            else:
+                entry1.error_text = "Invalid Code"
+                entry1.focus()
+                entry1.update()
+        else:
+            entry1.error_text = "Enter the Code"
+            entry1.focus()
+            entry1.update()
+
+    entry1 = ft.TextField(
+        hint_text="Enter the Code",
+        border=ft.InputBorder.OUTLINE,
+        width=350,
+        border_radius=9,
+        max_length=5,
+        password=True,
+        can_reveal_password=True,
+        prefix_icon=ft.icons.LOCK_ROUNDED,
+        border_color=ft.colors.SECONDARY,
+        autofocus=True,
+        keyboard_type=ft.KeyboardType.NUMBER,
+        capitalization=ft.TextCapitalization.WORDS,
+        on_submit=save_on,
+    )
+
+    # AlertDialog data
+    message_alertdialog = ft.AlertDialog(
+        modal=True,
+        title=ft.Text(
+            value=f"2-Step Verification",
+        ),
+        content=ft.Column(
+            [
+                entry1
+            ],
+            height=70,
+            width=350,
+        ),
+        actions=[
+            ft.TextButton(
+                text="Cancel",
+                on_click=on_ok,
+            ),
+            ft.TextButton(
+                text="Submit",
+                on_click=save_on,
             ),
         ],
         actions_alignment=ft.MainAxisAlignment.END,

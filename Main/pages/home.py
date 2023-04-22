@@ -5,6 +5,7 @@ from ..authentication.scr.check_installation import path
 from ..authentication.scr.loc_file_scr import file_path, file_data
 from ..functions.date_time import current_time
 import Main.authentication.scr.election_scr as ee
+from ..functions.dialogs import message_dialogs
 
 
 def home_page(page: ft.Page, content_column: ft.Column, rail_name: ft.NavigationRail, title_text: ft.Text):
@@ -46,15 +47,19 @@ def home_page(page: ft.Page, content_column: ft.Column, rail_name: ft.Navigation
         candidate_home_page(page, content_column, title_text)
 
     def candidate_add(e):
-        page.splash = ft.ProgressBar()
-        page.update()
-        rail_name.selected_index = 1
-        from .candidate_add import candidate_add_page
-        content_column.clean()
-        page.splash = None
-        content_column.scroll = None
-        page.update()
-        candidate_add_page(page, content_column, title_text)
+        ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+        if not ele_ser.loc['lock_data'].values[0]:
+            page.splash = ft.ProgressBar()
+            page.update()
+            rail_name.selected_index = 1
+            from .candidate_add import candidate_add_page
+            content_column.clean()
+            page.splash = None
+            content_column.scroll = None
+            page.update()
+            candidate_add_page(page, content_column, title_text)
+        else:
+            message_dialogs(page, "Data is Locked")
 
     app_data_df = pd.read_json(path + file_path['app_data'], orient='table')
     institution_name_text = ft.Text(

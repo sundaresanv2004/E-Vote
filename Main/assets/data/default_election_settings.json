@@ -8,7 +8,9 @@
   "vote": false,
   "completed": false,
   "code": null,
+  "final_nomination":false,
   "lock_data": false,
+  "result": false,
   "created-date": null,
   "created-time": null
 }
