@@ -466,18 +466,18 @@ class CandidateAddPage:
             self.change_values()
 
         alertdialog = ft.AlertDialog(
-            modal=True,
             content=ft.Text(
                 value="Your changes have not been saved",
             ),
+            modal=True,
             actions=[
-                ft.TextButton(
-                    text="Discard",
-                    on_click=discard,
-                ),
                 ft.TextButton(
                     text="Save",
                     on_click=on_close,
+                ),
+                ft.TextButton(
+                    text="Discard",
+                    on_click=discard,
                 ),
             ],
             actions_alignment=ft.MainAxisAlignment.END,
@@ -536,12 +536,12 @@ class CandidateAddPage:
             ),
             actions=[
                 ft.TextButton(
-                    text="Cancel",
-                    on_click=on_close,
-                ),
-                ft.TextButton(
                     text="Save",
                     on_click=on_save,
+                ),
+                ft.TextButton(
+                    text="Cancel",
+                    on_click=on_close,
                 ),
             ],
             actions_alignment=ft.MainAxisAlignment.END,

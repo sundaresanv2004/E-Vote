@@ -344,12 +344,12 @@ class CandidateEditPage:
             ),
             actions=[
                 ft.TextButton(
-                    text="Discard",
-                    on_click=discard,
-                ),
-                ft.TextButton(
                     text="Keep editing",
                     on_click=on_close,
+                ),
+                ft.TextButton(
+                    text="Discard",
+                    on_click=discard,
                 ),
             ],
             actions_alignment=ft.MainAxisAlignment.END,
@@ -395,12 +395,12 @@ class CandidateEditPage:
             ),
             actions=[
                 ft.TextButton(
-                    text="Cancel",
-                    on_click=on_close,
-                ),
-                ft.TextButton(
                     text="Ok",
                     on_click=save_changes,
+                ),
+                ft.TextButton(
+                    text="Cancel",
+                    on_click=on_close,
                 ),
             ],
             actions_alignment=ft.MainAxisAlignment.END,

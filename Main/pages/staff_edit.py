@@ -327,12 +327,12 @@ def unsaved_edit_dialogs(page: ft.Page, content_column: ft.Column, title_text: f
         ),
         actions=[
             ft.TextButton(
-                text="Discard",
-                on_click=discard,
-            ),
-            ft.TextButton(
                 text="Keep editing",
                 on_click=on_close,
+            ),
+            ft.TextButton(
+                text="Discard",
+                on_click=discard,
             ),
         ],
         actions_alignment=ft.MainAxisAlignment.END,
@@ -360,12 +360,12 @@ def edit_ask_staff_dialogs(page: ft.Page, content_column: ft.Column, title_text:
         ),
         actions=[
             ft.TextButton(
-                text="Cancel",
-                on_click=on_close,
-            ),
-            ft.TextButton(
                 text="Ok",
                 on_click=save_changes,
+            ),
+            ft.TextButton(
+                text="Cancel",
+                on_click=on_close,
             ),
         ],
         content=ft.Text(
@@ -418,12 +418,12 @@ def edit_permission_y_dialogs(page: ft.Page, content_column: ft.Column, title_te
         ),
         actions=[
             ft.TextButton(
-                text="Change",
-                on_click=on_close,
-            ),
-            ft.TextButton(
                 text="Save",
                 on_click=save_data,
+            ),
+            ft.TextButton(
+                text="Change",
+                on_click=on_close,
             ),
         ],
         actions_alignment=ft.MainAxisAlignment.END,

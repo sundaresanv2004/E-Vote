@@ -50,12 +50,12 @@ def delete_candidate_dialogs(page: ft.Page, content_column: ft.Column, index_df,
         ),
         actions=[
             ft.TextButton(
-                text="Cancel",
-                on_click=on_close,
-            ),
-            ft.TextButton(
                 text="Ok",
                 on_click=del_ok,
+            ),
+            ft.TextButton(
+                text="Cancel",
+                on_click=on_close,
             ),
         ],
         content=ft.Text(

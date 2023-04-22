@@ -43,18 +43,18 @@ def delete_staff_dialogs(page: ft.Page, content_column: ft.Column, index_df, tit
 
     # AlertDialog
     alertdialog = ft.AlertDialog(
-        modal=True,
         title=ft.Text(
             value="Delete this record?",
         ),
+        modal=True,
         actions=[
-            ft.TextButton(
-                text="Cancel",
-                on_click=on_close,
-            ),
             ft.TextButton(
                 text="Ok",
                 on_click=del_ok,
+            ),
+            ft.TextButton(
+                text="Cancel",
+                on_click=on_close,
             ),
         ],
         content=ft.Text(

@@ -302,12 +302,12 @@ def unsaved_dialogs(page: ft.Page, content_column: ft.Column, title_text: ft.Tex
         ),
         actions=[
             ft.TextButton(
-                text="Discard",
-                on_click=discard,
-            ),
-            ft.TextButton(
                 text="Save",
                 on_click=on_close,
+            ),
+            ft.TextButton(
+                text="Discard",
+                on_click=discard,
             ),
         ],
         actions_alignment=ft.MainAxisAlignment.END,
@@ -356,12 +356,12 @@ def permission_y_dialogs(page: ft.Page, content_column: ft.Column, list1: list, 
         ),
         actions=[
             ft.TextButton(
-                text="Change",
-                on_click=on_close,
-            ),
-            ft.TextButton(
                 text="Save",
                 on_click=save_data,
+            ),
+            ft.TextButton(
+                text="Change",
+                on_click=on_close,
             ),
         ],
         actions_alignment=ft.MainAxisAlignment.END,

@@ -35,7 +35,7 @@ class ElectionData:
             padding=15,
             alignment=ft.alignment.center,
             height=70,
-            # on_click=self.registration_date_oc_click,
+            on_click=self.on_click_nomination_list,
             ink=True,
             border_radius=5,
             border=ft.border.all(0.5, ft.colors.SECONDARY)
@@ -255,6 +255,10 @@ class ElectionData:
 
         self.page.update()
 
+    def on_click_nomination_list(self, e):
+        from ..functions.dialogs_election import category_order
+        category_order(self.page)
+
     def final_nomination_list(self):
         self.final_nomination_option.content = ft.Row(
             [
@@ -273,7 +277,7 @@ class ElectionData:
                     [
                         ft.IconButton(
                             icon=ft.icons.NAVIGATE_NEXT_ROUNDED,
-                            # on_click=self.registration_date_oc_click,
+                            on_click=self.on_click_nomination_list,
                         )
                     ]
                 )

@@ -296,12 +296,12 @@ class CandidateAddPage:
             ),
             actions=[
                 ft.TextButton(
-                    text="Discard",
-                    on_click=discard,
-                ),
-                ft.TextButton(
                     text="Save",
                     on_click=on_close,
+                ),
+                ft.TextButton(
+                    text="Discard",
+                    on_click=discard,
                 ),
             ],
             actions_alignment=ft.MainAxisAlignment.END,

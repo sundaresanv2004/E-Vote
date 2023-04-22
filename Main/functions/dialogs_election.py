@@ -60,12 +60,12 @@ def edit_election_name(page: ft.Page):
         ),
         actions=[
             ft.TextButton(
-                text="Cancel",
-                on_click=on_ok,
-            ),
-            ft.TextButton(
                 text="Save",
                 on_click=save_on,
+            ),
+            ft.TextButton(
+                text="Cancel",
+                on_click=on_ok,
             ),
         ],
         actions_alignment=ft.MainAxisAlignment.END,
@@ -125,12 +125,12 @@ def passcode_election(page: ft.Page, switch_data: ft.Switch):
 
         message_alertdialog.actions = [
             ft.TextButton(
-                text="Cancel",
-                on_click=on_ok,
-            ),
-            ft.TextButton(
                 text="Save",
                 on_click=save_on,
+            ),
+            ft.TextButton(
+                text="Cancel",
+                on_click=on_ok,
             ),
         ]
         page.update()
@@ -147,12 +147,12 @@ def passcode_election(page: ft.Page, switch_data: ft.Switch):
 
         message_alertdialog.actions = [
             ft.TextButton(
-                text="Cancel",
-                on_click=on_ok,
-            ),
-            ft.TextButton(
                 text="Next",
                 on_click=on_next1,
+            ),
+            ft.TextButton(
+                text="Cancel",
+                on_click=on_ok,
             ),
         ]
         page.update()
@@ -174,12 +174,12 @@ def passcode_election(page: ft.Page, switch_data: ft.Switch):
         ),
         actions=[
             ft.TextButton(
-                text="Cancel",
-                on_click=on_ok,
-            ),
-            ft.TextButton(
                 text="Next",
                 on_click=on_next,
+            ),
+            ft.TextButton(
+                text="Cancel",
+                on_click=on_ok,
             ),
         ],
         actions_alignment=ft.MainAxisAlignment.END,
@@ -252,16 +252,69 @@ def lock_unlock_data(page: ft.Page, switch_data: ft.Switch):
         ),
         actions=[
             ft.TextButton(
-                text="Cancel",
-                on_click=on_ok,
-            ),
-            ft.TextButton(
                 text="Submit",
                 on_click=save_on,
+            ),
+            ft.TextButton(
+                text="Cancel",
+                on_click=on_ok,
             ),
         ],
         actions_alignment=ft.MainAxisAlignment.END,
     )
+
+    # Open dialog
+    page.dialog = message_alertdialog
+    message_alertdialog.open = True
+    page.update()
+
+
+def category_order(page):
+    from ..authentication.scr.loc_file_scr import messages
+
+    def on_ok(e):
+        message_alertdialog.open = False
+        page.update()
+
+    def on_next1(e):
+        pass
+
+    # AlertDialog data
+    message_alertdialog = ft.AlertDialog(
+        modal=True,
+        actions_alignment=ft.MainAxisAlignment.END,
+    )
+
+    def on_next(e):
+        message_alertdialog.title = ft.Text(value="Read")
+        message_alertdialog.content = ft.Text(value=messages['final_list'])
+        message_alertdialog.actions = [
+            ft.TextButton(
+                text="Next",
+                on_click=on_next1,
+            ),
+            ft.TextButton(
+                text="Cancel",
+                on_click=on_ok,
+            ),
+        ]
+
+    ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+    if ele_ser.loc['final_nomination'].values[0]:
+        message_alertdialog.title = ft.Text(value="Make Sure?")
+        message_alertdialog.content = ft.Text(value=messages['re_final_list'])
+        message_alertdialog.actions = [
+            ft.TextButton(
+                text="Yes",
+                on_click=on_next,
+            ),
+            ft.TextButton(
+                text="No",
+                on_click=on_ok,
+            ),
+        ]
+    else:
+        on_next('e')
 
     # Open dialog
     page.dialog = message_alertdialog
