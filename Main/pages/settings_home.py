@@ -40,6 +40,15 @@ class ElectionData:
             border_radius=5,
             border=ft.border.all(0.5, ft.colors.SECONDARY)
         )
+        self.download_final_nomination_option = ft.Container(
+            padding=15,
+            alignment=ft.alignment.center,
+            height=70,
+            on_click=self.on_download_final_nomination,
+            ink=True,
+            border_radius=5,
+            border=ft.border.all(0.5, ft.colors.SECONDARY)
+        )
         self.registration_container_option = None
         self.election_date_option = None
         self.registration_switch = ft.Switch(on_change=self.registration_on_change)
@@ -224,6 +233,11 @@ class ElectionData:
         else:
             self.final_nomination_option.disabled = False
 
+        if not self.ele_ser.loc['final_nomination'].values[0]:
+            self.download_final_nomination_option.disabled = True
+        else:
+            self.download_final_nomination_option.disabled = False
+
         try:
             self.page.update()
         except AttributeError:
@@ -288,6 +302,39 @@ class ElectionData:
         self.check_date()
         return self.final_nomination_option
 
+    def on_download_final_nomination(self, e):
+        from ..functions.download_data import download_nomination
+        download_nomination(self.page)
+
+    def download_final_nomination(self):
+        self.download_final_nomination_option.content = ft.Row(
+            [
+                ft.Row(
+                    [
+                        ft.Text(
+                            value=f"Download Nomination List",
+                            size=20,
+                        ),
+                    ],
+                    expand=True,
+                    spacing=30,
+                    alignment=ft.MainAxisAlignment.START,
+                ),
+                ft.Row(
+                    [
+                        ft.IconButton(
+                            icon=ft.icons.NAVIGATE_NEXT_ROUNDED,
+                            on_click=self.on_download_final_nomination,
+                        )
+                    ]
+                )
+            ],
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        )
+
+        self.check_date()
+        return self.download_final_nomination_option
+
 
 def settings_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
     global obj
@@ -304,6 +351,7 @@ def settings_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
             obj.registration_date_container(),
             obj.lock_container(),
             obj.final_nomination_list(),
+            obj.download_final_nomination(),
         ]
     )
 

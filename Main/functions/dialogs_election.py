@@ -1,3 +1,4 @@
+from time import sleep
 import flet as ft
 import pandas as pd
 
@@ -271,13 +272,17 @@ def lock_unlock_data(page: ft.Page, switch_data: ft.Switch):
 
 def category_order(page):
     from ..authentication.scr.loc_file_scr import messages
+    from .order_category import order_category_option
 
     def on_ok(e):
         message_alertdialog.open = False
         page.update()
 
     def on_next1(e):
-        pass
+        message_alertdialog.open = False
+        page.update()
+        sleep(0.1)
+        order_category_option(page)
 
     # AlertDialog data
     message_alertdialog = ft.AlertDialog(
@@ -298,6 +303,8 @@ def category_order(page):
                 on_click=on_ok,
             ),
         ]
+
+        page.update()
 
     ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
     if ele_ser.loc['final_nomination'].values[0]:
