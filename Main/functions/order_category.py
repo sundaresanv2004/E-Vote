@@ -1,3 +1,4 @@
+from time import sleep
 import flet as ft
 import pandas as pd
 
@@ -63,6 +64,7 @@ def order_category_option(page: ft.Page):
         message_alertdialog.open = False
         page.update()
         final_list(list_category)
+        sleep(0.1)
         loading_dialogs(page, "Loading...", 1)
 
     message_alertdialog = ft.AlertDialog(
