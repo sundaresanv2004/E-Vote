@@ -17,6 +17,15 @@ class ElectionData:
 
     def __init__(self, page: ft.Page):
         super().__init__()
+        self.vote_option_option = ft.Container(
+            padding=15,
+            alignment=ft.alignment.center,
+            height=70,
+            on_click=self.registration_date_oc_click,
+            ink=True,
+            border_radius=5,
+            border=ft.border.all(0.5, ft.colors.SECONDARY)
+        )
         self.election_title_text = None
         self.from_date_text = ft.Text(size=20)
         self.to_date_text = ft.Text(size=20)
@@ -52,6 +61,7 @@ class ElectionData:
         self.registration_container_option = None
         self.election_date_option = None
         self.registration_switch = ft.Switch(on_change=self.registration_on_change)
+        self.vote_switch = ft.Switch(on_change=self.registration_on_change)
         self.lock = ft.Switch(on_change=self.on_lock_click)
         self.page = page
         self.ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
@@ -335,6 +345,32 @@ class ElectionData:
         self.check_date()
         return self.download_final_nomination_option
 
+    def vote_option(self):
+        self.vote_option_option.content = ft.Row(
+            [
+                ft.Row(
+                    [
+                        ft.Text(
+                            value=f"Vote",
+                            size=20,
+                        ),
+                    ],
+                    expand=True,
+                    spacing=30,
+                    alignment=ft.MainAxisAlignment.START,
+                ),
+                ft.Row(
+                    [
+                        self.vote_switch
+                    ]
+                )
+            ],
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        )
+
+        self.check_date()
+        return self.vote_option_option
+
 
 def settings_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
     global obj
@@ -352,6 +388,7 @@ def settings_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
             obj.lock_container(),
             obj.final_nomination_list(),
             obj.download_final_nomination(),
+            obj.vote_option(),
         ]
     )
 
