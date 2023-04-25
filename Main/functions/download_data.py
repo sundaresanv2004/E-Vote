@@ -30,7 +30,7 @@ def download_nomination(page):
 
     # AlertDialog data
     message_alertdialog = ft.AlertDialog(
-        modal=True,
+        modal=False,
         content=ft.Row(
             [
                 ft.Column(

@@ -33,7 +33,6 @@ def admin_sidebar(page: ft.Page, staff_val: bool):
             staff_clicked(2)
 
     def admin_clicked(e):
-        old_index = e
         page.splash = ft.ProgressBar()
         if e != 6:
             content_column.scroll = None
@@ -81,7 +80,6 @@ def admin_sidebar(page: ft.Page, staff_val: bool):
         page.update()
 
     def staff_clicked(e):
-        old_index = e
         page.splash = ft.ProgressBar()
         if e != 4:
             content_column.scroll = None

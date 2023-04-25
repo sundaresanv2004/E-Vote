@@ -21,8 +21,6 @@ class ElectionData:
             padding=15,
             alignment=ft.alignment.center,
             height=70,
-            on_click=self.registration_date_oc_click,
-            ink=True,
             border_radius=5,
             border=ft.border.all(0.5, ft.colors.SECONDARY)
         )
@@ -61,7 +59,7 @@ class ElectionData:
         self.registration_container_option = None
         self.election_date_option = None
         self.registration_switch = ft.Switch(on_change=self.registration_on_change)
-        self.vote_switch = ft.Switch(on_change=self.registration_on_change)
+        self.vote_switch = ft.Switch()
         self.lock = ft.Switch(on_change=self.on_lock_click)
         self.page = page
         self.ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
@@ -141,7 +139,6 @@ class ElectionData:
             border_radius=5,
             border=ft.border.all(0.5, ft.colors.SECONDARY)
         )
-        self.check_date()
 
         return self.registration_container_option
 
@@ -248,6 +245,11 @@ class ElectionData:
         else:
             self.download_final_nomination_option.disabled = False
 
+        if self.ele_ser.loc['lock_data'].values[0] and self.ele_ser.loc['final_nomination'].values[0]:
+            self.vote_switch.disabled = False
+        else:
+            self.vote_switch.disabled = True
+
         try:
             self.page.update()
         except AttributeError:
@@ -309,7 +311,6 @@ class ElectionData:
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
-        self.check_date()
         return self.final_nomination_option
 
     def on_download_final_nomination(self, e):
@@ -342,7 +343,6 @@ class ElectionData:
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
-        self.check_date()
         return self.download_final_nomination_option
 
     def vote_option(self):
