@@ -104,7 +104,7 @@ def datetime_field(page: ft.Page):
                     d2 = date(int(to_year), months_.index(to_month)+1, int(to_day))
 
                     if d1 <= d2:
-                        from ..authentication.files.settings_write import registration_date
+                        from ..authentication.files.vote_settings_write import registration_date
                         registration_date(from_date, to_date)
                         alertdialog.open = False
                         page.update()

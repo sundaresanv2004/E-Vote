@@ -20,7 +20,7 @@ def edit_election_name(page: ft.Page):
             if entry1.value not in election_data['name'].values:
                 entry1.error_text = None
                 entry1.update()
-                from ..authentication.files.settings_write import change_election_name
+                from ..authentication.files.vote_settings_write import change_election_name
                 change_election_name(entry1.value)
                 message_alertdialog.open = False
                 page.update()
@@ -80,7 +80,7 @@ def edit_election_name(page: ft.Page):
 
 def passcode_election(page: ft.Page, switch_data: ft.Switch):
     from ..authentication.scr.loc_file_scr import messages
-    from ..authentication.files.settings_write import first_lock
+    from ..authentication.files.vote_settings_write import first_lock
 
     # Functions
     def on_ok(e):
@@ -194,7 +194,7 @@ def passcode_election(page: ft.Page, switch_data: ft.Switch):
 
 def lock_unlock_data(page: ft.Page, switch_data: ft.Switch):
     from ..authentication.encrypter.encryption import decrypter
-    from ..authentication.files.settings_write import lock_and_unlock
+    from ..authentication.files.vote_settings_write import lock_and_unlock
 
     # Functions
     def on_ok(e):

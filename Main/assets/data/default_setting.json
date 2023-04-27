@@ -3,5 +3,6 @@
   "version": "0.06",
   "Theme": "Default",
   "Theme Mode": "light",
-  "Election": null
+  "Election": null,
+  "maximized": true
 }

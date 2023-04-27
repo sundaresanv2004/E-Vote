@@ -267,7 +267,7 @@ class ElectionData:
 
     def registration_on_change(self, e):
         from ..functions.date_time import datetime_field
-        from ..authentication.files.settings_write import registration
+        from ..authentication.files.vote_settings_write import registration
         if not self.ele_ser.loc['lock_data'].values[0]:
             registration(self.registration_switch.value)
             if self.registration_switch.value:

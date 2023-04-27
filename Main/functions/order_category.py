@@ -2,7 +2,7 @@ from time import sleep
 import flet as ft
 import pandas as pd
 
-from Main.authentication.files.settings_write import final_list
+from Main.authentication.files.vote_settings_write import final_list
 from Main.authentication.scr.loc_file_scr import file_data
 import Main.authentication.scr.election_scr as ee
 from Main.functions.dialogs import loading_dialogs

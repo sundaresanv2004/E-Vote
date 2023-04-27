@@ -1,6 +1,7 @@
 import pandas as pd
 import flet as ft
 
+from Main.authentication.files.settings_write import main_theme_on_change
 from Main.authentication.scr.check_installation import path
 from Main.authentication.scr.loc_file_scr import file_path
 import Main.authentication.user.login_enc as cc
@@ -46,11 +47,13 @@ class ThemeIcon(ft.UserControl):
             self.theme_icon.tooltip = "Dark mode"
             current_theme_mod = 'light'
             self.page.theme_mode = 'light'
+            main_theme_on_change("light")
         else:
             self.theme_icon.icon = ft.icons.SUNNY
             self.theme_icon.tooltip = "Light mode"
             current_theme_mod = 'dark'
             self.page.theme_mode = 'dark'
+            main_theme_on_change("dark")
 
         self.theme_icon.update()
         self.page.update()

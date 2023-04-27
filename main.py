@@ -3,6 +3,7 @@ import flet as ft
 from Main.authentication.scr.check_installation import installation_requirement, os_sys, path
 from Main.functions.theme import start_theme
 from Main.functions.window_close import close_true
+from Main.functions.window_resize import window_maximized, window_size_at_start
 from Main.pages.menu import menu_page
 from Main.pages.unsupported import UnsupportedPage
 
@@ -26,6 +27,14 @@ def main(page: ft.Page):
     # ask question at close [True, False]
     page.window_prevent_close = False
     page.on_window_event = at_close_event
+
+    # on resize
+    window_size_at_start(page)
+
+    def at_max_min(e):
+        window_maximized(page)
+
+    page.on_window_event = at_max_min
 
     # theme
     start_theme(page)
