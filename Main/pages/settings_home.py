@@ -59,7 +59,7 @@ class ElectionData:
         self.registration_container_option = None
         self.election_date_option = None
         self.registration_switch = ft.Switch(on_change=self.registration_on_change)
-        self.vote_switch = ft.Switch()
+        self.vote_switch = ft.Switch(on_change=self.on_vote_click)
         self.lock = ft.Switch(on_change=self.on_lock_click)
         self.page = page
         self.ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
@@ -250,6 +250,11 @@ class ElectionData:
         else:
             self.vote_switch.disabled = True
 
+        if self.ele_ser.loc["vote"].values[0]:
+            self.vote_switch.value = True
+        else:
+            self.vote_switch.value = False
+
         try:
             self.page.update()
         except AttributeError:
@@ -344,6 +349,10 @@ class ElectionData:
         )
 
         return self.download_final_nomination_option
+
+    def on_vote_click(self, e):
+        from ..authentication.files.vote_settings_write import vote_on
+        vote_on(self.vote_switch.value)
 
     def vote_option(self):
         self.vote_option_option.content = ft.Row(

@@ -53,8 +53,23 @@ def order_category_option(page: ft.Page):
     category_data = df1.category.unique()
     temp_category_data = []
 
-    for i in range(len(category_data)):
-        temp_category_data.append(CategoryList(i, category_data))
+    if df1.empty is False:
+        for i in range(len(category_data)):
+            temp_category_data.append(CategoryList(i, category_data))
+    else:
+        temp_category_data.append(
+            ft.Row(
+                [
+                    ft.Text(
+                        value="No Records",
+                        size=25,
+                    )
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                width=350,
+                height=200,
+            )
+        )
 
     def on_ok(e):
         message_alertdialog.open = False

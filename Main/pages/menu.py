@@ -29,6 +29,11 @@ def menu_page(page: ft.Page, menu_container: ft.Container):
         sleep(0.1)
         login_page(page, menu_container)
 
+    def vote_login_fun(e):
+        from ..authentication.user.verification import verification_page
+        sleep(0.1)
+        verification_page(page)
+
     def register_fun(e):
         register_button.disabled = True
         page.update()
@@ -80,6 +85,7 @@ def menu_page(page: ft.Page, menu_container: ft.Container):
     start_election_button = ft.TextButton(
         text="Start Election now.",
         disabled=True,
+        on_click=vote_login_fun,
         icon=ft.icons.HOW_TO_VOTE_ROUNDED,
     )
 

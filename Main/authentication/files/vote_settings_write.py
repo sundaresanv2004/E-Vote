@@ -52,6 +52,7 @@ def lock_and_unlock():
     ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
     if ele_ser.loc['lock_data'].values[0]:
         ele_ser.loc['lock_data'] = False
+        ele_ser.loc['vote'] = False
     else:
         ele_ser.loc['lock_data'] = True
         ele_ser.loc['registration'] = False
@@ -80,5 +81,12 @@ def final_list(list_data):
 
     df2.to_json(ee.current_election_path + rf'\{file_data["final_nomination"]}', orient='table', index=False)
     category_df.to_csv(ee.current_election_path + rf'\{file_data["final_category"]}', index=False)
+    ele_ser.to_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
+    from_page_check()
+
+
+def vote_on(val):
+    ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+    ele_ser.loc['vote'] = val
     ele_ser.to_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
     from_page_check()
