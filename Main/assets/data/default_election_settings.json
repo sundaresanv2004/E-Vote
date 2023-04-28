@@ -1,6 +1,6 @@
 {
   "name": "Election-Settings",
-  "version": "0.06",
+  "version": "0.07",
   "election-name": null,
   "registration": false,
   "registration_from": null,
