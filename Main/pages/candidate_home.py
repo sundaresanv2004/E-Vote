@@ -168,6 +168,7 @@ class ViewCandidateRecord(ft.UserControl):
 
     def __init__(self, page: ft.Page, content_column: ft.Column, index_val: int, title_text: ft.Text):
         super().__init__()
+        self.option1 = None
         self.page = page
         self.content_column = content_column
         self.index_val = index_val
@@ -196,7 +197,21 @@ class ViewCandidateRecord(ft.UserControl):
         from .candidate_profile import candidate_profile_page
         candidate_profile_page(self.page, self.content_column, self.title_text, self.index_val)
 
+    def verification(self, e):
+        from .candidate_delete_approve import approve_dialogs
+        approve_dialogs(self.page, self.content_column, self.title_text, self.index_val,
+                        self.candidate_data_df.loc[self.index_val].values[3], False)
+
     def build(self):
+        if self.candidate_data_df.loc[self.index_val].values[3]:
+            data = "Validated"
+        else:
+            data = "Validate"
+        self.option1 = ft.PopupMenuItem(
+            text=data,
+            on_click=self.verification,
+            checked=self.candidate_data_df.loc[self.index_val].values[3],
+        )
         options = ft.PopupMenuButton(
             icon=ft.icons.MORE_VERT_ROUNDED,
             tooltip="Options",
@@ -216,6 +231,8 @@ class ViewCandidateRecord(ft.UserControl):
                     icon=ft.icons.DELETE_ROUNDED,
                     on_click=self.delete
                 ),
+                ft.PopupMenuItem(),
+                self.option1
             ],
         )
 

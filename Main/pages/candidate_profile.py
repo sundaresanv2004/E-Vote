@@ -119,7 +119,7 @@ def candidate_profile_page(page: ft.Page, content_column: ft.Column, title_text:
         alertdialog.open = False
         page.update()
         sleep(0.1)
-        approve_dialogs(page, content_column, title_text, index_val, ver_val)
+        approve_dialogs(page, content_column, title_text, index_val, ver_val, True)
 
     verify_text = ft.TextButton(
         on_click=on_click_ver

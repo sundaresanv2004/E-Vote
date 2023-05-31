@@ -532,9 +532,6 @@ def election_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
 
     list1_data: list = [
         ft.Row(height=5),
-        generate_result_option,
-        view_result_option,
-        view_winners_option,
         manage_category_option,
         obj.election_title(),
         obj.registration_container(),
@@ -545,17 +542,47 @@ def election_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
         obj.vote_option(),
     ]
 
-    if cc.teme_data[2] == False:
-        del list1_data[1]
+    list2_data: list = [
+        ft.Row(height=5),
+        generate_result_option,
+        view_result_option,
+        view_winners_option,
+    ]
 
-    column_data = ft.Column(
-        controls=list1_data,
+    tab1_option = ft.Tab(
+        text="Election Settings",
+        content=ft.Column(
+            controls=list1_data,
+            scroll=ft.ScrollMode.ADAPTIVE,
+        )
     )
 
+    if cc.teme_data[2] == False:
+        del list2_data[0]
+
+    tab = ft.Tabs(
+        selected_index=0,
+        animation_duration=400,
+        tabs=[
+            tab1_option,
+            ft.Tab(
+                text="Result",
+                content=ft.Column(
+                    controls=list2_data,
+                    scroll=ft.ScrollMode.ADAPTIVE,
+                )
+            ),
+        ],
+        expand=True,
+    )
+
+    if cc.teme_data[2] == False:
+        tab.selected_index = 1
+        tab1_option.disabled = True
+
     content_column.controls = [
-        column_data,
+        tab,
     ]
 
     content_column.alignment = ft.MainAxisAlignment.START
-    content_column.scroll = ft.ScrollMode.ADAPTIVE
     page.update()

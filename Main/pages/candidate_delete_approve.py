@@ -69,22 +69,30 @@ def delete_candidate_dialogs(page: ft.Page, content_column: ft.Column, index_df,
     page.update()
 
 
-def approve_dialogs(page: ft.Page, content_column: ft.Column, title_text, id_val, ver_val):
+def approve_dialogs(page: ft.Page, content_column: ft.Column, title_text, id_val, ver_val, page_type):
     from .candidate_profile import candidate_profile_page
 
     def on_no(e):
         alertdialog.open = False
         page.update()
-        sleep(0.1)
-        candidate_profile_page(page, content_column, title_text, id_val)
+        if page_type:
+            sleep(0.1)
+            candidate_profile_page(page, content_column, title_text, id_val)
 
     def on_yes(e):
         from ..authentication.files.write_files import change_verification
         alertdialog.open = False
         page.update()
         change_verification(page, id_val)
-        sleep(0.1)
-        candidate_profile_page(page, content_column, title_text, id_val)
+        if page_type:
+            sleep(0.1)
+            candidate_profile_page(page, content_column, title_text, id_val)
+        else:
+            from Main.pages.candidate_home import candidate_home_page
+            page.update()
+            content_column.clean()
+            content_column.update()
+            candidate_home_page(page, content_column, title_text)
 
     if ver_val == False:
         ver_text_1 = ft.Text(
