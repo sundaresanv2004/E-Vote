@@ -4,7 +4,7 @@ import Main.authentication.scr.election_scr as ee
 from ..encrypter.encryption import encrypter
 from ..scr.check_installation import path
 from ..scr.loc_file_scr import file_data, file_path
-from ...pages.settings_home import from_page_check
+from ...pages.election_home import from_page_check
 
 
 def registration(val):

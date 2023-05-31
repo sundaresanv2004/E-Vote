@@ -184,6 +184,7 @@ def register_home_page(page: ft.Page, menu_container: ft.Container):
         expand=True,
         alignment=ft.MainAxisAlignment.START,
         scroll=ft.ScrollMode.ADAPTIVE,
+        on_scroll_interval=50
     )
 
     menu_container.content = all_done_data_column
