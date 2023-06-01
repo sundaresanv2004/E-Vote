@@ -1,12 +1,13 @@
+from time import sleep
 import flet as ft
 import pandas as pd
 
 import Main.authentication.scr.election_scr as ee
-from ..scr.loc_file_scr import file_data, file_path
+from ..scr.loc_file_scr import file_data
+from ...pages.vote_home import vote_page
 
 
 def verification_page(page: ft.Page):
-    from ..files.vote_settings_write import lock_and_unlock
     from ..encrypter.encryption import decrypter
 
     # Functions
@@ -20,7 +21,10 @@ def verification_page(page: ft.Page):
             if entry1.value == decrypter(ele_ser.loc['code'].values[0]):
                 entry1.error_text = None
                 message_alertdialog.open = False
+                sleep(0.1)
+                page.clean()
                 page.update()
+                vote_page(page)
             else:
                 entry1.error_text = "Invalid Code"
                 entry1.focus()
