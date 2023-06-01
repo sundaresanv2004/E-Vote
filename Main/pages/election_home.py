@@ -247,11 +247,6 @@ class ElectionData:
         else:
             self.download_final_nomination_option.disabled = False
 
-        if self.ele_ser.loc['lock_data'].values[0] and self.ele_ser.loc['final_nomination'].values[0]:
-            self.vote_switch.disabled = False
-        else:
-            self.vote_switch.disabled = True
-
         if self.ele_ser.loc["vote"].values[0]:
             self.vote_switch.value = True
         else:
@@ -276,10 +271,11 @@ class ElectionData:
         from ..functions.date_time import datetime_field
         from ..authentication.files.vote_settings_write import registration
         if not self.ele_ser.loc['lock_data'].values[0]:
-            registration(self.registration_switch.value)
+            a = registration(self.registration_switch.value)
             if self.registration_switch.value:
                 self.registration_date_option.disabled = False
-                datetime_field(self.page)
+                if not datetime_field(self.page):
+                    self.registration_switch.value = False
             else:
                 self.registration_date_option.disabled = True
         else:
@@ -353,8 +349,13 @@ class ElectionData:
         return self.download_final_nomination_option
 
     def on_vote_click(self, e):
-        from ..authentication.files.vote_settings_write import vote_on
-        vote_on(self.vote_switch.value)
+        if not (self.ele_ser.loc['lock_data'].values[0] and self.ele_ser.loc['final_nomination'].values[0]):
+            message_dialogs(self.page, "Enable Vote")
+            self.vote_switch.value = False
+            self.page.update()
+        else:
+            from ..authentication.files.vote_settings_write import vote_on
+            vote_on(self.vote_switch.value)
 
     def vote_option(self):
         self.vote_option_option.content = ft.Row(
@@ -557,28 +558,39 @@ def election_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.
         )
     )
 
-    if cc.teme_data[2] == False:
-        del list2_data[0]
+    tab2_option = ft.Tab(
+        text="Result",
+        content=ft.Column(
+            controls=list2_data,
+            scroll=ft.ScrollMode.ADAPTIVE,
+        )
+    )
+
+    tab3_option = ft.Tab(
+        text="Help",
+        content=ft.Column(
+            controls=list2_data,
+            scroll=ft.ScrollMode.ADAPTIVE,
+        )
+    )
 
     tab = ft.Tabs(
         selected_index=0,
         animation_duration=400,
-        tabs=[
-            tab1_option,
-            ft.Tab(
-                text="Result",
-                content=ft.Column(
-                    controls=list2_data,
-                    scroll=ft.ScrollMode.ADAPTIVE,
-                )
-            ),
-        ],
         expand=True,
     )
 
     if cc.teme_data[2] == False:
-        tab.selected_index = 1
-        tab1_option.disabled = True
+        del list2_data[1]
+        tab.tabs = [
+            tab2_option,
+        ]
+    else:
+        tab.tabs = [
+            tab1_option,
+            tab2_option,
+            tab3_option,
+        ]
 
     content_column.controls = [
         tab,

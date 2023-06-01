@@ -82,6 +82,11 @@ def order_category_option(page: ft.Page):
         sleep(0.1)
         loading_dialogs(page, "Loading...", 1)
 
+    save_button = ft.TextButton(
+        text="Save",
+        on_click=on_save,
+    )
+
     message_alertdialog = ft.AlertDialog(
         modal=True,
         title=ft.Text("Chose Category Order"),
@@ -93,10 +98,7 @@ def order_category_option(page: ft.Page):
             height=300,
         ),
         actions=[
-            ft.TextButton(
-                text="Save",
-                on_click=on_save,
-            ),
+            save_button,
             ft.TextButton(
                 text="Cancel",
                 on_click=on_ok,
@@ -104,6 +106,9 @@ def order_category_option(page: ft.Page):
         ],
         actions_alignment=ft.MainAxisAlignment.END,
     )
+
+    if df1.empty:
+        save_button.disabled = True
 
     # Open dialog
     page.dialog = message_alertdialog

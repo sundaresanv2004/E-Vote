@@ -42,6 +42,7 @@ def edit_election_name(page: ft.Page):
         border_radius=9,
         border_color=ft.colors.SECONDARY,
         autofocus=True,
+        on_submit=save_on,
         value=ele_ser.loc['election-name'].values[0],
         capitalization=ft.TextCapitalization.WORDS,
     )
@@ -88,6 +89,17 @@ def passcode_election(page: ft.Page, switch_data: ft.Switch):
         message_alertdialog.open = False
         page.update()
 
+    def save_on(e):
+        if len(entry1.value) == 5:
+            entry1.error_text = None
+            message_alertdialog.open = False
+            page.update()
+            first_lock(entry1.value)
+        else:
+            entry1.error_text = "Enter the Code"
+            entry1.focus()
+            entry1.update()
+
     entry1 = ft.TextField(
         hint_text="Enter the Code",
         width=350,
@@ -99,20 +111,10 @@ def passcode_election(page: ft.Page, switch_data: ft.Switch):
         prefix_icon=ft.icons.LOCK_ROUNDED,
         border_color=ft.colors.SECONDARY,
         autofocus=True,
+        on_submit=save_on,
         keyboard_type=ft.KeyboardType.NUMBER,
         capitalization=ft.TextCapitalization.WORDS,
     )
-
-    def save_on(e):
-        if len(entry1.value) == 5:
-            entry1.error_text = None
-            message_alertdialog.open = False
-            page.update()
-            first_lock(entry1.value)
-        else:
-            entry1.error_text = "Enter the Code"
-            entry1.focus()
-            entry1.update()
 
     def on_next1(e):
         message_alertdialog.title = ft.Text(value="2-Step Verification")

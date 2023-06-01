@@ -38,11 +38,10 @@ class DateTimeField:
             # on_change=self.on_change_qualification,
             border_color=ft.colors.SECONDARY,
             options=[
-                ft.dropdown.Option(present_year - 1),
+                ft.dropdown.Option(present_year),
                 ft.dropdown.Option(present_year),
                 ft.dropdown.Option(present_year + 1),
                 ft.dropdown.Option(present_year + 2),
-                ft.dropdown.Option(present_year + 3),
             ],
         )
 
@@ -108,6 +107,7 @@ def datetime_field(page: ft.Page):
                         registration_date(from_date, to_date)
                         alertdialog.open = False
                         page.update()
+                        return True
                     else:
                         to_obj.days_drop_down.error_text = "Invalid Date"
                         to_obj.months_drop_down.error_text = "Invalid Date"
@@ -139,6 +139,11 @@ def datetime_field(page: ft.Page):
         to_obj.year_drop_down.value = to_year2
         to_obj.months_drop_down.value = to_month2
         to_obj.days_drop_down.value = to_day2
+
+    def close(e):
+        alertdialog.open = False
+        page.update()
+        return False
 
     alertdialog = ft.AlertDialog(
         modal=True,
@@ -190,6 +195,10 @@ def datetime_field(page: ft.Page):
             ft.TextButton(
                 text="Save",
                 on_click=save_on_click,
+            ),
+            ft.TextButton(
+                text="Cancel",
+                on_click=close,
             ),
         ],
         actions_alignment=ft.MainAxisAlignment.END,

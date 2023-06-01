@@ -198,9 +198,12 @@ class ViewCandidateRecord(ft.UserControl):
         candidate_profile_page(self.page, self.content_column, self.title_text, self.index_val)
 
     def verification(self, e):
-        from .candidate_delete_approve import approve_dialogs
-        approve_dialogs(self.page, self.content_column, self.title_text, self.index_val,
-                        self.candidate_data_df.loc[self.index_val].values[3], False)
+        if not self.ele_ser.loc['lock_data'].values[0]:
+            from .candidate_delete_approve import approve_dialogs
+            approve_dialogs(self.page, self.content_column, self.title_text, self.index_val,
+                            self.candidate_data_df.loc[self.index_val].values[3], False)
+        else:
+            message_dialogs(self.page, "Data is Locked")
 
     def build(self):
         if self.candidate_data_df.loc[self.index_val].values[3]:
