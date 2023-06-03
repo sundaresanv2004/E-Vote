@@ -66,6 +66,9 @@ def main(page: ft.Page):
     # from Main.pages.sidebar_options import admin_sidebar
     # admin_sidebar(page, True)
 
+    # from Main.pages.vote_home import vote_page
+    # vote_page(page)
+
 
 def unsupported_page(page: ft.Page):
     # Width and height of the window.

@@ -1,30 +1,13 @@
-theme_color = {
-    "Clean and Energetic": [
-        "#5680E9",
-        "#84CEEB",
-        "#5AB9EA",
-        "#C1C8E4",
-        "#8860D0"
-    ],
-    "Cool and Fresh": [
-        "#05386B",
-        '#379683',
-        "#5CDB95",
-        "#8EE4AF",
-        "#EDF5E1"
-    ],
-    "Cheerful and Energetic": [
-        "#FBE8A6",
-        "#F4976C",
-        "#303C6C",
-        "#B4DFE5",
-        "#D2FDFF"
-    ],
-    "Rose Red and Blueberry": [
-        "#4285F4",
-        "#5C2018",
-        "#BC4639",
-        "#D4A59A",
-        "#F3E0DC"
-    ]
+sky = {
+    '50': '#f0f9ff',
+    '100': '#e0f2fe',
+    '200': '#bae6fd',
+    '300': '#7dd3fc',
+    '400': '#38bdf8',
+    '500': '#0ea5e9',
+    '600': '#0284c7',
+    '700': '#0369a1',
+    '800': '#075985',
+    '900': '#0c4a6e',
+    '950': '#082f49',
 }
