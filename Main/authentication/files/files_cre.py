@@ -9,7 +9,7 @@ from Main.authentication.scr.loc_file_scr import file_path, app_data, file_data,
 
 # folders creations
 def start_folder():
-    if not os.path.exists(path + r'\assets\s\abxyzc'):
+    if not os.path.exists(path + r'\data\s\abxyzc'):
         os.makedirs(path + file_path['admin_file'])
         os.makedirs(path + file_path['candidate_data'])
         dictionary = {
@@ -18,15 +18,14 @@ def start_folder():
             "data": None
         }
 
-        with open(path + r'\assets\s\abxyzc', "w") as outfile:
+        with open(path + r'\data\s\abxyzc', "w") as outfile:
             json.dump(dictionary, outfile)
 
 
 # file creations
-def app_start(app_start_data_list1: list):
+def app_start(app_start_data_list1):
     app_start_data_dict1: dict = {"topic": [
         "app_version",
-        "institution_type",
         "institution_name",
         "logo",
         "theme",
@@ -38,8 +37,7 @@ def app_start(app_start_data_list1: list):
     ],
         "values": [
             app_data['version'],
-            app_start_data_list1[0],
-            app_start_data_list1[1],
+            app_start_data_list1,
             None,
             "system",
             None,

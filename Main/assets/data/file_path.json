@@ -1,12 +1,12 @@
 {
   "name": "file_path",
   "version": "1.01",
-  "file_path": "\\assets\\f\\gAAABjz",
-  "app_data": "\\assets\\a\\adABI3K",
-  "admin_file": "\\assets\\a\\afABEQo",
-  "admin_data": "\\assets\\a\\afABEQo\\adABAp0",
-  "admin_login_data": "\\assets\\a\\afABEQo\\asABCbJb",
-  "candidate_data": "\\assets\\c\\cdABKIiT",
-  "settings": "\\assets\\s\\setABn8S_4G",
-  "election_data": "\\assets\\e\\ydABD8Y"
+  "file_path": "\\data\\f\\gAAABjz",
+  "app_data": "\\data\\a\\adABI3K",
+  "admin_file": "\\data\\a\\afABEQo",
+  "admin_data": "\\data\\a\\afABEQo\\adABAp0",
+  "admin_login_data": "\\data\\a\\afABEQo\\asABCbJb",
+  "candidate_data": "\\data\\c\\cdABKIiT",
+  "settings": "\\data\\s\\setABn8S_4G",
+  "election_data": "\\data\\e\\ydABD8Y"
 }
