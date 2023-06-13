@@ -5,8 +5,8 @@ from ..files.write_files import new_election_creation
 from ..scr.check_installation import path
 from ...functions.date_time import present_year
 
-election_data = pd.read_csv(path + file_path["election_data"])
-current_election_path = election_data.values[0][1]
+# election_data = pd.read_csv(path + file_path["election_data"])
+current_election_path = None  # election_data.values[0][1]
 
 
 def election_start_scr():
