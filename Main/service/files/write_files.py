@@ -5,9 +5,9 @@ import pandas as pd
 import string
 import random
 
-from Main.authentication.encrypter.encryption import encrypter
-from Main.authentication.scr.check_installation import path
-from Main.authentication.scr.loc_file_scr import file_path
+from ..enc.encryption import encrypter
+from ..scr.check_installation import path
+from ..scr.loc_file_scr import file_path
 
 
 def admin_data_in(admin_data_new_in_list: list):
@@ -37,7 +37,7 @@ def login_details_update(index_val):
 
 
 def new_election_creation(title: str):
-    from Main.authentication.files.files_cre import new_election_creation_folder
+    from .files_cre import new_election_creation_folder
 
     election_data = pd.read_csv(path + file_path["election_data"])
     settings_df = pd.read_json(path + file_path['settings'], orient='table')
@@ -77,18 +77,9 @@ def edit_staff_data(data_list: list, index_user):
     staff_df.to_json(path + file_path['admin_data'], orient='table', index=False)
 
 
-def theme_on_change(theme_mod: str):
-    import Main.authentication.user.login_enc as cc
-    staff_df = pd.read_json(path + file_path['admin_data'], orient='table')
-    index_val = staff_df[staff_df.id == cc.teme_data[0]].index.values[0]
-    staff_df.at[index_val, "theme"] = theme_mod
-
-    staff_df.to_json(path + file_path['admin_data'], orient='table', index=False)
-
-
 def category_add_new(list_data: list):
     from ..scr.loc_file_scr import file_data
-    import Main.authentication.scr.election_scr as ee
+    import Main.service.scr.election_scr as ee
 
     category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
     index_val = category_df['id'].max()
@@ -103,8 +94,8 @@ def category_add_new(list_data: list):
 
 
 def add_candidate(list1_data: list):
-    from Main.authentication.scr.loc_file_scr import file_data
-    import Main.authentication.scr.election_scr as ee
+    from ..scr.loc_file_scr import file_data
+    import Main.service.scr.election_scr as ee
 
     candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
 
@@ -123,8 +114,8 @@ def add_candidate(list1_data: list):
 
 
 def delete_candidate(index_val):
-    from Main.authentication.scr.loc_file_scr import file_data
-    import Main.authentication.scr.election_scr as ee
+    from ..scr.loc_file_scr import file_data
+    import Main.service.scr.election_scr as ee
 
     candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
     user_data = candidate_data_df.loc[index_val].values
@@ -140,29 +131,9 @@ def delete_candidate(index_val):
                               index=False)
 
 
-def change_verification(page, id_val):
-    from Main.authentication.scr.loc_file_scr import file_data
-    import Main.authentication.scr.election_scr as ee
-    from ...functions.snack_bar import snack_bar1
-
-    candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
-    user_data = candidate_data_df.loc[id_val].values
-
-    if user_data[3] == True:
-        candidate_data_df.at[id_val, "verification"] = False
-        snack_bar1(page, "Disapproved")
-    else:
-        candidate_data_df.at[id_val, "verification"] = True
-        snack_bar1(page, "Approved")
-
-    candidate_data_df.to_json(
-        ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table', index=False
-    )
-
-
 def candidate_edit(list_data: list, index_val):
-    from Main.authentication.scr.loc_file_scr import file_data
-    import Main.authentication.scr.election_scr as ee
+    from ..scr.loc_file_scr import file_data
+    import Main.service.scr.election_scr as ee
 
     candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
 
@@ -176,7 +147,7 @@ def candidate_edit(list_data: list, index_val):
 
 
 def category_edit(list_data: list, index_val):
-    import Main.authentication.scr.election_scr as ee
+    import Main.service.scr.election_scr as ee
     from ..scr.loc_file_scr import file_data
 
     category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
@@ -186,7 +157,7 @@ def category_edit(list_data: list, index_val):
 
 
 def delete_category(index_val):
-    import Main.authentication.scr.election_scr as ee
+    import Main.service.scr.election_scr as ee
     from ..scr.loc_file_scr import file_data
 
     category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')

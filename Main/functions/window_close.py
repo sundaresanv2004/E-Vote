@@ -3,22 +3,18 @@ import flet as ft
 
 def close_true(page: ft.Page):
 
-    def on_yes(e):
-        page.window_destroy()
-
     def on_no(e):
         exit_confirm_dialog.open = False
-        page.window_title_bar_hidden = False
         page.update()
 
     exit_confirm_dialog = ft.AlertDialog(
-        modal=True,
+        modal=False,
         title=ft.Text("Confirm Exit"),
-        content=ft.Text("Are you sure do you want to exit?"),
+        content=ft.Text("Are you sure do you want to exit?", font_family='Verdana',),
         actions=[
             ft.TextButton(
                 "Yes",
-                on_click=on_yes,
+                on_click=lambda e:page.window_destroy(),
             ),
             ft.TextButton(
                 "No",
@@ -30,5 +26,4 @@ def close_true(page: ft.Page):
 
     page.dialog = exit_confirm_dialog
     exit_confirm_dialog.open = True
-    page.window_title_bar_hidden = True
     page.update()

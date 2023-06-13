@@ -4,7 +4,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
-from Main.authentication.scr.loc_file_scr import app_data
+from ..scr.loc_file_scr import app_data
 
 kdf = PBKDF2HMAC(
     algorithm=hashes.SHA256(),

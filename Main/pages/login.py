@@ -1,73 +1,87 @@
 from time import sleep
 import flet as ft
 
-import Main.functions.theme as tt
-from ..functions.animations import menu_container_animation
+from ..functions.dialogs import message_dialogs
 
 
-def login_page(page: ft.Page, menu_container: ft.Container):
-    # Functions
+def login_page(page: ft.Page, content_image: ft.Container, content_column: ft.Column):
+    def on_hover_color(e):
+        e.control.bgcolor = "#0369a1" if e.data == "true" else "#0ea5e9"
+        e.control.update()
+
     def back(e):
-        back_button.disabled = True
-        menu_container.clean()
+        from .menu import menu_page
+        content_image.height = 370
+        content_image.update()
+        sleep(0.3)
+        content_column.clean()
         page.update()
-        from Main.pages.menu import menu_page
-        menu_container_animation(menu_container)
-        sleep(0.1)
-        menu_page(page, menu_container)
+        menu_page(page, content_image, content_column)
 
     def check_username_input(e):
-        if len(entry_name.value) != 0:
-            entry_name.suffix_icon = None
-            entry_name.error_text = None
-        else:
-            entry_name.error_text = "Enter the Username"
-            entry_name.suffix_icon = ft.icons.ERROR_OUTLINE_ROUNDED
-        entry_name.update()
-
-    def check_password_input(e):
-        if len(entry_password.value) != 0:
-            entry_password.error_text = ""
-        else:
-            entry_password.error_text = "Enter the Username"
-        entry_password.update()
-
-    def login_check_fun(e):
         login_waring_text.value = None
         login_waring_text.update()
+        if len(username_entry.value) != 0:
+            username_entry.suffix_icon = None
+            username_entry.error_text = None
+        else:
+            username_entry.error_text = "Enter the Username"
+            username_entry.suffix_icon = ft.icons.ERROR_OUTLINE_ROUNDED
+        username_entry.update()
+
+    def check_password_input(e):
+        login_waring_text.value = None
+        login_waring_text.update()
+        if len(password_entry.value) != 0:
+            password_entry.error_text = ""
+        else:
+            password_entry.error_text = "Enter the Password"
+        password_entry.update()
+
+    def login_check_fun(e):
         check_username_input(e)
         check_password_input(e)
 
-        if len(entry_name.value) != 0:
-            if len(entry_password.value) != 0:
-                progressbar_column.controls = [progressbar_login]
-                menu_container.disabled = True
+        if len(username_entry.value) != 0:
+            if len(password_entry.value) != 0:
+                button_container.content = ft.ProgressRing(color=ft.colors.WHITE)
+                content_column.disabled = True
+                button_container.opacity = 0.5
+                button_container.bgcolor = '#295361'
                 page.update()
-                import Main.authentication.user.login_enc as cc
-                val = cc.login_checker(entry_name.value, entry_password.value)
+                import Main.service.user.login_enc as cc
+                val = cc.login_checker(username_entry.value, password_entry.value)
                 sleep(1)
                 if val is True:
-                    from Main.pages.sidebar_options import admin_sidebar
+                    from .menubar import menubar_page
                     page.clean()
                     if cc.teme_data[2] == True:
-                        admin_sidebar(page, True)
+                        menubar_page(page)
                     else:
-                        admin_sidebar(page, False)
+                        pass
                 else:
-                    progressbar_column.controls = None
-                    menu_container.disabled = False
+                    button_container.content = ft.Text(
+                        value="Sign Up",
+                        size=20,
+                        font_family='Verdana',
+                        weight=ft.FontWeight.W_400,
+                        color=ft.colors.WHITE,
+                    )
+                    content_column.disabled = False
+                    button_container.opacity = 1
+                    button_container.bgcolor = '#0ea5e9'
+                    page.update()
                     login_waring_text.value = "  Invalid Username or Password!  "
-                    entry_password.value = None
-                    entry_password.error_text = ""
-                    entry_name.focus()
+                    password_entry.error_text = ""
+                    username_entry.focus()
                     page.update()
                     val = False
             else:
-                entry_password.focus()
-                entry_password.update()
+                password_entry.focus()
+                password_entry.update()
         else:
-            entry_name.focus()
-            entry_name.update()
+            username_entry.focus()
+            username_entry.update()
 
     # text
     login_waring_text = ft.Text(
@@ -75,139 +89,113 @@ def login_page(page: ft.Page, menu_container: ft.Container):
         color=ft.colors.ERROR,
     )
 
+    button_container = ft.Container(
+        height=50,
+        width=330,
+        border_radius=10,
+        bgcolor="#0ea5e9",
+        on_hover=on_hover_color,
+        content=ft.Text(
+            value="Sign Up",
+            size=20,
+            font_family='Verdana',
+            weight=ft.FontWeight.W_400,
+            color=ft.colors.WHITE,
+        ),
+        alignment=ft.alignment.center,
+        animate=ft.animation.Animation(100, ft.AnimationCurve.DECELERATE),
+        on_click=login_check_fun,
+    )
+
     # Input Fields
-    entry_name = ft.TextField(
+    username_entry = ft.TextField(
         hint_text="Enter the Username",
-        width=400,
-        border_color=ft.colors.SECONDARY,
-        autofocus=True,
-        prefix_icon=ft.icons.ACCOUNT_CIRCLE_ROUNDED,
-        border=ft.InputBorder.OUTLINE,
+        width=330,
         filled=False,
-        border_radius=9,
-        focused_border_color=ft.colors.PRIMARY,
+        prefix_icon=ft.icons.PERSON_ROUNDED,
+        border=ft.InputBorder.UNDERLINE,
+        border_color=ft.colors.BLACK,
+        autofocus=True,
+        text_style=ft.TextStyle(font_family='Verdana'),
+        error_style=ft.TextStyle(font_family='Verdana'),
         on_change=check_username_input,
         on_submit=login_check_fun,
     )
 
-    entry_password = ft.TextField(
+    password_entry = ft.TextField(
         hint_text="Enter the Password",
-        width=400,
-        border_radius=9,
-        border_color=ft.colors.SECONDARY,
-        autofocus=True,
-        prefix_icon=ft.icons.PASSWORD_ROUNDED,
-        border=ft.InputBorder.OUTLINE,
+        width=330,
         filled=False,
+        prefix_icon=ft.icons.LOCK_ROUNDED,
+        border=ft.InputBorder.UNDERLINE,
+        border_color=ft.colors.BLACK,
         password=True,
         can_reveal_password=True,
-        focused_border_color=ft.colors.PRIMARY,
+        text_style=ft.TextStyle(font_family='Verdana'),
+        error_style=ft.TextStyle(font_family='Verdana'),
         on_change=check_password_input,
         on_submit=login_check_fun,
     )
 
-    def on_forgot_password(e):
-        from Main.functions.dialogs import message_dialogs
-        message_dialogs(page, 'Forgot Password?')
-
-    # Buttons
-    # back button
-    back_button = ft.IconButton(
-        icon=ft.icons.ARROW_BACK_ROUNDED,
-        tooltip='Back',
-        on_click=back,
-    )
-
-    button_forgot_password = ft.TextButton(
-        text="Forgot Password?",
-        on_click=on_forgot_password,
-    )
-
-    # login button
-    login_button = ft.ElevatedButton(
-        text="Login",
-        height=50,
-        width=150,
-        on_click=login_check_fun,
-    )
-
-    # ProgressBar
-    progressbar_login = ft.ProgressBar(
-        width=465,
-        bgcolor=ft.colors.TRANSPARENT,
-    )
-    progressbar_column = ft.Column(
-        height=15,
-    )
-
-    # alignment and data
-    menu_container.content = ft.Column(
-        [
-            progressbar_column,
-            ft.Row(
+    content_column.controls = [
+        ft.Column(
+            [
+                ft.Row(
+                    [
+                        ft.Text(
+                            value="Sign In",
+                            size=30,
+                            font_family='Verdana',
+                            color='#0c4a6e',
+                            weight=ft.FontWeight.W_800,
+                        ),
+                    ],
+                    width=450,
+                    alignment=ft.MainAxisAlignment.CENTER,
+                ),
+                ft.Column(
+                    [
+                        username_entry,
+                        password_entry,
+                        button_container,
+                    ],
+                    width=450,
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                    spacing=30,
+                ),
+                ft.Row(
+                    [
+                        login_waring_text
+                    ],
+                    width=450,
+                    alignment=ft.MainAxisAlignment.CENTER,
+                )
+            ],
+            width=450,
+            height=320,
+            scroll=ft.ScrollMode.ADAPTIVE,
+            spacing=15,
+        ),
+        ft.Container(
+            content=ft.Row(
                 [
-                    ft.Row(
-                        [
-                            back_button,
-                        ],
+                    ft.TextButton(
+                        text="Back",
+                        icon=ft.icons.ARROW_BACK_IOS_NEW_ROUNDED,
+                        on_click=back,
                     ),
-                    ft.Row(
-                        [
-                            ft.Text(
-                                value="Log In",
-                                size=30,
-                                weight=ft.FontWeight.BOLD,
-                            ),
-                        ],
-                        expand=True,
-                        alignment=ft.MainAxisAlignment.CENTER,
-                    ),
-                    ft.Row(
-                        [
-                            tt.ThemeIcon(page),
-                        ],
+                    ft.TextButton(
+                        text="Forgot Password?",
+                        on_click=lambda e: message_dialogs(page, 'Forgot Password?'),
                     ),
                 ],
-                alignment=ft.MainAxisAlignment.CENTER,
+                alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                width=450,
             ),
-            ft.Column(
-                [
-                    login_waring_text,
-                ]
-            ),
-            ft.Column(
-                [
-                    entry_name,
-                    entry_password,
-                ],
-                spacing=40
-            ),
-            ft.Row(
-                [
-                    button_forgot_password,
-                ],
-                width=380,
-                alignment=ft.MainAxisAlignment.END,
-            ),
-            ft.Column(
-                height=15,
-            ),
-            ft.Row(
-                [
-                    login_button,
-                ],
-                width=400,
-                alignment=ft.MainAxisAlignment.END,
-            ),
-            ft.Column(
-                height=20,
-            ),
-        ],
-        expand=True,
-        scroll=ft.ScrollMode.ADAPTIVE,
-        alignment=ft.MainAxisAlignment.START,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-    )
+            bgcolor='#44CCCCCC',
+            blur=ft.Blur(50, 50, ft.BlurTileMode.MIRROR),
+            border_radius=ft.border_radius.only(bottom_left=15, bottom_right=15)
+        )
+    ]
 
-    menu_container.padding = 0.3
-    menu_container.update()
+    page.update()

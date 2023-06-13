@@ -3,8 +3,8 @@ import json
 import datetime
 import pandas as pd
 
-from Main.authentication.scr.check_installation import path
-from Main.authentication.scr.loc_file_scr import file_path, app_data, file_data, default_election_setting_data
+from ..scr.check_installation import path
+from ..scr.loc_file_scr import file_path, app_data, file_data, default_election_setting_data
 
 
 # folders creations
@@ -14,8 +14,9 @@ def start_folder():
         os.makedirs(path + file_path['candidate_data'])
         dictionary = {
             "name": "E-Vote",
-            "version": "0.06",
-            "data": None
+            "version": "2.01",
+            "data": None,
+            "enc": True
         }
 
         with open(path + r'\data\s\abxyzc', "w") as outfile:

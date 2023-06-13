@@ -2,8 +2,7 @@ import platform
 import os
 import pandas as pd
 
-from Main.authentication.scr.loc_file_scr import file_path, default_setting_data
-
+from .loc_file_scr import file_path, default_setting_data
 
 path = None
 os_sys = None

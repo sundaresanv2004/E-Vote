@@ -1,17 +1,16 @@
 from time import sleep
-
 import flet as ft
 import pandas as pd
 
-from Main.authentication.encrypter.encryption import decrypter
-from Main.authentication.scr.check_installation import path
-from Main.authentication.scr.loc_file_scr import file_path
-import Main.authentication.user.login_enc as cc
+from ..service.enc.encryption import decrypter
+from ..service.scr.check_installation import path
+from ..service.scr.loc_file_scr import file_path
+import Main.service.user.login_enc as cc
 
 index_val = None
 
 
-def staff_profile_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text, id_index):
+def staff_profile_page(page: ft.Page, id_index):
     global index_val
     # files
     staff_df = pd.read_json(path + file_path['admin_data'], orient='table')
@@ -28,25 +27,10 @@ def staff_profile_page(page: ft.Page, content_column: ft.Column, title_text: ft.
         if index_val == 0:
             message_dialogs(page, "Delete this record?")
         else:
-            delete_staff_dialogs(page, content_column, staff_df.loc[index_val].values[0], title_text, True)
+            delete_staff_dialogs(page, staff_df.loc[index_val].values[0], True)
 
     def edit_on_click(e):
-        alertdialog.open = False
-        page.update()
-        sleep(0.3)
-        from Main.pages.staff_edit import staff_edit_page
-        from Main.functions.dialogs import message_dialogs
-        if index_val == 0:
-            if cc.teme_data[0] == 1:
-                content_column.clean()
-                content_column.update()
-                staff_edit_page(page, content_column, title_text, index_val, False)
-            else:
-                message_dialogs(page, "Edit this record?")
-        else:
-            content_column.clean()
-            content_column.update()
-            staff_edit_page(page, content_column, title_text, index_val, False)
+        pass
 
     def on_close(e):
         alertdialog.open = False
@@ -148,7 +132,7 @@ def staff_profile_page(page: ft.Page, content_column: ft.Column, title_text: ft.
 
     # AlertDialog
     alertdialog = ft.AlertDialog(
-        modal=True,
+        modal=False,
         content=ft.Column(
             [
                 ft.Row(

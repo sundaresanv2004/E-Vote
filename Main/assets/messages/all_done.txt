@@ -1,0 +1,55 @@
+# Welcome to E-Vote App!
+
+With our advanced and user-friendly election application, participating in the democratic process has never been easier. We strive to provide you with a secure, convenient, and transparent platform for casting your vote in various elections. Here's what you need to know:
+
+## Secure and Trustworthy:
+
+
+Rest assured that your vote is treated with the utmost security and privacy. Our application employs cutting-edge encryption protocols and stringent security measures to safeguard your personal information and ensure the integrity of the voting process.
+
+
+## Here are the steps to follow to conduct an election:
+### 1. Create categories:
+
+To ensure a structured and organized election process, it is essential to create categories for different positions. Under the `Election Page` you can access the `Category` option to create categories based on the roles or positions to be filled.
+
+### 2. Add candidates:
+Under the `Add Candidate` option in the `Candidate page`, you can quickly create candidate profiles by providing the necessary information. Ensure you have the following details ready:
+
+- Full Name: Enter the candidate's full name.
+- Position: Specify the position or role for which the candidate is running.
+- Qualifications: Describe the candidate's qualifications.
+- Image: Upload a professional photograph of the candidate. [Passport sized (600 x 600 px or 1200 x 1200 px)]
+
+### 3. Lock Candidate Data:
+
+After adding candidates, it is crucial to enhance security measures by implementing a data lock feature. By locking the candidate data, you can strengthen the integrity of the election process. This feature disables options to add, edit, or delete candidate data, ensuring that the information remains consistent and protected.
+
+However, if necessary, authorized personnel may temporarily disable the lock to make required changes to candidate data. Please note that this option should only be used when absolutely necessary to avoid any unintended modifications to the candidate information.
+
+Note: In order to proceed further in the election process, the data lock option must be enabled. When the data lock is enabled, some options related to adding, editing, or deleting candidate data may be restricted or unavailable.
+
+### 4. 2-Step Verification:
+
+During the initial setup of the data lock feature, administrators or authorized individuals will be prompted to create a unique 5-digit verification code. This code will serve as an additional authentication step when performing sensitive actions, such as starting an election, generating results and more.
+
+### 5. Final Nomination List:
+
+Within the `election page`, locate and click on the `Generate Nomination List` option. This feature allows you to compile the final list of candidates running for each position in the election.
+Next, you will be prompted to select the order of categories in which they will be presented during the election. This order determines the sequence in which the positions will be displayed to the voters. Carefully arrange the categories based on their significance or any predetermined criteria.
+
+### 6. Election
+Once all the necessary preparations have been made, you can access the "Vote" option to enable the election.
+Note: After the election has been conducted, certain options within the election page may be inaccessible for security reasons.
+
+### 7. Generate Result:
+To obtain the election results, access the `Generate Result` option located within the election page of the app. Clicking on this option initiates the process of generating the final outcome of the election.
+Note:Updating Results with Additional Voting:
+If additional voting is conducted after the initial result generation, it is important to generate the results again to reflect the updated data accurately. This ensures that the final results include all the votes cast throughout the entire election process.
+
+## Creating a New Election:
+To manage election data separately and maintain a clear distinction between different elections, the app provides the option to create a new election without carrying over any old data.
+
+- Navigate to the settings page within the app. Look for the option that allows you to manage elections or create a new election. This option is typically located in the settings page.
+- Once you've accessed the settings page, click on the "New Election" option. This initiates the process of creating a fresh and independent election within the app.
+- Once the new election is created, you can choose it as the "Current Election" from a dropdown menu or similar interface. This selection ensures that all subsequent actions and data within the app pertain to the newly created election.

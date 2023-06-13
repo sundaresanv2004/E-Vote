@@ -11,7 +11,7 @@ def snack_bar1(page: ft.Page, text: str):
 
     # SnackBar data
     snack_bar_1 = ft.SnackBar(
-        content=ft.Text(f"{text}"),
+        content=ft.Text(f"{text}", font_family='Verdana',),
         action="Close",
         on_action=close,
         action_color=ft.colors.BLUE,

@@ -1,8 +1,9 @@
 {
   "name": "Settings",
-  "version": "1.01",
+  "version": "2.01",
   "Theme": "blue",
-  "Theme Mode": "dark",
+  "Theme Mode": "light",
   "Election": null,
-  "maximized": true
+  "maximized": true,
+  "close": false
 }

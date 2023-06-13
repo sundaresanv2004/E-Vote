@@ -1,40 +1,30 @@
-import re
-from time import sleep
 import flet as ft
 import pandas as pd
+import re
 
-from Main.authentication.encrypter.encryption import decrypter
-from Main.authentication.files.write_files import admin_data_in
-from Main.authentication.scr.check_installation import path
-from Main.authentication.scr.loc_file_scr import file_path
+from ..service.enc.encryption import decrypter
+from ..service.files.write_files import admin_data_in
+from ..service.scr.check_installation import path
+from ..service.scr.loc_file_scr import file_path
+from ..service.scr.loc_file_scr import warnings
 
 user_name, mail_id, password = False, False, False
+alertdialog = ft.AlertDialog(modal=True)
+val_list_staff = ["", "", "", False]
 
 
-def staff_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
-    title_text.value = "Staff > Add Staff"
+def staff_add_page(page: ft.Page):
+    global alertdialog, val_list_staff
 
-    # Functions
-    def back_staff_add_page(e):
-        from Main.pages.staff_home import staff_home_page
-        if len(name_entry.value) != 0:
-            unsaved_dialogs(page, content_column, title_text)
-        elif len(mail_id_entry.value) != 0:
-            unsaved_dialogs(page, content_column, title_text)
-        elif len(password_entry.value) != 0:
-            unsaved_dialogs(page, content_column, title_text)
-        else:
-            content_column.clean()
-            content_column.update()
-            staff_home_page(page, content_column, title_text)
-
-    ad_df = pd.read_json(path + file_path['admin_data'], orient='table')
-    check_list: list = []
-    for i in range(len(ad_df.index)):
-        check_list.append(decrypter(ad_df.loc[i].values[1]))
+    def on_close(e):
+        global val_list_staff
+        val_list_staff = ["", "", "", False]
+        alertdialog.open = False
+        page.update()
 
     def username_checker(e):
-        global user_name
+        global user_name, val_list_staff
+        val_list_staff[0] = name_entry.value
         if len(name_entry.value) != 0:
             save_button.disabled = False
         else:
@@ -58,7 +48,8 @@ def staff_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text
     mail_check = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
     def mail_id_checker(e):
-        global mail_id
+        global mail_id, val_list_staff
+        val_list_staff[1] = mail_id_entry.value
         mail_id_entry.on_change = mail_id_checker
         if len(mail_id_entry.value) != 0:
             if re.fullmatch(mail_check, mail_id_entry.value):
@@ -76,7 +67,8 @@ def staff_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text
         mail_id_entry.update()
 
     def password_checker(e):
-        global password
+        global password, val_list_staff
+        val_list_staff[2] = password_entry.value
         password_entry.on_change = password_checker
         if len(password_entry.value) != 0:
             if len(password_entry.value) >= 8:
@@ -92,6 +84,7 @@ def staff_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text
         password_entry.update()
 
     def on_click_save(e):
+        global val_list_staff
         username_checker(e)
         mail_id_checker(e)
         password_checker(e)
@@ -100,12 +93,12 @@ def staff_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text
             if mail_id is True:
                 if password is True:
                     if permission_dropdown.value == 'Yes':
-                        permission_y_dialogs(page, content_column, [name_entry.value,
-                                                                    mail_id_entry.value,
-                                                                    password_entry.value], title_text)
+                        permission_y_dialogs(page)
                     else:
-                        save(page, content_column, [name_entry.value, mail_id_entry.value,
-                                                    password_entry.value, False], title_text)
+                        val_list_staff[3] = False
+                        alertdialog.open = False
+                        page.update()
+                        save(page)
                 else:
                     password_entry.focus()
                     password_entry.update()
@@ -116,93 +109,96 @@ def staff_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text
             name_entry.focus()
             name_entry.update()
 
+    def on_admin_permission(e):
+        y_admin_permission(page)
+
+    def dropdown_change(e):
+        global val_list_staff
+        if permission_dropdown.value == 'Yes':
+            val_list_staff[3] = True
+        else:
+            val_list_staff[3] = False
+
     # Main Text
     main_staff_add_text = ft.Text(
         value="Add Staff",
-        size=35,
         weight=ft.FontWeight.BOLD,
-        italic=True,
+        size=25,
+        font_family='Verdana',
     )
 
-    # Button
-    back_staff_home_button = ft.IconButton(
-        icon=ft.icons.ARROW_BACK_ROUNDED,
-        tooltip="Back",
-        on_click=back_staff_add_page,
-    )
-
-    def on_admin_permission(e):
-        from ..functions.dialogs import message_dialogs
-        message_dialogs(page, "Admin Permission?")
-
-    question_button = ft.PopupMenuButton(
-        icon=ft.icons.QUESTION_ANSWER_ROUNDED,
-        tooltip="Questions?",
-        items=[
-            ft.PopupMenuItem(
-                icon=ft.icons.ADMIN_PANEL_SETTINGS_ROUNDED,
-                text="What is Admin Permission?",
-                on_click=on_admin_permission,
-            ),
-        ]
-    )
-
-    save_button = ft.ElevatedButton(
-        text="Save",
-        height=50,
-        width=150,
-        disabled=True,
-        on_click=on_click_save,
-    )
+    ad_df = pd.read_json(path + file_path['admin_data'], orient='table')
+    check_list: list = []
+    for i in range(len(ad_df.index)):
+        check_list.append(decrypter(ad_df.loc[i].values[1]))
 
     # Input Field
     name_entry = ft.TextField(
         hint_text="Enter the Username",
-        width=450,
+        width=400,
         border=ft.InputBorder.OUTLINE,
         border_radius=9,
-        border_color=ft.colors.SECONDARY,
+        text_style=ft.TextStyle(font_family='Verdana'),
+        error_style=ft.TextStyle(font_family='Verdana'),
         autofocus=True,
-        prefix_icon=ft.icons.ACCOUNT_CIRCLE_ROUNDED,
+        prefix_icon=ft.icons.PERSON_ROUNDED,
         on_submit=on_click_save,
         on_change=username_checker,
     )
 
     mail_id_entry = ft.TextField(
         hint_text="Enter the Mail id",
-        width=450,
+        width=400,
         border=ft.InputBorder.OUTLINE,
         border_radius=9,
-        prefix_icon=ft.icons.MAIL,
-        border_color=ft.colors.SECONDARY,
+        text_style=ft.TextStyle(font_family='Verdana'),
+        error_style=ft.TextStyle(font_family='Verdana'),
+        prefix_icon=ft.icons.MAIL_ROUNDED,
         on_submit=on_click_save,
+        on_change=mail_id_checker,
     )
 
     password_entry = ft.TextField(
         hint_text="Enter the Password",
         password=True,
         can_reveal_password=True,
-        prefix_icon=ft.icons.PASSWORD_ROUNDED,
-        width=450,
+        prefix_icon=ft.icons.LOCK_ROUNDED,
+        width=400,
         border=ft.InputBorder.OUTLINE,
+        text_style=ft.TextStyle(font_family='Verdana'),
+        error_style=ft.TextStyle(font_family='Verdana'),
         border_radius=9,
-        border_color=ft.colors.SECONDARY,
         on_submit=on_click_save,
+        on_change=password_checker,
     )
+
+    if len(val_list_staff[0]) != 0:
+        name_entry.value = val_list_staff[0]
+
+    if len(val_list_staff[1]) != 0:
+        mail_id_entry.value = val_list_staff[1]
+
+    if len(val_list_staff[2]) != 0:
+        password_entry.value = val_list_staff[2]
 
     permission_dropdown = ft.Dropdown(
         hint_text="Choose Admin permission",
-        width=450,
+        text_style=ft.TextStyle(font_family='Verdana'),
+        width=400,
         helper_text="Default value No",
         border=ft.InputBorder.OUTLINE,
         border_radius=9,
+        color=ft.colors.BLACK,
         options=[
             ft.dropdown.Option("Yes"),
             ft.dropdown.Option("No"),
         ],
         prefix_icon=ft.icons.CATEGORY_ROUNDED,
-        border_color=ft.colors.SECONDARY,
+        on_change=dropdown_change,
     )
+
+    if val_list_staff[3]:
+        permission_dropdown.value = "Yes"
 
     add_staff_column_data = ft.Column(
         [
@@ -220,170 +216,157 @@ def staff_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
             ),
-            ft.Row(
-                [
-                    save_button,
-                ],
-                width=450,
-                alignment=ft.MainAxisAlignment.END,
-            )
         ],
         width=450,
-        spacing=30,
     )
 
-    content_column.controls = [
-        ft.Row(
-            [
-                ft.Row(
-                    [
-                        back_staff_home_button,
-                    ],
-                    alignment=ft.MainAxisAlignment.START,
-                ),
-                ft.Row(
-                    [
-                        main_staff_add_text,
-                    ],
-                    expand=True,
-                    alignment=ft.MainAxisAlignment.CENTER,
-                ),
-                ft.Row(
-                    [
-                        question_button,
-                    ],
-                    alignment=ft.MainAxisAlignment.END,
-                ),
-            ]
+    # AlertDialog
+    alertdialog.content = ft.Column(
+        [
+            ft.Row(
+                [
+                    ft.Row(
+                        [
+                            main_staff_add_text,
+                        ],
+                        expand=True,
+                    ),
+                    ft.Row(
+                        [
+                            ft.IconButton(
+                                icon=ft.icons.CLOSE_ROUNDED,
+                                tooltip="Close",
+                                on_click=on_close,
+                            )
+                        ]
+                    )
+                ]
+            ),
+            add_staff_column_data,
+        ],
+        scroll=ft.ScrollMode.ADAPTIVE,
+        height=480,
+        width=450,
+    )
+
+    save_button = ft.TextButton(
+        text="Save",
+        on_click=on_click_save,
+    )
+
+    if len(val_list_staff[0]) == 0:
+        save_button.disabled = True
+    else:
+        save_button.disabled = False
+
+    alertdialog.actions = [
+        ft.TextButton(
+            text="What is Admin Permission?",
+            on_click=on_admin_permission,
         ),
-        ft.Divider(
-            thickness=3,
-            height=5,
-        ),
-        ft.Column(
-            [
-                ft.Row(
-                    height=40,
-                ),
-                add_staff_column_data,
-                ft.Row(
-                    height=10,
-                )
-            ],
-            expand=True,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-            scroll=ft.ScrollMode.ADAPTIVE,
-        )
+        save_button
     ]
 
-    page.update()
-
-
-def unsaved_dialogs(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
-    def on_close(e):
-        alertdialog.open = False
-        page.update()
-
-    def discard(e):
-        from Main.pages.staff_home import staff_home_page
-        alertdialog.open = False
-        page.update()
-        content_column.clean()
-        content_column.update()
-        staff_home_page(page, content_column, title_text)
-
-    alertdialog = ft.AlertDialog(
-        modal=True,
-        title=ft.Text(
-            value="Discard?"
-        ),
-        content=ft.Text(
-            value="Your changes have not been saved",
-        ),
-        actions=[
-            ft.TextButton(
-                text="Save",
-                on_click=on_close,
-            ),
-            ft.TextButton(
-                text="Discard",
-                on_click=discard,
-            ),
-        ],
-        actions_alignment=ft.MainAxisAlignment.END,
-    )
+    alertdialog.actions_alignment = ft.MainAxisAlignment.SPACE_BETWEEN
 
     page.dialog = alertdialog
     alertdialog.open = True
     page.update()
 
 
-def permission_y_dialogs(page: ft.Page, content_column: ft.Column, list1: list, title_text: ft.Text):
+def y_admin_permission(page: ft.Page):
+    global alertdialog
+
+    # Functions
+    def on_ok(e):
+        alertdialog.title = None
+        staff_add_page(page)
+
+    # AlertDialog data
+
+    alertdialog.title = ft.Text(
+        value="Admin Permission?",
+        font_family='Verdana',
+    )
+
+    alertdialog.content = ft.Text(
+        value=f'{warnings["Admin Permission?"]}',
+    )
+
+    alertdialog.actions = [
+        ft.TextButton(
+            text="Ok",
+            on_click=on_ok,
+        ),
+    ]
+
+    alertdialog.actions_alignment = ft.MainAxisAlignment.END
+
+    page.update()
+
+
+def permission_y_dialogs(page: ft.Page):
+    global alertdialog
+
     def on_close(e):
-        alertdialog.open = False
-        page.update()
+        alertdialog.title = None
+        staff_add_page(page)
 
     def save_data(e):
-        list1.append(True)
+        global val_list_staff, alertdialog
+        val_list_staff[3] = True
+        alertdialog.title = None
         alertdialog.open = False
         page.update()
-        save(page, content_column, list1, title_text)
+        save(page)
 
     def on_admin_permission(e):
-        alertdialog.open = False
-        page.update()
-        sleep(0.2)
-        from ..functions.dialogs import message_dialogs
-        message_dialogs(page, "Admin Permission?")
+        y_admin_permission(page)
 
-    alertdialog = ft.AlertDialog(
-        modal=True,
-        title=ft.Text(
-            value="Make Sure",
-        ),
-        content=ft.Column(
-            [
-                ft.Text(
-                    value="Do you want to give them admin permission?",
-                ),
-                ft.TextButton(
-                    text="Learn more.",
-                    on_click=on_admin_permission
-                )
-            ],
-            height=70,
-            width=340,
-        ),
-        actions=[
-            ft.TextButton(
-                text="Save",
-                on_click=save_data,
-            ),
-            ft.TextButton(
-                text="Change",
-                on_click=on_close,
-            ),
-        ],
-        actions_alignment=ft.MainAxisAlignment.END,
+    alertdialog.title = ft.Text(
+        value="Make Sure",
+        font_family='Verdana',
     )
 
-    page.dialog = alertdialog
-    alertdialog.open = True
+    alertdialog.content = ft.Column(
+        [
+            ft.Text(
+                value="Do you want to give them admin permission?",
+                font_family='Verdana',
+            ),
+            ft.TextButton(
+                text="Learn more.",
+                on_click=on_admin_permission
+            )
+        ],
+        height=70,
+        width=340,
+    )
+
+    alertdialog.actions = [
+        ft.TextButton(
+            text="Save",
+            on_click=save_data,
+        ),
+        ft.TextButton(
+            text="Change",
+            on_click=on_close,
+        ),
+    ]
+    alertdialog.actions_alignment = ft.MainAxisAlignment.END
+
     page.update()
 
 
-def save(page: ft.Page, content_column: ft.Column, list1: list, title_text: ft.Text):
+def save(page: ft.Page):
+    global val_list_staff, alertdialog
     page.splash = ft.ProgressBar()
     page.update()
     from ..functions.snack_bar import snack_bar1
-    from .staff_home import staff_home_page
-    from ..functions.dialogs import loading_dialogs
-    sleep(0.1)
-    loading_dialogs(page, "Saving...", 1)
-    admin_data_in([list1[0], list1[1], list1[2], list1[3]])
+    from .staff_home import display_staff
+    admin_data_in([val_list_staff[0], val_list_staff[1], val_list_staff[2], val_list_staff[3]])
     page.splash = None
     page.update()
-    content_column.clean()
-    content_column.update()
-    staff_home_page(page, content_column, title_text)
+    val_list_staff = ["", "", "", False]
+    display_staff(page)
     snack_bar1(page, "Successfully Added")

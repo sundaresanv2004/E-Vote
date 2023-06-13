@@ -1,403 +1,318 @@
 import os
+import glob
+import shutil
 import random
-from time import sleep
 import string
+from time import sleep
 import flet as ft
 import pandas as pd
 
-from Main.authentication.scr.loc_file_scr import file_data
-import Main.authentication.scr.election_scr as ee
-import Main.authentication.user.login_enc as cc
+from ..service.scr.loc_file_scr import file_data
+import Main.service.scr.election_scr as ee
+import Main.service.user.login_enc as cc
 
-obj = None
+list_cand_data = ['', '', '', '']
+save_button = ft.TextButton(
+    text='Save',
+    disabled=True,
+)
+alertdialog_candidate_add = None
 
 
-class CandidateAddPage:
+def candidate_add_page(page: ft.Page):
+    global alertdialog_candidate_add
 
-    def __init__(self, page: ft.Page, content_column: ft.Column, title_text: ft.Text):
-        super().__init__()
-        self.page = page
-        self.content_column = content_column
-        self.title_text = title_text
-        self.candidate_selected_image_name = False
-        self.candidate_selected_file_path = None
-        self.candidate_image_destination = ee.current_election_path + r'\images'
+    def on_close(e):
+        global list_cand_data
+        alertdialog_candidate_add.open = False
+        page.update()
+        if list_cand_data[1] is not False:
+            if len(list_cand_data[1]) != 0:
+                try:
+                    os.remove(fr'{ee.current_election_path}\images\{list_cand_data[1]}')
+                except FileNotFoundError:
+                    pass
+        list_cand_data = ['', '', '', '', '']
 
-        # Input Fields
-        self.name_entry = ft.TextField(
-            hint_text="Enter the Candidate name",
-            width=450,
-            border=ft.InputBorder.OUTLINE,
-            border_radius=9,
-            border_color=ft.colors.SECONDARY,
-            autofocus=True,
-            capitalization=ft.TextCapitalization.WORDS,
-            prefix_icon=ft.icons.ACCOUNT_CIRCLE_ROUNDED,
-            on_change=self.disable_save_button,
-        )
-
-        self.qualification_dropdown = ft.Dropdown(
-            hint_text="Choose Candidate Qualification",
-            width=450,
-            border=ft.InputBorder.OUTLINE,
-            border_radius=9,
-            on_change=self.on_change_qualification,
-            prefix_icon=ft.icons.CATEGORY_ROUNDED,
-            border_color=ft.colors.SECONDARY,
-        )
-
-        self.category_dropdown = ft.Dropdown(
-            hint_text="Choose Candidate Category",
-            width=450,
-            on_change=self.disable_save_button,
-            border=ft.InputBorder.OUTLINE,
-            border_radius=9,
-            options=[
-                ft.dropdown.Option("Select Candidate Qualification"),
-            ],
-            prefix_icon=ft.icons.CATEGORY_ROUNDED,
-            border_color=ft.colors.SECONDARY,
-        )
-
-        self.upload_button = None
-        self.save_button = None
-        self.main_column = None
-        self.category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
-        self.container = ft.Container(
-            content=ft.Text("Upload Image"),
-            width=200,
-            height=250,
-            alignment=ft.alignment.center,
-            border=ft.border.all(0.5, ft.colors.SECONDARY),
-            border_radius=ft.border_radius.all(5),
-        )
-
-    def qualification_dropdown_values(self):
-        option_list1: list = []
-        temp_list: list = []
-        self.category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
-
-        if self.category_df.empty is not True:
-            for i in range(len(self.category_df)):
-                if self.category_df.loc[i].values[2] not in temp_list:
-                    option_list1.append(ft.dropdown.Option(self.category_df.loc[i].values[2]))
-                    temp_list.append(self.category_df.loc[i].values[2])
-        else:
-            option_list1.append(ft.dropdown.Option("No Qualification Records"))
-
-        self.qualification_dropdown.options = option_list1
-
-    def on_change_qualification(self, e):
-        option_list2: list = []
-        temp_list1: list = []
-
-        if self.qualification_dropdown.value is not None:
-            if self.qualification_dropdown.value != "No Qualification Records":
-                cur_val = self.category_df[self.category_df.qualification == self.qualification_dropdown.value].values
-                for j in range(len(cur_val)):
-                    if cur_val[j][1] not in temp_list1:
-                        option_list2.append(ft.dropdown.Option(cur_val[j][1]))
-                        temp_list1.append(cur_val[j][1])
-            else:
-                from ..functions.dialogs import message_dialogs
-                message_dialogs(self.page, "No Category Recodes")
-        else:
-            option_list2.append(ft.dropdown.Option("Select Candidate Qualification"))
-
-        self.category_dropdown.options = option_list2
-        self.category_dropdown.update()
-        self.disable_save_button(e)
-
-    def pick_files_result(self, e: ft.FilePickerResultEvent):
-        from ..functions.dialogs import error_dialogs
-        if self.candidate_selected_image_name is not False:
-            try:
-                os.replace(self.candidate_image_destination, self.candidate_selected_file_path)
-            except FileNotFoundError:
-                pass
-
-        source = string.ascii_letters + string.digits
-        rand = ''.join((random.choice(source)) for i in range(5))
-        self.candidate_selected_image_name = f'{rand}' + "".join(map(lambda f: f.name, e.files)) if e.files else False
-        self.candidate_selected_file_path = ", ".join(map(lambda f: f.path, e.files)) if e.files else False
-
-        if self.candidate_selected_image_name is not False:
-            self.candidate_image_destination = ee.current_election_path + rf'\images\{self.candidate_selected_image_name}'
-            try:
-                if not os.path.exists(self.candidate_image_destination):
-                    os.replace(self.candidate_selected_file_path, self.candidate_image_destination)
-                    self.container.content = ft.Text()
-                    self.container.update()
-                    self.container.image_src = self.candidate_image_destination
-                    self.container.image_fit = ft.ImageFit.COVER
-                    self.container.update()
-                else:
-                    error_dialogs(self.page, "001")
-            except OSError:
-                self.container.content = ft.Text("Upload Image")
-                self.container.update()
-                self.candidate_selected_image_name, self.candidate_selected_file_path = False, None
-                self.candidate_image_destination = ee.current_election_path + r'\images'
-                error_dialogs(self.page, "002")
-        else:
-            self.container.image_src = None
-            self.container.content = ft.Text("Upload canceled!")
-            self.container.update()
-
-    def change_values(self):
-        if self.candidate_selected_image_name is not False:
-            try:
-                os.replace(self.candidate_image_destination, self.candidate_selected_file_path)
-            except FileNotFoundError:
-                pass
-        self.candidate_selected_image_name, self.candidate_selected_file_path = False, None
-        self.candidate_image_destination = ee.current_election_path + r'\images'
-
-    def back_candidate_home(self):
-        from .candidate_home import candidate_home_page
-        if len(self.name_entry.value) != 0:
-            self.unsaved_dialogs()
-        elif self.candidate_selected_image_name is not False:
-            self.unsaved_dialogs()
-        else:
-            self.content_column.clean()
-            self.content_column.update()
-            candidate_home_page(self.page, self.content_column, self.title_text)
-
-    def disable_save_button(self, e):
-        if len(self.name_entry.value) != 0:
-            if self.qualification_dropdown.value is not None:
-                if self.qualification_dropdown.value != "No Category Records":
-                    if self.category_dropdown.value is not None:
-                        if self.category_dropdown.value != "Select Candidate Qualification":
-                            self.save_button.disabled = False
-                        else:
-                            self.save_button.disabled = True
-                    else:
-                        self.save_button.disabled = True
-                else:
-                    self.save_button.disabled = True
-            else:
-                self.save_button.disabled = True
-        else:
-            self.save_button.disabled = True
-        self.save_button.update()
-
-    def save_data(self, e):
-        self.save_button.disabled = True
-        self.page.splash = ft.ProgressBar()
-        self.page.update()
-        from ..authentication.files.write_files import add_candidate
-        from ..functions.snack_bar import snack_bar1
-        from ..functions.dialogs import loading_dialogs
-        from .candidate_home import candidate_home_page
-        sleep(0.1)
-        loading_dialogs(self.page, "Saving...", 1)
-        add_candidate([self.name_entry.value, self.category_dropdown.value, True, self.qualification_dropdown.value,
-                       self.candidate_selected_image_name, cc.teme_data[1]])
-        self.page.splash = None
-        self.page.update()
-        self.content_column.clean()
-        self.content_column.update()
-        candidate_home_page(self.page, self.content_column, self.title_text)
-        snack_bar1(self.page, "Successfully Added")
-
-    def build(self):
-        self.save_button = ft.ElevatedButton(
-            text="Save",
-            height=50,
-            width=150,
-            disabled=True,
-            on_click=self.save_data,
-        )
-
-        pick_files_dialog = ft.FilePicker(on_result=self.pick_files_result)
-        self.page.overlay.append(pick_files_dialog)
-        self.upload_button = ft.TextButton(
-            text="Upload Image",
-            icon=ft.icons.FILE_UPLOAD_ROUNDED,
-            on_click=lambda _: pick_files_dialog.pick_files(allow_multiple=True, file_type=ft.FilePickerFileType.IMAGE),
-        )
-
-        self.qualification_dropdown_values()
-
-        self.main_column = ft.Column(
+    alertdialog_candidate_add = ft.AlertDialog(
+        modal=True,
+        title=None,
+        content=ft.Column(
             [
                 ft.Row(
                     [
-                        ft.Column(
+                        ft.Row(
                             [
-
-                                ft.Row(
-                                    [
-                                        ft.Column(
-                                            [
-                                                self.container,
-                                                self.upload_button,
-                                            ],
-                                            alignment=ft.MainAxisAlignment.CENTER,
-                                            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                                        ),
-                                        ft.Column(
-                                            [
-                                                self.name_entry,
-                                                self.qualification_dropdown,
-                                                self.category_dropdown,
-                                            ],
-                                            spacing=40,
-                                        )
-                                    ],
-                                    height=300,
-                                    spacing=50,
-                                    alignment=ft.MainAxisAlignment.CENTER,
+                                ft.Text(
+                                    value="Add Candidate",
+                                    weight=ft.FontWeight.BOLD,
+                                    size=25,
+                                    font_family='Verdana',
                                 ),
-                                ft.Row(
-                                    [
-                                        self.save_button,
-                                    ],
-                                    width=720,
-                                    alignment=ft.MainAxisAlignment.END,
-                                ),
-                                ft.Row(
-                                    height=5,
-                                )
-
                             ],
+                            expand=True,
                         ),
-                    ],
-                    scroll=ft.ScrollMode.ADAPTIVE,
-                )
+                        ft.Row(
+                            [
+                                ft.IconButton(
+                                    icon=ft.icons.CLOSE_ROUNDED,
+                                    tooltip="Close",
+                                    on_click=on_close,
+                                )
+                            ]
+                        )
+                    ]
+                ),
+                build(page)
             ],
-            width=800,
-            spacing=30,
-        )
-
-        return self.main_column
-
-    def unsaved_dialogs(self):
-        def on_close(e):
-            alertdialog.open = False
-            self.page.update()
-
-        def discard(e):
-            from .candidate_home import candidate_home_page
-            alertdialog.open = False
-            self.page.update()
-            sleep(0.2)
-            self.content_column.clean()
-            self.content_column.update()
-            candidate_home_page(self.page, self.content_column, self.title_text)
-            self.change_values()
-
-        alertdialog = ft.AlertDialog(
-            modal=True,
-            content=ft.Text(
-                value="Your changes have not been saved",
-            ),
-            actions=[
-                ft.TextButton(
-                    text="Save",
-                    on_click=on_close,
-                ),
-                ft.TextButton(
-                    text="Discard",
-                    on_click=discard,
-                ),
-            ],
-            actions_alignment=ft.MainAxisAlignment.END,
-        )
-
-        self.page.dialog = alertdialog
-        alertdialog.open = True
-        self.page.update()
-
-
-def candidate_add_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
-    global obj
-    obj = CandidateAddPage(page, content_column, title_text)
-
-    def back_candidate_add_page(e):
-        obj.back_candidate_home()
-
-    def can(e):
-        from .category import category_add_page
-        category_add_page(page, content_column, title_text, False)
-
-    title_text.value = "Candidate > Add Candidate"
-
-    # Main Text
-    main_candidate_add_text = ft.Text(
-        value="Add Candidate",
-        size=35,
-        weight=ft.FontWeight.BOLD,
-        italic=True,
-    )
-
-    # Button
-    back_candidate_home_button = ft.IconButton(
-        icon=ft.icons.ARROW_BACK_ROUNDED,
-        tooltip="Back",
-        on_click=back_candidate_add_page,
-    )
-
-    question_button = ft.PopupMenuButton(
-        icon=ft.icons.QUESTION_ANSWER_ROUNDED,
-        tooltip="Help",
-        items=[
-            ft.PopupMenuItem(
-                icon=ft.icons.CATEGORY_ROUNDED,
-                text="Add a New category",
-                on_click=can
-            ),
-        ]
-    )
-
-    content_column.controls = [
-        ft.Row(
-            [
-                ft.Row(
-                    [
-                        back_candidate_home_button,
-                    ],
-                    alignment=ft.MainAxisAlignment.START,
-                ),
-                ft.Row(
-                    [
-                        main_candidate_add_text,
-                    ],
-                    expand=True,
-                    alignment=ft.MainAxisAlignment.CENTER,
-                ),
-                ft.Row(
-                    [
-                        question_button,
-                    ],
-                    alignment=ft.MainAxisAlignment.END,
-                ),
-            ]
-        ),
-        ft.Divider(
-            thickness=3,
-            height=5,
-        ),
-        ft.Column(
-            [
-                ft.Row(
-                    height=40,
-                ),
-                obj.build(),
-                ft.Row(
-                    height=10,
-                )
-            ],
-            expand=True,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             scroll=ft.ScrollMode.ADAPTIVE,
-        )
-    ]
+            height=360,
+            width=650,
+        ),
+        actions=[
+            ft.TextButton(
+                text="Add a new category",
+                # on_click=on_admin_permission,
+            ),
+            save_button,
+        ],
+        actions_alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+    )
 
+    page.dialog = alertdialog_candidate_add
+    alertdialog_candidate_add.open = True
     page.update()
 
 
-def change_check():
-    obj.qualification_dropdown_values()
+def build(page: ft.Page):
+    global list_cand_data
+
+    def disable_button(e):
+        global list_cand_data
+        on_qualification_change()
+        if len(name_entry.value) != 0:
+            list_cand_data[0] = name_entry.value
+            if qualification_dropdown.value is not None:
+                if qualification_dropdown.value != "No Records":
+                    list_cand_data[2] = qualification_dropdown.value
+                    if category_dropdown.value is not None:
+                        if category_dropdown.value != "Select Candidate Qualification":
+                            list_cand_data[3] = category_dropdown.value
+                            save_button.disabled = False
+                        else:
+                            save_button.disabled = True
+                    else:
+                        save_button.disabled = True
+                else:
+                    save_button.disabled = True
+            else:
+                save_button.disabled = True
+        else:
+            save_button.disabled = True
+        save_button.update()
+
+    def save(e):
+        global list_cand_data, alertdialog_candidate_add
+        alertdialog_candidate_add.open = False
+        page.splash = ft.ProgressBar()
+        page.update()
+        from ..service.files.write_files import add_candidate
+        from ..functions.snack_bar import snack_bar1
+        from ..functions.dialogs import loading_dialogs
+        sleep(0.2)
+        loading_dialogs(page, "Saving...", 0.8)
+        if len(list_cand_data[1]) == 0:
+            image_data = False
+        else:
+            image_data = list_cand_data[1]
+        add_candidate([name_entry.value, category_dropdown.value, True, qualification_dropdown.value, image_data,
+                       cc.teme_data[1]])
+        page.splash = None
+        page.update()
+        from .candidate_home import display_candidate
+        display_candidate(page)
+        snack_bar1(page, "Successfully Added")
+        list_cand_data = ['', '', '', '', '']
+
+    save_button.on_click = save
+
+    category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
+    candidate_image_destination = ee.current_election_path + r'\images'
+
+    def on_qualification_change():
+        temp_list3: list = []
+        if qualification_dropdown.value is not None:
+            if qualification_dropdown.value != "No Records":
+                for j in list(category_df[category_df.qualification == qualification_dropdown.value].values):
+                    temp_list3.append(ft.dropdown.Option(j[1]))
+            else:
+                temp_list3.append(ft.dropdown.Option("Select Candidate Qualification"))
+        else:
+            temp_list3.append(ft.dropdown.Option("Select Candidate Qualification"))
+
+        category_dropdown.options = temp_list3
+        page.update()
+
+    # Input Field
+    name_entry = ft.TextField(
+        hint_text="Enter the Candidate name",
+        width=350,
+        border=ft.InputBorder.OUTLINE,
+        border_radius=9,
+        text_style=ft.TextStyle(font_family='Verdana'),
+        autofocus=True,
+        capitalization=ft.TextCapitalization.WORDS,
+        prefix_icon=ft.icons.PERSON_ROUNDED,
+        on_change=disable_button,
+    )
+
+    qualification_dropdown = ft.Dropdown(
+        hint_text="Choose Candidate Qualification",
+        width=350,
+        border=ft.InputBorder.OUTLINE,
+        border_radius=9,
+        prefix_icon=ft.icons.CATEGORY_ROUNDED,
+        text_style=ft.TextStyle(font_family='Verdana'),
+        color=ft.colors.BLACK,
+        on_change=disable_button,
+    )
+
+    category_dropdown = ft.Dropdown(
+        hint_text="Choose Candidate Category",
+        width=350,
+        border=ft.InputBorder.OUTLINE,
+        border_radius=9,
+        text_style=ft.TextStyle(font_family='Verdana'),
+        color=ft.colors.BLACK,
+        options=[
+            ft.dropdown.Option("Select Candidate Qualification"),
+        ],
+        prefix_icon=ft.icons.CATEGORY_ROUNDED,
+        on_change=disable_button,
+    )
+
+    container = ft.Container(
+        content=ft.Text("Upload Image", font_family='Verdana'),
+        width=200,
+        height=250,
+        alignment=ft.alignment.center,
+        border=ft.border.all(1, ft.colors.BLACK),
+        border_radius=10,
+        image_fit=ft.ImageFit.COVER,
+    )
+
+    temp_list1: list = []
+    if not category_df.empty:
+        for i in list(category_df['qualification'].unique()):
+            temp_list1.append(ft.dropdown.Option(i))
+    else:
+        temp_list1.append(ft.dropdown.Option("Select Candidate Qualification"))
+
+    qualification_dropdown.options = temp_list1
+
+    temp_list2: list = []
+    if not category_df.empty:
+        for i in list(category_df['category'].unique()):
+            temp_list2.append(ft.dropdown.Option(i))
+    else:
+        temp_list2.append(ft.dropdown.Option("No Category Records"))
+
+    category_dropdown.options = temp_list2
+
+    if len(list_cand_data[0]) != 0:
+        name_entry.value = list_cand_data[0]
+
+    if len(list_cand_data[2]) != 0:
+        qualification_dropdown.value = list_cand_data[2]
+
+    if len(list_cand_data[3]) != 0:
+        category_dropdown.value = list_cand_data[3]
+
+    if len(list_cand_data[1]) != 0:
+        container.image_src = candidate_image_destination + rf'\{list_cand_data[1]}'
+        container.content = None
+
+    def pick_files_result(e: ft.FilePickerResultEvent):
+        global list_cand_data
+        from ..functions.dialogs import error_dialogs
+        candidate_image_destination1 = ee.current_election_path + r'\images'
+
+        if list_cand_data[1] is not False:
+            if len(list_cand_data[1]) != 0:
+                candidate_image_destination1 += rf'\{list_cand_data[1]}'
+                try:
+                    os.remove(candidate_image_destination1)
+                except FileNotFoundError:
+                    pass
+
+        source = string.ascii_letters + string.digits
+        rand = ''.join((random.choice(source)) for _ in range(5))
+        candidate_selected_image_name = f'{rand}' + "".join(map(lambda f: f.name, e.files)) if e.files else False
+        candidate_selected_file_path = ", ".join(map(lambda f: f.path, e.files)) if e.files else False
+        list_cand_data[1] = candidate_selected_image_name
+        if candidate_selected_image_name is not False:
+            candidate_image_destination1 = ee.current_election_path + r'\images' + rf'\{candidate_selected_image_name}'
+            try:
+                if not os.path.exists(candidate_image_destination1):
+                    for jpgfile in glob.iglob(os.path.join(candidate_selected_file_path, candidate_selected_file_path)):
+                        shutil.copy(candidate_selected_file_path, candidate_image_destination1)
+                    container.content = ft.Text()
+                    container.update()
+                    container.image_src = candidate_image_destination1
+                    container.update()
+                else:
+                    error_dialogs(page, "001")
+            except OSError:
+                container.content = ft.Text("Upload Image", font_family='Verdana', )
+                container.update()
+                list_cand_data[1] = ''
+                error_dialogs(page, "002")
+        else:
+            container.image_src = None
+            container.content = ft.Text("Upload canceled!", font_family='Verdana', )
+            container.update()
+
+    pick_files_dialog = ft.FilePicker(on_result=pick_files_result)
+    page.overlay.append(pick_files_dialog)
+
+    upload_button = ft.TextButton(
+        text="Upload Image",
+        icon=ft.icons.FILE_UPLOAD_ROUNDED,
+        on_click=lambda _: pick_files_dialog.pick_files(allow_multiple=True, file_type=ft.FilePickerFileType.IMAGE),
+    )
+
+    main_column = ft.Row(
+        [
+            ft.Column(
+                [
+
+                    ft.Row(
+                        [
+                            ft.Column(
+                                [
+                                    container,
+                                    upload_button,
+                                ],
+                                alignment=ft.MainAxisAlignment.CENTER,
+                                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                            ),
+                            ft.Column(
+                                [
+                                    name_entry,
+                                    qualification_dropdown,
+                                    category_dropdown,
+                                ],
+                                spacing=40,
+                            )
+                        ],
+                        height=300,
+                        spacing=50,
+                        alignment=ft.MainAxisAlignment.CENTER,
+                    ),
+                ],
+            ),
+        ],
+        scroll=ft.ScrollMode.ADAPTIVE,
+    )
+
+    return main_column

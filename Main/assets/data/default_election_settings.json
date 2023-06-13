@@ -1,11 +1,8 @@
 {
   "name": "Election-Settings",
-  "version": "1.01",
+  "version": "2.01",
   "election-name": null,
-  "registration": false,
-  "registration_from": null,
-  "registration_to": null,
-  "vote": false,
+  "vote_option": false,
   "completed": false,
   "code": null,
   "final_nomination":false,

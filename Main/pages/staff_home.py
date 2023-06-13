@@ -1,187 +1,118 @@
 import flet as ft
 import pandas as pd
 
-from Main.authentication.encrypter.encryption import decrypter
-from Main.authentication.scr.check_installation import path
-from Main.authentication.scr.loc_file_scr import file_path
-import Main.authentication.user.login_enc as cc
+from ..service.enc.encryption import decrypter
+from ..service.scr.check_installation import path
+from ..service.scr.loc_file_scr import file_path
+
+column_1 = ft.Column()
+main_column1 = None
+search_entry = ft.TextField(
+    hint_text="Search",
+    hint_style=ft.TextStyle(color='f2f9f9', font_family='Verdana'),
+    width=450,
+    height=55,
+    border=ft.InputBorder.OUTLINE,
+    border_radius=50,
+    disabled=True,
+    focused_border_color='#f2f9f9',
+    border_color='#ddeff0',
+    prefix_style=ft.TextStyle(color=ft.colors.WHITE),
+    text_style=ft.TextStyle(font_family='Verdana'),
+    prefix_icon=ft.icons.SEARCH_ROUNDED,
+)
 
 
-def staff_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
-    title_text.value = "Staff"
+def staff_home_page(page: ft.Page, main_column: ft.Column):
+    global search_entry, column_1, main_column1
 
-    # Functions
-    def add_staff_page_fun(e):
-        from Main.pages.staff_add import staff_add_page
-        content_column.clean()
-        content_column.update()
-        staff_add_page(page, content_column, title_text)
+    main_column1 = main_column
 
-    def page_resize(e):
-        staff_data_table.width = page.window_width - 150
+    def search(e):
+        search_display_staff(page)
+
+    search_entry.on_change = search
+    search_entry.value = None
+
+    main_column.controls = [
+        ft.Container(
+            margin=ft.margin.only(left=5, right=5),
+            alignment=ft.alignment.center,
+            content=search_entry,
+        ),
+        ft.Container(
+            padding=5,
+            content=column_1,
+            expand=True,
+        ),
+    ]
+    page.update()
+    page.splash = None
+    display_staff(page)
+
+
+def search_display_staff(page: ft.Page):
+    # file
+    staff_df = pd.read_json(path + file_path['admin_data'], orient='table')
+    name_enc = list(staff_df['name'].values)
+
+    row_staff_data_list: list = []
+    if len(search_entry.value) != 0:
+        for i in name_enc:
+            if search_entry.value.lower() in decrypter(i).lower():
+                row_staff_data_list.append(ViewStaffRecord(page, main_column1, name_enc.index(i)))
+        column_1.controls = row_staff_data_list
         page.update()
+    else:
+        display_staff(page)
 
-    # Text & Button
-    main_title_text = ft.Text(
-        value="Records",
-        size=35,
-        weight=ft.FontWeight.BOLD,
-        italic=True,
-    )
 
-    add_staff_button = ft.FloatingActionButton(
-        icon=ft.icons.PERSON_ADD_ALT_1_ROUNDED,
-        tooltip="Add new Staff",
-        on_click=add_staff_page_fun,
-    )
-
+def display_staff(page):
+    global column_1
     # file
     staff_df = pd.read_json(path + file_path['admin_data'], orient='table')
 
-    # Table
-    staff_data_table = ft.DataTable(
-        column_spacing=50,
-        width=page.window_width - 150,
-        columns=[
-            ft.DataColumn(ft.Text("#")),
-            ft.DataColumn(ft.Text("Name")),
-            ft.DataColumn(ft.Text("Mail ID")),
-            ft.DataColumn(ft.Text("Password")),
-            ft.DataColumn(ft.Text("Permission")),
-            ft.DataColumn(ft.Text(" "))
-        ],
-    )
-
-    staff_data_row: list = []
-    if len(staff_df) != 0:
-        for i in range(len(staff_df)):
-            if staff_df.loc[i].values[4] == True:
-                permission = ft.Icon(
-                    name=ft.icons.DONE_ALL_ROUNDED,
-                    color=ft.colors.GREEN_700,
-                    size=30,
-                )
-            else:
-                permission = ft.Icon(
-                    name=ft.icons.CLOSE_ROUNDED,
-                    color=ft.colors.ERROR,
-                    size=30,
-                )
-            if cc.teme_data[0] != 1:
-                if i == 0:
-                    password_text = ft.Text(f'*' * len(decrypter(staff_df.loc[i].values[3])))
-                else:
-                    password_text = ft.Text(f'{decrypter(staff_df.loc[i].values[3])}')
-            else:
-                password_text = ft.Text(f'{decrypter(staff_df.loc[i].values[3])}')
-
-            staff_data_row.append(
-                ft.DataRow(
-                    cells=[
-                        ft.DataCell(ft.Text(value=f"{i + 1}")),
-                        ft.DataCell(ft.Text(f'{decrypter(staff_df.loc[i].values[1])}')),
-                        ft.DataCell(ft.Text(f'{decrypter(staff_df.loc[i].values[2])}')),
-                        ft.DataCell(password_text),
-                        ft.DataCell(permission),
-                        ft.DataCell(ViewStaffRecord(page, content_column, i, title_text))
-                    ],
-                )
-            )
-
-    staff_data_table.rows = staff_data_row
-    data_list1: list = [
-        ft.Row(
-            [
-                staff_data_table,
-            ],
-            scroll=ft.ScrollMode.ADAPTIVE,
-        )
-    ]
+    row_staff_data_list: list = []
 
     if len(staff_df) == 0:
-        data_list1.append(
+        row_staff_data_list.append(
             ft.Row(
                 [
                     ft.Text(
-                        value="No Records",
-                        size=20,
+                        value="No record found",
+                        size=25,
                     )
                 ],
-                height=page.window_height - 400,
-                width=page.window_width - 100,
-                vertical_alignment=ft.CrossAxisAlignment.CENTER,
                 alignment=ft.MainAxisAlignment.CENTER,
             )
         )
+        column_1.alignment = ft.MainAxisAlignment.CENTER
+    else:
+        for i in range(len(staff_df.index)):
+            row_staff_data_list.append(ViewStaffRecord(page, main_column1, i))
+        column_1.scroll = ft.ScrollMode.ADAPTIVE
+        search_entry.disabled = False
+        column_1.expand = True
 
-    row_1 = ft.Column(
-        data_list1
-    )
-    staff_home_column_data = ft.Column(
-        expand=True,
-        controls=[row_1],
-        scroll=ft.ScrollMode.ADAPTIVE
-    )
-
-    content_column.controls = [
-        ft.Row(
-            [
-                ft.Row(
-                    [
-                        main_title_text,
-                    ],
-                    alignment=ft.MainAxisAlignment.CENTER,
-                    expand=True,
-                ),
-                ft.Row(
-                    [
-                        add_staff_button,
-                    ],
-                    alignment=ft.MainAxisAlignment.END,
-                ),
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-        ),
-        ft.Divider(
-            height=5,
-            thickness=3,
-        ),
-        staff_home_column_data,
-    ]
-
-    page.on_resize = page_resize
+    column_1.controls = row_staff_data_list
     page.update()
 
 
 class ViewStaffRecord(ft.UserControl):
 
-    def __init__(self, page, column, index_val, title):
+    def __init__(self, page, column, index_val):
         super().__init__()
         self.page = page
         self.column = column
         self.index_val = index_val
-        self.title_text = title
-        self.ad_df = pd.read_json(path + file_path['admin_data'], orient='table')
+        self.staff_df = pd.read_json(path + file_path['admin_data'], orient='table')
 
     def edit(self, e):
-        import Main.authentication.user.login_enc as cc
-        from Main.pages.staff_edit import staff_edit_page
-        from Main.functions.dialogs import message_dialogs
-        if self.index_val == 0:
-            if cc.teme_data[0] == 1:
-                self.column.clean()
-                self.column.update()
-                staff_edit_page(self.page, self.column, self.title_text, self.index_val, False)
-            else:
-                message_dialogs(self.page, "Edit this record?")
-        else:
-            self.column.clean()
-            self.column.update()
-            staff_edit_page(self.page, self.column, self.title_text, self.index_val, False)
+        pass
 
     def profile(self, e):
         from Main.pages.staff_profile import staff_profile_page
-        staff_profile_page(self.page, self.column, self.title_text, self.ad_df.loc[self.index_val].values[0])
+        staff_profile_page(self.page, self.staff_df.loc[self.index_val].values[0])
 
     def delete(self, e):
         from Main.functions.dialogs import message_dialogs
@@ -189,28 +120,50 @@ class ViewStaffRecord(ft.UserControl):
         if self.index_val == 0:
             message_dialogs(self.page, "Delete this record?")
         else:
-            delete_staff_dialogs(self.page, self.column, self.ad_df.loc[self.index_val].values[0], self.title_text,
-                                 False)
+            delete_staff_dialogs(self.page, self.staff_df.loc[self.index_val].values[0], False)
 
     def build(self):
-        return ft.PopupMenuButton(
-            tooltip="Options",
-            icon=ft.icons.MORE_VERT_ROUNDED,
-            items=[
-                ft.PopupMenuItem(
-                    text="View Profile",
-                    icon=ft.icons.STREETVIEW_ROUNDED,
-                    on_click=self.profile
-                ),
-                ft.PopupMenuItem(
-                    text="Edit",
-                    icon=ft.icons.EDIT_ROUNDED,
-                    on_click=self.edit
-                ),
-                ft.PopupMenuItem(
-                    text="Delete",
-                    icon=ft.icons.DELETE_ROUNDED,
-                    on_click=self.delete
-                ),
-            ],
+        self_icon = ft.CircleAvatar(
+            content=ft.Icon(
+                name=ft.icons.ACCOUNT_CIRCLE,
+            ),
         )
+
+        single_box_row = ft.Card(
+            ft.Container(
+                ft.ListTile(
+                    leading=self_icon,
+                    title=ft.Text(
+                        value=f"{decrypter(self.staff_df.loc[self.index_val].values[1])}",
+                        font_family='Verdana',
+                    ),
+                    subtitle=ft.Text(
+                        value=f"{decrypter(self.staff_df.loc[self.index_val].values[2])}",
+                        font_family='Verdana',
+                    ),
+                    trailing=ft.PopupMenuButton(
+                        icon=ft.icons.MORE_VERT_ROUNDED,
+                        items=[
+                            ft.PopupMenuItem(
+                                text="Edit",
+                                icon=ft.icons.EDIT_ROUNDED,
+                                on_click=self.edit
+                            ),
+                            ft.PopupMenuItem(
+                                text="Delete",
+                                icon=ft.icons.DELETE_ROUNDED,
+                                on_click=self.delete
+                            ),
+                        ],
+                    ),
+                    on_click=self.profile,
+                ),
+                padding=ft.padding.symmetric(vertical=3.5),
+                blur=ft.Blur(20, 20, ft.BlurTileMode.MIRROR),
+                border_radius=10,
+            ),
+            elevation=0,
+            color=ft.colors.with_opacity(0.4, '#44CCCCCC')
+        )
+
+        return single_box_row

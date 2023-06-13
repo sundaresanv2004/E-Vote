@@ -1,9 +1,10 @@
 import pandas as pd
+from secrets import compare_digest
 
-from Main.authentication.encrypter.encryption import decrypter
-from Main.authentication.files.write_files import login_details_update
-from Main.authentication.scr.check_installation import path
-from Main.authentication.scr.loc_file_scr import file_path
+from ..enc.encryption import decrypter
+from ..files.write_files import login_details_update
+from ..scr.check_installation import path
+from ..scr.loc_file_scr import file_path
 
 admin_login_df = pd.read_json(path + file_path['admin_data'], orient='table')
 admin_data_df1 = admin_login_df.loc[0].values
@@ -17,8 +18,8 @@ def login_checker(entry1: str, entry2: str):
     staff_df = pd.read_json(path + file_path["admin_data"], orient='table')
 
     for i in range(len(staff_df)):
-        if decrypter(staff_df.loc[i].values[1]) == entry1:
-            if decrypter(staff_df.loc[i].values[3]) == entry2:
+        if compare_digest(decrypter(staff_df.loc[i].values[1]), entry1):
+            if compare_digest(decrypter(staff_df.loc[i].values[3]), entry2):
                 teme_data = [staff_df.loc[i].values[0],
                              decrypter(staff_df.loc[i].values[1]),
                              staff_df.loc[i].values[4],

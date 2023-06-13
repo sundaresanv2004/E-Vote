@@ -1,9 +1,9 @@
 import pandas as pd
 
-from Main.authentication.files.write_files import new_election_creation
-from Main.authentication.scr.check_installation import path
-from Main.authentication.scr.loc_file_scr import file_path
-from Main.functions.date_time import present_year
+from .loc_file_scr import file_path
+from ..files.write_files import new_election_creation
+from ..scr.check_installation import path
+from ...functions.date_time import present_year
 
 election_data = pd.read_csv(path + file_path["election_data"])
 current_election_path = election_data.values[0][1]

@@ -1,102 +1,131 @@
 import flet as ft
 
-import Main.functions.theme as tt
+from ..functions.dialogs import message_dialogs
+from ..service.scr.loc_file_scr import all_done_message
 
 
-def all_done_page(page: ft.Page, menu_container: ft.Container):
-    # Functions
-    def submit_on_clicked(e):
-        from Main.functions.dialogs import message_dialogs
-        message_dialogs(page, 'Restart Required')
+def all_done_page(page: ft.Page, content_column: ft.Column):
+    def on_hover_color(e):
+        e.control.bgcolor = "#0369a1" if e.data == "true" else "#0ea5e9"
+        e.control.update()
 
     def on_change_button(e):
         if checkbox_terms.value is True:
-            submit_button.disabled = False
+            button_container.disabled = False
+            button_container.tooltip = None
+            button_container.bgcolor = "#0ea5e9"
+            button_container.opacity = 1
+            button_container.on_hover = on_hover_color
         else:
-            submit_button.disabled = True
-        submit_button.update()
+            button_container.disabled = True
+            button_container.tooltip = 'Disabled'
+            button_container.bgcolor = "#bae6fd"
+            button_container.opacity = 0.5
+            button_container.on_hover = None
+        button_container.update()
 
-    # Buttons
-    # submit button
-    submit_button = ft.ElevatedButton(
-        text="Done",
+    button_container = ft.Container(
+        width=300,
         height=50,
-        width=120,
+        border_radius=10,
+        bgcolor="#bae6fd",
+        opacity=0.5,
         disabled=True,
-        on_click=submit_on_clicked,
+        tooltip='Disabled',
+        content=ft.Text(
+            value="Restart",
+            size=20,
+            font_family='Verdana',
+            weight=ft.FontWeight.W_400,
+            color=ft.colors.WHITE,
+        ),
+        alignment=ft.alignment.center,
+        animate=ft.animation.Animation(100, ft.AnimationCurve.DECELERATE),
+        on_click=lambda e: message_dialogs(page, 'Restart Required'),
     )
 
     # Input Filed
     checkbox_terms = ft.Checkbox(
-        label="I have read and understand the above information",
+        label="I have read and understand the above information.",
         value=False,
         on_change=on_change_button,
     )
 
     # alignment and data
-    all_done_data_column = ft.Column(
-        [
-            ft.Row(
-                [
-                    ft.Row(
-                        [
-                            ft.Icon(
-                                name=ft.icons.DONE_ROUNDED,
-                                size=40,
-                            ),
-                            ft.Text(
-                                value="All Done",
-                                size=40,
-                                weight=ft.FontWeight.BOLD,
-                            ),
-                        ],
-                        expand=True,
-                        alignment=ft.MainAxisAlignment.CENTER,
-                    ),
-                    ft.Row(
-                        [
-                            tt.ThemeIcon(page),
-                        ],
-                    ),
-                ],
-                alignment=ft.MainAxisAlignment.CENTER,
-            ),
-            ft.Column(
-                height=10,
-            ),
-            ft.Column(
-                [
-                    ft.Text(
-                        "aa\naaaa\naaaa\naaaaa\naaaaa\naaaaa\naaaa\naa\naaaa\naaaaa"
-                    )
-                ],
-            ),
-            ft.Column(
-                height=20,
-            ),
-            ft.Row(
-                [
-                    checkbox_terms,
-                ],
-                width=680,
-            ),
-            ft.Row(
-                [
-                    submit_button,
-                ],
-                width=650,
-                alignment=ft.MainAxisAlignment.END,
-            ),
-            ft.Column(
-                height=40,
-            ),
-        ],
-        expand=True,
-        alignment=ft.MainAxisAlignment.START,
-        scroll=ft.ScrollMode.ADAPTIVE,
-    )
+    content_column.controls = [
+        ft.Column(
+            [
+                ft.Row(
+                    [
+                        ft.Icon(
+                            name=ft.icons.DONE_ROUNDED,
+                            size=40,
+                        ),
+                        ft.Text(
+                            value="All Done",
+                            size=40,
+                            weight=ft.FontWeight.BOLD,
+                            font_family='Verdana',
+                        ),
+                    ],
+                    width=450,
+                    height=70,
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                    key='top'
+                ),
+                ft.Column(
+                    [
+                        ft.Column(
+                            [
+                                ft.Markdown(
+                                    selectable=False,
+                                    value=all_done_message,
+                                    code_theme="atom-one-dark",
+                                    code_style=ft.TextStyle(font_family="Verdana"),
+                                )
+                            ],
+                            width=400,
+                        ),
+                        ft.Column(
+                            [
+                                checkbox_terms,
+                                ft.Row(
+                                    [
+                                        button_container
+                                    ],
+                                    width=450,
+                                    alignment=ft.MainAxisAlignment.CENTER
+                                )
+                            ],
+                            width=400,
+                            spacing=30,
+                            alignment=ft.MainAxisAlignment.CENTER
+                        ),
+                    ],
+                    width=450,
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                ),
+                ft.Column(height=20),
+                ft.Row(
+                    [
+                        ft.IconButton(
+                            icon=ft.icons.ARROW_CIRCLE_UP_ROUNDED,
+                            tooltip='Back to top',
+                            icon_size=30,
+                            icon_color=ft.colors.BLACK,
+                            on_click=lambda _: content_column.scroll_to(key="top", duration=1000)
+                        ),
+                        ft.Row(width=1)
+                    ],
+                    width=450,
+                    alignment=ft.MainAxisAlignment.END
+                )
+            ],
+            expand=True,
+            scroll=ft.ScrollMode.ADAPTIVE,
+        )
+    ]
 
-    menu_container.content = all_done_data_column
-    menu_container.padding = 10
-    menu_container.disabled = False
-    menu_container.update()
+    content_column.expand = True
+    page.update()

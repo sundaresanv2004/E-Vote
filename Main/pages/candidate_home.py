@@ -1,242 +1,194 @@
 import flet as ft
 import pandas as pd
 
-from ..authentication.scr.loc_file_scr import file_data
-import Main.authentication.scr.election_scr as ee
-from ..functions.dialogs import message_dialogs
+from ..service.scr.loc_file_scr import file_data
+import Main.service.scr.election_scr as ee
+
+column_1 = ft.Column()
+main_column1 = None
+search_entry = ft.TextField(
+    hint_text="Search",
+    hint_style=ft.TextStyle(color='f2f9f9', font_family='Verdana'),
+    width=450,
+    border=ft.InputBorder.OUTLINE,
+    height=55,
+    disabled=True,
+    border_radius=50,
+    focused_border_color='#f2f9f9',
+    border_color='#ddeff0',
+    prefix_style=ft.TextStyle(color=ft.colors.WHITE),
+    text_style=ft.TextStyle(font_family='Verdana'),
+    prefix_icon=ft.icons.SEARCH_ROUNDED,
+)
 
 
-def candidate_home_page(page: ft.Page, content_column: ft.Column, title_text: ft.Text):
-    title_text.value = "Candidate"
+def candidate_home_page(page: ft.Page, main_column: ft.Column):
+    global search_entry, column_1, main_column1
 
-    # Functions
-    def page_resize(e):
-        candidate_data_table.width = page.window_width - 150
+    main_column1 = main_column
+
+    def search(e):
+        search_display_candidate(page)
+
+    search_entry.on_change = search
+    search_entry.value = None
+
+    main_column.controls = [
+        ft.Container(
+            margin=ft.margin.only(left=5, right=5),
+            content=search_entry,
+            alignment=ft.alignment.center,
+        ),
+        ft.Container(
+            padding=5,
+            content=column_1,
+            expand=True,
+        ),
+    ]
+    page.update()
+    page.splash = None
+    display_candidate(page)
+
+
+def search_display_candidate(page: ft.Page):
+    # file
+    candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+    name_enc = list(candidate_data_df['candidate_name'].values)
+    cat_enc = list(candidate_data_df['category'].unique())
+
+    row_can_data_list: list = []
+    data_in: list = []
+    if len(search_entry.value) != 0:
+        for i in name_enc:
+            if search_entry.value.lower() in i.lower():
+                if name_enc.index(i) not in data_in:
+                    row_can_data_list.append(ViewStaffRecord(page, main_column1, name_enc.index(i)))
+                    data_in.append(name_enc.index(i))
+
+        for j in cat_enc:
+            if search_entry.value.lower() in j.lower():
+                for k in list(candidate_data_df[candidate_data_df.category == j].index.values):
+                    if k not in data_in:
+                        row_can_data_list.append(ViewStaffRecord(page, main_column1, k))
+                        data_in.append(k)
+
+        column_1.controls = row_can_data_list
         page.update()
+    else:
+        display_candidate(page)
 
-    def add_candidate_page_fun(e):
-        ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
-        if not ele_ser.loc['lock_data'].values[0]:
-            from .candidate_add import candidate_add_page
-            content_column.clean()
-            content_column.update()
-            candidate_add_page(page, content_column, title_text)
-        else:
-            message_dialogs(page, "Data is Locked")
 
-    # Text & Buttons
-    main_title_text = ft.Text(
-        value="Records",
-        size=35,
-        weight=ft.FontWeight.BOLD,
-        italic=True,
-    )
-
-    add_candidate_button = ft.FloatingActionButton(
-        icon=ft.icons.PERSON_ADD_ALT_1_ROUNDED,
-        tooltip="Add new Candidate",
-        on_click=add_candidate_page_fun,
-    )
-
-    # Read candidate data
+def display_candidate(page):
+    global column_1
+    # file
     candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
 
-    # Table
-    candidate_data_table = ft.DataTable(
-        column_spacing=10,
-        width=page.window_width - 150,
-        columns=[
-            ft.DataColumn(ft.Text(value="#")),
-            ft.DataColumn(ft.Text(value="Name")),
-            ft.DataColumn(ft.Text(value="Category")),
-            ft.DataColumn(ft.Text(value="Qualification")),
-            ft.DataColumn(ft.Text(value="Verification")),
-            ft.DataColumn(ft.Text(value="Added on")),
-            ft.DataColumn(ft.Text(value="Image")),
-            ft.DataColumn(ft.Text(value=" "))
-        ],
-    )
-
-    candidate_data_row: list = []
-    if len(candidate_data_df) != 0:
-        for i in range(len(candidate_data_df)):
-            if candidate_data_df.loc[i].values[3] == True:
-                verification_icon = ft.Icon(
-                    name=ft.icons.DONE_ALL_ROUNDED,
-                    color=ft.colors.GREEN_700,
-                    size=30,
-                )
-            else:
-                verification_icon = ft.Icon(
-                    name=ft.icons.CLOSE_ROUNDED,
-                    color=ft.colors.ERROR,
-                    size=30,
-                )
-            if candidate_data_df.loc[i].values[5] != False:
-                image_icon = ft.Icon(
-                    name=ft.icons.DONE_ROUNDED,
-                    color=ft.colors.GREEN_700,
-                    size=30,
-                )
-            else:
-                image_icon = ft.Icon(
-                    name=ft.icons.CLOSE_ROUNDED,
-                    color=ft.colors.ERROR,
-                    size=30,
-                )
-            candidate_data_row.append(
-                ft.DataRow(
-                    cells=[
-                        ft.DataCell(ft.Text(value=f'{i + 1}')),
-                        ft.DataCell(ft.Text(value=f'{candidate_data_df.loc[i].values[1]}')),
-                        ft.DataCell(ft.Text(value=f'{candidate_data_df.loc[i].values[2]}')),
-                        ft.DataCell(ft.Text(value=f'{candidate_data_df.loc[i].values[4]}')),
-                        ft.DataCell(verification_icon),
-                        ft.DataCell(ft.Text(value=f'{candidate_data_df.loc[i].values[6]}')),
-                        ft.DataCell(image_icon),
-                        ft.DataCell(ViewCandidateRecord(page, content_column, i, title_text))
-                    ],
-                )
-            )
-
-    candidate_data_table.rows = candidate_data_row
-    data_list1: list = [
-        ft.Row(
-            [
-                candidate_data_table,
-            ],
-            scroll=ft.ScrollMode.ADAPTIVE,
-        )
-    ]
+    row_can_data_list = []
 
     if len(candidate_data_df) == 0:
-        data_list1.append(
+        row_can_data_list.append(
             ft.Row(
                 [
                     ft.Text(
-                        value="No Records",
-                        size=20,
+                        value="No record found",
+                        size=25,
                     )
                 ],
-                height=page.window_height - 400,
-                width=page.window_width - 100,
-                vertical_alignment=ft.CrossAxisAlignment.CENTER,
                 alignment=ft.MainAxisAlignment.CENTER,
             )
         )
+        column_1.alignment = ft.MainAxisAlignment.CENTER
+    else:
+        for i in range(len(candidate_data_df.index)):
+            row_can_data_list.append(ViewStaffRecord(page, main_column1, i))
+        column_1.expand = True
+        search_entry.disabled = False
+        column_1.scroll = ft.ScrollMode.ADAPTIVE
 
-    row_1 = ft.Column(
-        data_list1
-    )
-    candidate_home_column_data = ft.Column(
-        expand=True,
-        controls=[row_1],
-        scroll=ft.ScrollMode.ADAPTIVE
-    )
-
-    content_column.controls = [
-        ft.Row(
-            [
-                ft.Row(
-                    [
-                        main_title_text,
-                    ],
-                    alignment=ft.MainAxisAlignment.CENTER,
-                    expand=True,
-                ),
-                ft.Row(
-                    [
-                        add_candidate_button,
-                    ],
-                    alignment=ft.MainAxisAlignment.END,
-                ),
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-        ),
-        ft.Divider(
-            height=5,
-            thickness=3,
-        ),
-        candidate_home_column_data,
-    ]
-
-    page.on_resize = page_resize
+    column_1.controls = row_can_data_list
     page.update()
 
 
-class ViewCandidateRecord(ft.UserControl):
+class ViewStaffRecord(ft.UserControl):
 
-    def __init__(self, page: ft.Page, content_column: ft.Column, index_val: int, title_text: ft.Text):
+    def __init__(self, page, column, index_val):
         super().__init__()
-        self.option1 = None
         self.page = page
-        self.content_column = content_column
         self.index_val = index_val
-        self.title_text = title_text
+        self.column = column
         self.candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}',
                                               orient='table')
         self.ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+        self.candidate_image_destination = ee.current_election_path + r'\images'
 
     def edit(self, e):
-        if not self.ele_ser.loc['lock_data'].values[0]:
-            from .candidate_edit import candidate_edit_page
-            self.content_column.clean()
-            self.content_column.update()
-            candidate_edit_page(self.page, self.content_column, self.title_text, self.index_val)
-        else:
-            message_dialogs(self.page, "Data is Locked")
-
-    def delete(self, e):
-        if not self.ele_ser.loc['lock_data'].values[0]:
-            from .candidate_delete_approve import delete_candidate_dialogs
-            delete_candidate_dialogs(self.page, self.content_column, self.index_val, self.title_text, False)
-        else:
-            message_dialogs(self.page, "Data is Locked")
+        pass
 
     def profile(self, e):
-        from .candidate_profile import candidate_profile_page
-        candidate_profile_page(self.page, self.content_column, self.title_text, self.index_val)
+        pass
+        # from .candidate_profile import candidate_profile_page
+        # candidate_profile_page(self.page, self.index_val)
 
-    def verification(self, e):
-        if not self.ele_ser.loc['lock_data'].values[0]:
-            from .candidate_delete_approve import approve_dialogs
-            approve_dialogs(self.page, self.content_column, self.title_text, self.index_val,
-                            self.candidate_data_df.loc[self.index_val].values[3], False)
-        else:
-            message_dialogs(self.page, "Data is Locked")
+    def delete(self, e):
+        pass
+        # if not self.ele_ser.loc['lock_data'].values[0]:
+        #     from .candidate_delete_approve import delete_candidate_dialogs
+        #     delete_candidate_dialogs(self.page, self.index_val, False)
+        # else:
+        #     message_dialogs(self.page, "Data is Locked")
 
     def build(self):
-        if self.candidate_data_df.loc[self.index_val].values[3]:
-            data = "Validated"
+        if not self.candidate_data_df.loc[self.index_val].values[5]:
+            self_icon = ft.CircleAvatar(
+                content=ft.Icon(
+                    name=ft.icons.ACCOUNT_CIRCLE,
+                ),
+            )
         else:
-            data = "Validate"
-        self.option1 = ft.PopupMenuItem(
-            text=data,
-            on_click=self.verification,
-            checked=self.candidate_data_df.loc[self.index_val].values[3],
-        )
-        options = ft.PopupMenuButton(
-            icon=ft.icons.MORE_VERT_ROUNDED,
-            tooltip="Options",
-            items=[
-                ft.PopupMenuItem(
-                    text="View Profile",
-                    icon=ft.icons.STREETVIEW_ROUNDED,
-                    on_click=self.profile
+            self_icon = ft.Container(
+                width=50,
+                height=50,
+                alignment=ft.alignment.center,
+                border_radius=50,
+                image_src=self.candidate_image_destination + rf'/{self.candidate_data_df.loc[self.index_val].values[5]}',
+                image_fit=ft.ImageFit.COVER
+            )
+
+        single_box_row = ft.Card(
+            ft.Container(
+                ft.ListTile(
+                    leading=self_icon,
+                    title=ft.Text(
+                        value=f"{self.candidate_data_df.loc[self.index_val].values[1]}",
+                        font_family='Verdana',
+                    ),
+                    subtitle=ft.Text(
+                        value=f"{self.candidate_data_df.loc[self.index_val].values[2]}",
+                        font_family='Verdana',
+                    ),
+                    trailing=ft.PopupMenuButton(
+                        icon=ft.icons.MORE_VERT_ROUNDED,
+                        items=[
+                            ft.PopupMenuItem(
+                                text="Edit",
+                                icon=ft.icons.EDIT_ROUNDED,
+                                on_click=self.edit
+                            ),
+                            ft.PopupMenuItem(
+                                text="Delete",
+                                icon=ft.icons.DELETE_ROUNDED,
+                                on_click=self.delete
+                            ),
+                        ],
+                    ),
+                    on_click=self.profile,
                 ),
-                ft.PopupMenuItem(
-                    text="Edit",
-                    icon=ft.icons.EDIT_ROUNDED,
-                    on_click=self.edit
-                ),
-                ft.PopupMenuItem(
-                    text="Delete",
-                    icon=ft.icons.DELETE_ROUNDED,
-                    on_click=self.delete
-                ),
-                ft.PopupMenuItem(),
-                self.option1
-            ],
+                padding=ft.padding.symmetric(vertical=3.5),
+                blur=ft.Blur(20, 20, ft.BlurTileMode.MIRROR),
+                border_radius=10,
+            ),
+            elevation=0,
+            color=ft.colors.with_opacity(0.4, '#44CCCCCC')
         )
 
-        return options
+        return single_box_row

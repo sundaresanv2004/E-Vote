@@ -1,230 +1,131 @@
 import flet as ft
 import pandas as pd
 
-from ..authentication.scr.check_installation import path
-from ..authentication.scr.loc_file_scr import file_path, file_data
 from ..functions.date_time import current_time
-import Main.authentication.scr.election_scr as ee
-from ..functions.dialogs import message_dialogs
+from ..service.scr.check_installation import path
+from ..service.scr.loc_file_scr import file_path, file_data
+import Main.service.scr.election_scr as ee
 
 
-def home_page(page: ft.Page, content_column: ft.Column, rail_name: ft.NavigationRail, title_text: ft.Text):
-    import Main.authentication.user.login_enc as cc
-    title_text.value = "Home"
+def home_page(page: ft.Page, main_column: ft.Column):
+    import Main.service.user.login_enc as cc
 
-    # Functions
-    def staff_view(e):
-        page.splash = ft.ProgressBar()
-        page.update()
-        rail_name.selected_index = 2
-        from Main.pages.staff_home import staff_home_page
-        content_column.clean()
-        page.splash = None
-        content_column.scroll = None
-        page.update()
-        staff_home_page(page, content_column, title_text)
-
-    def staff_add(e):
-        page.splash = ft.ProgressBar()
-        page.update()
-        rail_name.selected_index = 2
-        from Main.pages.staff_add import staff_add_page
-        content_column.clean()
-        page.splash = None
-        content_column.scroll = None
-        page.update()
-        staff_add_page(page, content_column, title_text)
-
-    def candidate_view(e):
-        page.splash = ft.ProgressBar()
-        page.update()
-        rail_name.selected_index = 1
-        from .candidate_home import candidate_home_page
-        content_column.clean()
-        page.splash = None
-        content_column.scroll = None
-        page.update()
-        candidate_home_page(page, content_column, title_text)
-
-    def candidate_add(e):
-        ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
-        if not ele_ser.loc['lock_data'].values[0]:
-            page.splash = ft.ProgressBar()
-            page.update()
-            rail_name.selected_index = 1
-            from .candidate_add import candidate_add_page
-            content_column.clean()
-            page.splash = None
-            content_column.scroll = None
-            page.update()
-            candidate_add_page(page, content_column, title_text)
-        else:
-            message_dialogs(page, "Data is Locked")
-
-    app_data_df = pd.read_json(path + file_path['app_data'], orient='table')
-    institution_name_text = ft.Text(
-        value=app_data_df[app_data_df.topic == 'institution_name'].values[0][1],
-        size=45,
-        weight=ft.FontWeight.BOLD,
-        italic=True,
-    )
-
-    # Cards
-    # candidate info card
     candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
-    student_info_card = ft.Card(
-        ft.Container(
-            ft.Column(
-                [
-                    ft.Row(
-                        [
-                            ft.Icon(
-                                name=ft.icons.ACCOUNT_CIRCLE_ROUNDED,
-                                size=40,
-                            ),
-                            ft.ListTile(
-                                title=ft.Text(
-                                    value=f"{len(candidate_data_df)}",
-                                ),
-                                subtitle=ft.Text(
-                                    value="No.of Candidates",
-                                    color=ft.colors.SECONDARY,
-                                ),
-                                width=150
-                            ),
-                            ft.PopupMenuButton(
-                                icon=ft.icons.MORE_VERT_ROUNDED,
-                                items=[
-                                    ft.PopupMenuItem(
-                                        icon=ft.icons.PERSON_ADD_ALT_1_ROUNDED,
-                                        text="Add Candidate",
-                                        on_click=candidate_add
-                                    ),
-                                    ft.PopupMenuItem(
-                                        icon=ft.icons.VIEW_LIST_ROUNDED,
-                                        text="View Records",
-                                        on_click=candidate_view,
-                                    ),
-                                ]
-                            )
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER,
-                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
-                    ),
-                ],
-                alignment=ft.MainAxisAlignment.CENTER,
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+    student_container = ft.Container(
+        width=300,
+        height=150,
+        border_radius=15,
+        bgcolor='#44CCCCCC',
+        alignment=ft.alignment.center,
+        blur=ft.Blur(30, 15, ft.BlurTileMode.MIRROR),
+        content=ft.ListTile(
+            leading=ft.Icon(
+                name=ft.icons.ACCOUNT_CIRCLE_ROUNDED,
+                size=40,
+                color=ft.colors.BLACK
+            ),
+            title=ft.Text(
+                value=f"{len(candidate_data_df)}",
+                font_family='Verdana',
+                weight=ft.FontWeight.W_400
+            ),
+            subtitle=ft.Text(
+                value="No.of Candidates",
+                color=ft.colors.BLACK,
+                weight=ft.FontWeight.W_300,
+                font_family='Verdana'
             ),
             width=300,
-            height=140,
-            padding=10,
         )
     )
 
-    # Staff PopupMenuButton
-    staff_popup_menu = ft.PopupMenuButton(
-        icon=ft.icons.MORE_VERT_ROUNDED,
-        items=[
-            ft.PopupMenuItem(
-                icon=ft.icons.PERSON_ADD_ALT_1_ROUNDED,
-                text="Add Staff",
-                on_click=staff_add,
-            ),
-            ft.PopupMenuItem(
-                icon=ft.icons.VIEW_LIST_ROUNDED,
-                text="View Records",
-                on_click=staff_view,
-            ),
-        ]
-    )
-
-    if cc.teme_data[2] != True:
-        staff_popup_menu.disabled = True
-        staff_popup_menu.tooltip = 'Disabled'
-
-    # staff info card
     staff_df = pd.read_json(path + file_path['admin_data'], orient='table')
-    teacher_info_card = ft.Card(
-        ft.Container(
-            ft.Column(
-                [
-                    ft.Row(
-                        [
-                            ft.Icon(
-                                name=ft.icons.ACCOUNT_CIRCLE_ROUNDED,
-                                size=40,
-                            ),
-                            ft.ListTile(
-                                title=ft.Text(
-                                    value=f"{len(staff_df)}",
-                                ),
-                                subtitle=ft.Text(
-                                    value="No.of Staffs",
-                                    color=ft.colors.SECONDARY,
-                                ),
-                                width=150,
-                            ),
-                            staff_popup_menu
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER,
-                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
-                    ),
-                ],
-                alignment=ft.MainAxisAlignment.CENTER,
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+    staff_container = ft.Container(
+        width=300,
+        height=150,
+        border_radius=15,
+        bgcolor='#44CCCCCC',
+        alignment=ft.alignment.center,
+        blur=ft.Blur(20, 10, ft.BlurTileMode.MIRROR),
+        content=ft.ListTile(
+            leading=ft.Icon(
+                name=ft.icons.ACCOUNT_CIRCLE_ROUNDED,
+                size=40,
+                color=ft.colors.BLACK
             ),
-            width=290,
-            height=140,
-            padding=10,
+            title=ft.Text(
+                value=f"{len(staff_df)}",
+                font_family='Verdana',
+                weight=ft.FontWeight.W_400
+            ),
+            subtitle=ft.Text(
+                value="No.of Staff",
+                color=ft.colors.BLACK,
+                weight=ft.FontWeight.W_300,
+                font_family='Verdana'
+            ),
+            width=300,
         )
     )
 
-    # page ui
+    app_data_df = pd.read_json(path + file_path['app_data'], orient='table')
     setting_df = pd.read_json(path + file_path['settings'], orient='table')
-    content_column.controls = [
+
+    main_column.controls = [
         ft.Column(
             [
-                ft.Row(
-                    [
-                        institution_name_text,
-                    ],
-                    height=170,
-                    alignment=ft.MainAxisAlignment.CENTER
+                ft.Row(height=20),
+                ft.Container(
+                    margin=ft.margin.only(left=5, right=5),
+                    alignment=ft.alignment.center,
+                    content=ft.Text(
+                        value=app_data_df[app_data_df.topic == 'institution_name'].values[0][1],
+                        size=40,
+                        font_family='Verdana',
+                        color='#172554',
+                        weight=ft.FontWeight.W_800,
+                    )
                 ),
+                ft.Row(height=20),
                 ft.Container(
                     ft.Column(
                         [
                             ft.Text(
                                 value=f"{current_time}, {cc.teme_data[1].capitalize()}",
                                 size=30,
+                                font_family='Verdana',
                                 italic=True,
                             ),
                             ft.Text(
                                 value=f"Selected Election:  {setting_df.loc['Election'].values[0]}",
                                 size=25,
+                                font_family='Verdana',
                                 italic=False,
                             ),
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
                     ),
-                    margin=30,
-                    padding=20,
-                    height=150,
+                    padding=30,
+                    margin=ft.margin.only(left=30, right=10),
+                    height=200
                 ),
+                ft.Row(height=20),
                 ft.Container(
-                    ft.Row(
+                    margin=ft.margin.only(left=5, right=5),
+                    padding=10,
+                    alignment=ft.alignment.center,
+                    content=ft.Row(
                         [
-                            student_info_card,
-                            teacher_info_card,
+                            student_container,
+                            staff_container
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_EVENLY,
-                    ),
-                    height=200,
+                    )
                 ),
             ],
-            alignment=ft.MainAxisAlignment.CENTER,
+            expand=True,
+            scroll=ft.ScrollMode.ADAPTIVE,
         )
     ]
-
-    content_column.scroll = ft.ScrollMode.ADAPTIVE
+    page.splash = None
     page.update()

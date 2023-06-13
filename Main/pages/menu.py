@@ -1,190 +1,96 @@
-from time import sleep
 import flet as ft
-import numpy as np
-import pandas as pd
 
-from ..authentication.scr.check_installation import start, path
-import Main.authentication.scr.election_scr as ee
-from ..authentication.scr.loc_file_scr import app_data, file_path, file_data
-import Main.functions.theme as tt
-from ..functions.animations import menu_container_animation, register_container_animation
+from ..service.scr.check_installation import start
+import Main.service.scr.election_scr as ee
+
+cont_image = None
+cont_column = None
 
 
-def menu_page(page: ft.Page, menu_container: ft.Container):
+class MenuButtons(ft.UserControl):
+    def __init__(self, page: ft.Page, text: str):
+        super().__init__()
+        self.page = page
+        self.text = text
+        self.cont_image = cont_image
+        self.cont_column = cont_column
+        self.button_container = None
+        self.text_val = ft.Text(
+            value=self.text,
+            size=20,
+            color=ft.colors.WHITE,
+            font_family='Verdana',
+            weight=ft.FontWeight.W_400,
+        )
 
-    # functions
-    def get_started_fun(e):
-        from .start_info import start_info_page
-        menu_container.clean()
-        page.update()
-        menu_container_animation(menu_container)
-        sleep(0.1)
-        start_info_page(page, menu_container, [])
+    def animations(self, size):
+        self.cont_image.height = size
+        self.cont_column.clean()
+        self.page.update()
 
-    def user_login_fun(e):
+    def on_create_account(self, e):
+        self.animations(250)
+        from .create_account import create_account_page
+        create_account_page(self.page, self.cont_image, self.cont_column)
+
+    def on_sign_in(self, e):
+        self.animations(170)
         from .login import login_page
-        menu_container.clean()
-        page.update()
-        menu_container_animation(menu_container)
-        sleep(0.1)
-        login_page(page, menu_container)
+        login_page(self.page, self.cont_image, self.cont_column)
 
-    def vote_login_fun(e):
-        from ..authentication.user.verification import verification_page
-        sleep(0.1)
-        verification_page(page)
+    def build(self):
+        def on_hover_color(e):
+            if self.text != 'Connect Server':
+                e.control.bgcolor = "#0369a1" if e.data == "true" else "#0ea5e9"
+                e.control.update()
 
-    def register_fun(e):
-        register_button.disabled = True
-        page.update()
-        from .register import register_home_page
-        menu_container.clean()
-        page.update()
-        register_container_animation(menu_container)
-        sleep(0.25)
-        register_home_page(page, menu_container)
+        self.button_container = ft.Container(
+            width=300,
+            height=50,
+            border_radius=10,
+            bgcolor="#0ea5e9",
+            alignment=ft.alignment.center,
+            on_hover=on_hover_color,
+            content=self.text_val,
+            animate=ft.animation.Animation(100, ft.AnimationCurve.DECELERATE)
+        )
 
-    # Buttons
-    # Get Started button
-    get_started_button = ft.ElevatedButton(
-        text="Get Started",
-        height=50,
-        width=200,
-        on_click=get_started_fun,
-    )
+        if self.text == 'Connect Server':
+            self.button_container.bgcolor = "#bae6fd"
+            self.button_container.tooltip = "Disabled"
+            self.button_container.opacity = 0.5
+            self.text_val.color = '#0369a1'
+        elif self.text == "Create Account":
+            self.button_container.on_click = self.on_create_account
+        elif self.text == "Sign In":
+            self.button_container.on_click = self.on_sign_in
 
-    # connection button
-    connect_server_button = ft.ElevatedButton(
-        text="Connect Server",
-        height=50,
-        width=200,
-        disabled=True,
-        tooltip="disabled",
-    )
+        return self.button_container
 
-    # login button
-    login_button = ft.ElevatedButton(
-        text="Log in",
-        icon=ft.icons.LOGIN_ROUNDED,
-        height=50,
-        width=200,
-        on_click=user_login_fun,
-    )
 
-    # register button
-    register_button = ft.ElevatedButton(
-        text="Register",
-        disabled=True,
-        icon=ft.icons.PERSON_ADD_ALT_ROUNDED,
-        height=50,
-        width=200,
-        on_click=register_fun,
-    )
-
-    # vote button
-    start_election_button = ft.TextButton(
-        text="Start Election now.",
-        disabled=True,
-        on_click=vote_login_fun,
-        icon=ft.icons.HOW_TO_VOTE_ROUNDED,
-    )
+def menu_page(page: ft.Page, content_image: ft.Container, content_column: ft.Column):
+    global cont_image, cont_column
+    cont_image = content_image
+    cont_column = content_column
 
     if start is True:
-        start_election_button.disabled = True
-        start_election_button.tooltip = 'Disabled'
-        list_menu_button: list = [get_started_button, connect_server_button]
+        list_menu_button = [
+            MenuButtons(page, "Create Account"),
+            MenuButtons(page, "Connect Server"),
+        ]
     else:
         ee.election_start_scr()
-        list_menu_button: list = [login_button, register_button]
+        list_menu_button = [
+            MenuButtons(page, "Sign In"),
+            MenuButtons(page, "Vote"),
+        ]
 
-    # Read files
-    setting_df = pd.read_json(path + file_path['settings'], orient='table')
-    if setting_df.loc['Election'].values[0] != np.nan:
-        election_settings_df = None
-        try:
-            election_settings_df = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
-        except TypeError:
-            pass
-        if election_settings_df is not None:
-            if election_settings_df.loc["registration"].values[0] != False:
-                register_button.disabled = False
-            if election_settings_df.loc["vote"].values[0] != False:
-                start_election_button.disabled = False
+    content_column.controls = [
+        ft.Column(
+            list_menu_button,
+            width=250,
+            spacing=20,
+        )
+    ]
 
-    # alignment and data
-    menu_container_data = ft.Column(
-        [
-            ft.Row(
-                [
-                    tt.ThemeIcon(page),
-                ],
-                alignment=ft.MainAxisAlignment.END,
-            ),
-            ft.Column(
-                [
-                    ft.Column(
-                        [
-                            ft.Row(
-                                [
-                                    ft.Text(
-                                        value="E",
-                                        size=40,
-                                        weight=ft.FontWeight.BOLD,
-                                        italic=True,
-                                    ),
-                                    ft.Text(
-                                        value="Vote",
-                                        size=40,
-                                        italic=True,
-                                    ),
-                                ],
-                                spacing=15,
-                                width=500,
-                                alignment=ft.MainAxisAlignment.START,
-                            ),
-                            ft.Row(
-                                [
-                                    ft.Text(
-                                        value="Version: ",
-                                        size=20,
-                                    ),
-                                    ft.Text(
-                                        value=f"{app_data['version']}",
-                                        size=20,
-                                    ),
-                                ],
-                                spacing=5,
-                                width=500,
-                                alignment=ft.MainAxisAlignment.START,
-                            ),
-                        ],
-                        spacing=10,
-                        alignment=ft.MainAxisAlignment.START,
-                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                    ),
-                    ft.Column(
-                        list_menu_button,
-                        spacing=25,
-                        alignment=ft.MainAxisAlignment.START,
-                        expand=True,
-                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                    )
-                ],
-                expand=True,
-                alignment=ft.MainAxisAlignment.CENTER,
-                spacing=25,
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-            ),
-            ft.Row(
-                [
-                    start_election_button,
-                ],
-            )
-        ],
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER
-    )
-
-    menu_container.content = menu_container_data
-    menu_container.padding = 10
-    menu_container.update()
     page.update()

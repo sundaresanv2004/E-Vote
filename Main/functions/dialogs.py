@@ -1,7 +1,7 @@
 from time import sleep
 import flet as ft
 
-from Main.authentication.scr.loc_file_scr import warnings, error_data
+from ..service.scr.loc_file_scr import warnings, error_data
 
 
 def message_dialogs(page: ft.Page, message_key: str):
@@ -14,12 +14,14 @@ def message_dialogs(page: ft.Page, message_key: str):
 
     # AlertDialog data
     message_alertdialog = ft.AlertDialog(
-        modal=True,
+        modal=False,
         title=ft.Text(
             value=f"{message_key}",
+            font_family='Verdana',
         ),
         content=ft.Text(
             value=f"{warnings[message_key]}",
+            font_family='Verdana',
         ),
         actions=[
             ft.TextButton(
@@ -48,6 +50,7 @@ def loading_dialogs(page: ft.Page, text: str, time_sleep: float):
                             size=25,
                             weight=ft.FontWeight.BOLD,
                             italic=True,
+                            font_family='Verdana',
                         ),
                     ],
                     expand=True,
@@ -88,9 +91,11 @@ def error_dialogs(page: ft.Page, error_key: str):
         modal=True,
         title=ft.Text(
             value=f"Error {error_key}!",
+            font_family='Verdana',
         ),
         content=ft.Text(
             value=f"{error_data[error_key]}",
+            font_family='Verdana',
         ),
         actions=[
             ft.TextButton(
