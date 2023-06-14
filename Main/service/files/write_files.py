@@ -44,8 +44,8 @@ def new_election_creation(title: str):
     source = string.ascii_letters + string.digits
     rand = ''.join((random.choice(source)) for i in range(8))
     folder_name = rand + title
-    if election_data.empty is True:
-        election_data.loc['0'] = [title, path + file_path['candidate_data'] + rf'\{folder_name}']
+    election_data.loc['a'] = [title, path + file_path['candidate_data'] + rf'\{folder_name}']
+    if pd.isna(settings_df.loc['Election'].values[0]) is True:
         settings_df.loc['Election'] = title
         settings_df.to_json(path + file_path['settings'], orient='table', index=True)
 

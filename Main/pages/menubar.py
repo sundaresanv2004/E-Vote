@@ -39,11 +39,12 @@ def menubar_page(page: ft.Page):
             elif old_data == 2:
                 page.remove(add_staff_button)
                 staff.icon = None
-
-            election.icon = None
-            settings.icon = None
-
+            elif old_data == 3:
+                election.icon = None
+            elif old_data == 4:
+                settings.icon = None
         old_data = e
+        page.update()
 
         if e == 0:
             container.image_src = "Main/assets/images/background-2.png"
@@ -64,6 +65,8 @@ def menubar_page(page: ft.Page):
             election.icon = ft.icons.HOW_TO_VOTE
         elif e == 4:
             settings.icon = ft.icons.SETTINGS
+            from .settings import settings_page
+            settings_page(page, main_column)
         elif e == 5:
             from main import main
             from ..functions.dialogs import loading_dialogs

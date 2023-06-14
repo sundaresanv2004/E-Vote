@@ -14,7 +14,7 @@ def message_dialogs(page: ft.Page, message_key: str):
 
     # AlertDialog data
     message_alertdialog = ft.AlertDialog(
-        modal=False,
+        modal=True,
         title=ft.Text(
             value=f"{message_key}",
             font_family='Verdana',
@@ -65,9 +65,9 @@ def loading_dialogs(page: ft.Page, text: str, time_sleep: float):
             ],
             expand=True,
             alignment=ft.MainAxisAlignment.CENTER,
-            spacing=8,
+            spacing=10,
             height=180,
-            width=100,
+            width=130,
         )
     )
 

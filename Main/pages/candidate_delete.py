@@ -14,7 +14,7 @@ def delete_candidate_dialogs(page: ft.Page, index_df, view):
         from Main.service.scr.loc_file_scr import file_data
         import Main.service.scr.election_scr as ee
         delete_candidate(index_df)
-        alertdialog.open = False
+        delete_candidate_dialogs1.open = False
         page.update()
         sleep(0.2)
         loading_dialogs(page, "Deleting...", 0.5)
@@ -33,7 +33,7 @@ def delete_candidate_dialogs(page: ft.Page, index_df, view):
                 candidate_profile_page(page, index_df - 1)
 
     def on_close(e):
-        alertdialog.open = False
+        delete_candidate_dialogs1.open = False
         page.update()
         if view is True:
             sleep(0.1)
@@ -41,16 +41,16 @@ def delete_candidate_dialogs(page: ft.Page, index_df, view):
             candidate_profile_page(page, index_df)
 
     # AlertDialog
-    alertdialog = ft.AlertDialog(
+    delete_candidate_dialogs1 = ft.AlertDialog(
         modal=True,
         title=ft.Text(
-            value="Delete this record?",
             font_family='Verdana',
+            value="Delete this record?",
         ),
         actions=[
             ft.TextButton(
-                text="Ok",
                 on_click=del_ok,
+                text="Ok",
             ),
             ft.TextButton(
                 text="Cancel",
@@ -64,8 +64,8 @@ def delete_candidate_dialogs(page: ft.Page, index_df, view):
         actions_alignment=ft.MainAxisAlignment.END,
     )
 
-    page.dialog = alertdialog
-    alertdialog.open = True
+    page.dialog = delete_candidate_dialogs1
+    delete_candidate_dialogs1.open = True
     page.update()
 
 
