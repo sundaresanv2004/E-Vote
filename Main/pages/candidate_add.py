@@ -118,9 +118,7 @@ def build(page: ft.Page):
         page.update()
         from ..service.files.write_files import add_candidate
         from ..functions.snack_bar import snack_bar1
-        from ..functions.dialogs import loading_dialogs
         sleep(0.2)
-        loading_dialogs(page, "Saving...", 0.8)
         if len(list_cand_data[1]) == 0:
             image_data = False
         else:

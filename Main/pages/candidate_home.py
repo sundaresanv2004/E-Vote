@@ -1,6 +1,7 @@
 import flet as ft
 import pandas as pd
 
+from ..functions.dialogs import message_dialogs
 from ..service.scr.loc_file_scr import file_data
 import Main.service.scr.election_scr as ee
 
@@ -125,17 +126,15 @@ class ViewStaffRecord(ft.UserControl):
         pass
 
     def profile(self, e):
-        pass
-        # from .candidate_profile import candidate_profile_page
-        # candidate_profile_page(self.page, self.index_val)
+        from .candidate_profile import candidate_profile_page
+        candidate_profile_page(self.page, self.index_val)
 
     def delete(self, e):
-        pass
-        # if not self.ele_ser.loc['lock_data'].values[0]:
-        #     from .candidate_delete_approve import delete_candidate_dialogs
-        #     delete_candidate_dialogs(self.page, self.index_val, False)
-        # else:
-        #     message_dialogs(self.page, "Data is Locked")
+        if not self.ele_ser.loc['lock_data'].values[0]:
+            from .candidate_delete import delete_candidate_dialogs
+            delete_candidate_dialogs(self.page, self.index_val, False)
+        else:
+            message_dialogs(self.page, "Data is Locked")
 
     def build(self):
         if not self.candidate_data_df.loc[self.index_val].values[5]:
