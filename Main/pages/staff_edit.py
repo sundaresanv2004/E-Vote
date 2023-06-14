@@ -5,10 +5,10 @@ from time import sleep
 
 from ..service.enc.encryption import decrypter
 from ..service.scr.check_installation import path
-from ..service.scr.loc_file_scr import file_path
+from ..service.scr.loc_file_scr import file_path, warnings
 
 user_name, mail_id, password = False, False, False
-alertdialog = ft.AlertDialog(modal=True)
+alertdialog1_staff = ft.AlertDialog(modal=True)
 val_list_staff = ["", "", "", False]
 index_val1 = None
 first = False
@@ -16,7 +16,7 @@ first = False
 
 def staff_edit_page(page: ft.Page, index_val, view):
     import Main.service.user.login_enc as cc
-    global alertdialog, val_list_staff, index_val1, first
+    global alertdialog1_staff, val_list_staff, index_val1, first
     index_val1 = index_val
 
     staff_df = pd.read_json(path + file_path['admin_data'], orient='table')
@@ -27,7 +27,7 @@ def staff_edit_page(page: ft.Page, index_val, view):
         index_val1 = None
         first = False
         val_list_staff = ["", "", "", False]
-        alertdialog.open = False
+        alertdialog1_staff.open = False
         page.update()
         sleep(0.2)
         if view is True:
@@ -234,8 +234,8 @@ def staff_edit_page(page: ft.Page, index_val, view):
         width=450,
     )
 
-    # AlertDialog
-    alertdialog.content = ft.Column(
+    # alertdialog1_staff
+    alertdialog1_staff.content = ft.Column(
         [
             ft.Row(
                 [
@@ -264,7 +264,7 @@ def staff_edit_page(page: ft.Page, index_val, view):
             add_staff_column_data,
         ],
         scroll=ft.ScrollMode.ADAPTIVE,
-        height=480,
+        height=450,
         width=450,
     )
 
@@ -274,60 +274,60 @@ def staff_edit_page(page: ft.Page, index_val, view):
         on_click=on_click_save,
     )
 
-    alertdialog.actions = [
+    alertdialog1_staff.actions = [
         save_button
     ]
 
-    alertdialog.actions_alignment = ft.MainAxisAlignment.END
+    alertdialog1_staff.actions_alignment = ft.MainAxisAlignment.END
 
-    page.dialog = alertdialog
-    alertdialog.open = True
+    page.dialog = alertdialog1_staff
+    alertdialog1_staff.open = True
     page.update()
     changes_checker('e')
 
 
 def edit_permission_y_dialogs(page: ft.Page, index_val, view):
-    global alertdialog, index_val1
+    global alertdialog1_staff, index_val1
 
     def on_close(e):
-        alertdialog.title = None
+        alertdialog1_staff.title = None
         staff_edit_page(page, index_val1, view)
 
     def save_data(e):
         global val_list_staff
-        alertdialog.title = None
+        alertdialog1_staff.title = None
         val_list_staff[3] = True
-        alertdialog.open = False
+        alertdialog1_staff.open = False
         page.update()
         sleep(0.2)
         save(page, index_val, view)
 
     def on_admin_permission(e):
-        alertdialog.open = False
+        alertdialog1_staff.open = False
         page.update()
         sleep(0.2)
         from ..functions.dialogs import message_dialogs
         message_dialogs(page, "Admin Permission?")
 
-    alertdialog.title = ft.Text(
+    alertdialog1_staff.title = ft.Text(
         value="Make Sure",
     )
 
-    alertdialog.content = ft.Column(
+    alertdialog1_staff.content = ft.Column(
         [
             ft.Text(
                 value="Do you want to give them admin permission?",
             ),
             ft.TextButton(
                 text="Learn more.",
-                on_click=on_admin_permission,
+                on_click=lambda _: y_admin_permission(page, view),
             )
         ],
         height=70,
         width=340,
     )
 
-    alertdialog.actions = [
+    alertdialog1_staff.actions = [
         ft.TextButton(
             text="Save",
             on_click=save_data,
@@ -338,7 +338,38 @@ def edit_permission_y_dialogs(page: ft.Page, index_val, view):
         ),
     ]
 
-    alertdialog.actions_alignment = ft.MainAxisAlignment.END
+    alertdialog1_staff.actions_alignment = ft.MainAxisAlignment.END
+
+    page.update()
+
+
+def y_admin_permission(page: ft.Page, view):
+    global alertdialog1_staff
+
+    # Functions
+    def on_ok(e):
+        alertdialog1_staff.title = None
+        staff_edit_page(page, index_val1, view)
+
+    # alertdialog1_staff data
+
+    alertdialog1_staff.title = ft.Text(
+        font_family='Verdana',
+        value="Admin Permission?",
+    )
+
+    alertdialog1_staff.content = ft.Text(
+        value=f'{warnings["Admin Permission?"]}',
+    )
+
+    alertdialog1_staff.actions = [
+        ft.TextButton(
+            text="Ok",
+            on_click=on_ok,
+        ),
+    ]
+
+    alertdialog1_staff.actions_alignment = ft.MainAxisAlignment.END
 
     page.update()
 
@@ -350,7 +381,7 @@ def save(page: ft.Page, index_val, view):
     from ..service.files.write_files import edit_staff_data
     from .staff_home import display_staff
     from ..functions.dialogs import loading_dialogs
-    alertdialog.open = False
+    alertdialog1_staff.open = False
     page.update()
     edit_staff_data([val_list_staff[0], val_list_staff[1], val_list_staff[2], val_list_staff[3]], index_val)
     display_staff(page)

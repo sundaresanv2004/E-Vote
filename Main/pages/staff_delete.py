@@ -26,6 +26,8 @@ def delete_staff_dialogs(page: ft.Page, index_df, view):
         if cc.teme_data[0] == index_df:
             page.splash = ft.ProgressBar()
             page.update()
+            from .menubar import update
+            update()
             from main import main
             loading_dialogs(page, "Logging out...", 4)
             sleep(0.2)
