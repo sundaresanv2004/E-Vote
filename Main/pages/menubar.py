@@ -68,6 +68,7 @@ def menubar_page(page: ft.Page):
             from main import main
             from ..functions.dialogs import loading_dialogs
             loading_dialogs(page, "Logging out...", 2)
+            old_data = None
             page.clean()
             page.splash = None
             page.update()
@@ -143,9 +144,7 @@ def menubar_page(page: ft.Page):
                                     )
                                 ]
                             ),
-                            tooltip='Profile',
                             margin=5,
-                            on_click=lambda _: print('a'),
                         )
                     ],
                     expand=True,
@@ -179,3 +178,8 @@ def menubar_page(page: ft.Page):
     page.add(container)
     page.update()
     on_option_click(0)
+
+
+def update():
+    global old_data
+    old_data = None

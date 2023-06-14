@@ -30,7 +30,18 @@ def staff_profile_page(page: ft.Page, id_index):
             delete_staff_dialogs(page, staff_df.loc[index_val].values[0], True)
 
     def edit_on_click(e):
-        pass
+        alertdialog.open = False
+        page.update()
+        sleep(0.2)
+        from Main.pages.staff_edit import staff_edit_page
+        from Main.functions.dialogs import message_dialogs
+        if index_val == 0:
+            if cc.teme_data[0] == 1:
+                staff_edit_page(page, index_val, True)
+            else:
+                message_dialogs(page, "Edit this record?")
+        else:
+            staff_edit_page(page, index_val, True)
 
     def on_close(e):
         alertdialog.open = False
@@ -180,18 +191,20 @@ def staff_profile_page(page: ft.Page, id_index):
                             ],
                             spacing=20,
                             width=490,
+                            height=280,
                             scroll=ft.ScrollMode.ADAPTIVE,
                         ),
                         next_button,
                     ],
                     alignment=ft.MainAxisAlignment.CENTER,
                     vertical_alignment=ft.CrossAxisAlignment.CENTER,
-                    width=600,
+                    width=610,
                     height=300,
+                    scroll=ft.ScrollMode.ADAPTIVE,
                 ),
             ],
             height=350,
-            width=600,
+            width=610,
         ),
         actions=[
             ft.TextButton(

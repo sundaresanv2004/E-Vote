@@ -32,7 +32,6 @@ def staff_home_page(page: ft.Page, main_column: ft.Column):
         search_display_staff(page)
 
     search_entry.on_change = search
-    search_entry.value = None
 
     main_column.controls = [
         ft.Container(
@@ -72,6 +71,8 @@ def display_staff(page):
     # file
     staff_df = pd.read_json(path + file_path['admin_data'], orient='table')
 
+    search_entry.value = None
+
     row_staff_data_list: list = []
 
     if len(staff_df) == 0:
@@ -108,7 +109,16 @@ class ViewStaffRecord(ft.UserControl):
         self.staff_df = pd.read_json(path + file_path['admin_data'], orient='table')
 
     def edit(self, e):
-        pass
+        import Main.service.user.login_enc as cc
+        from Main.pages.staff_edit import staff_edit_page
+        from Main.functions.dialogs import message_dialogs
+        if self.index_val == 0:
+            if cc.teme_data[0] == 1:
+                staff_edit_page(self.page, self.index_val, False)
+            else:
+                message_dialogs(self.page, "Edit this record?")
+        else:
+            staff_edit_page(self.page, self.index_val, False)
 
     def profile(self, e):
         from Main.pages.staff_profile import staff_profile_page
