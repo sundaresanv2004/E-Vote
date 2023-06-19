@@ -268,7 +268,9 @@ def help_dialogs(page: ft.Page):
 
 
 def delete_election_dialogs(page: ft.Page):
+    from ..service.files.settings_write import delete_election
     from ..service.enc.code_generator import code_generate, code_checker
+
     def on_close(e):
         delete_election_dialogs1.open = False
         page.update()
@@ -278,6 +280,14 @@ def delete_election_dialogs(page: ft.Page):
             if code_checker(code_entry.value):
                 code_entry.error_text = None
                 code_entry.update()
+                delete_election_dialogs1.open = False
+                page.update()
+                sleep(0.2)
+                delete_election()
+                loading_dialogs(page, "Deleting...", 2)
+                snack_bar1(page, "Successfully Deleted.")
+                sleep(0.2)
+                message_dialogs(page, 'Restart Required')
             else:
                 code_entry.error_text = "Invalid Code!"
                 code_entry.focus()

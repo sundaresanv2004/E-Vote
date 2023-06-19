@@ -1,4 +1,6 @@
+import numpy as np
 import pandas as pd
+import os
 
 from ..scr.check_installation import path
 from ..scr.loc_file_scr import file_path
@@ -37,3 +39,20 @@ def current_election_name(name: str, page):
     from ..scr.election_scr import election_start_scr
     election_start_scr()
 
+
+def delete_election():
+    election_data01 = pd.read_csv(path + file_path["election_data"])
+    settings_df = pd.read_json(path + file_path['settings'], orient='table')
+
+    election_index = election_data01[election_data01.name == settings_df.loc['Election'].values[0]].index.values[0]
+    election_dir = election_data01[election_data01.name == settings_df.loc['Election'].values[0]].values[0][1]
+
+    election_data01.drop(election_index, axis=0, inplace=True)
+    settings_df.loc['Election'] = np.NaN
+    settings_df.to_json(path + file_path['settings'], orient='table', index=True)
+    try:
+        os.remove(election_dir)
+    except OSError:
+        pass
+
+    election_data01.to_csv(path + file_path["election_data"], index=False)
