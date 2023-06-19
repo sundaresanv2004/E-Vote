@@ -40,15 +40,10 @@ def new_election_creation(title: str):
     from .files_cre import new_election_creation_folder
 
     election_data = pd.read_csv(path + file_path["election_data"])
-    settings_df = pd.read_json(path + file_path['settings'], orient='table')
     source = string.ascii_letters + string.digits
     rand = ''.join((random.choice(source)) for i in range(8))
     folder_name = rand + title
     election_data.loc['a'] = [title, path + file_path['candidate_data'] + rf'\{folder_name}']
-    if pd.isna(settings_df.loc['Election'].values[0]) is True:
-        settings_df.loc['Election'] = title
-        settings_df.to_json(path + file_path['settings'], orient='table', index=True)
-
     election_data.to_csv(path + file_path["election_data"], index=False)
     new_election_creation_folder(title, folder_name)
 

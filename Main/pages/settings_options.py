@@ -257,7 +257,7 @@ def help_dialogs(page: ft.Page):
 
     # AlertDialog data
     help_dialogs1 = ft.AlertDialog(
-        modal=True,
+        modal=False,
         content=help_content,
     )
 
@@ -268,52 +268,85 @@ def help_dialogs(page: ft.Page):
 
 
 def delete_election_dialogs(page: ft.Page):
+    from ..service.enc.code_generator import code_generate, code_checker
     def on_close(e):
         delete_election_dialogs1.open = False
         page.update()
 
-    def del_ok(e):
-        pass
+    def on_ok(e):
+        if len(code_entry.value) != 0:
+            if code_checker(code_entry.value):
+                code_entry.error_text = None
+                code_entry.update()
+            else:
+                code_entry.error_text = "Invalid Code!"
+                code_entry.focus()
+        else:
+            code_entry.error_text = "Enter the code."
+            code_entry.focus()
+        code_entry.update()
 
-    election_data6 = pd.read_csv(path + file_path["election_data"])
-    temp_list: list = []
-    for i in list(election_data6['name']):
-        temp_list.append(ft.dropdown.Option(i))
-
-    election_dropdown = ft.Dropdown(
-        hint_text="Choose the Election",
+    code_entry = ft.TextField(
+        hint_text="Enter the one time code.",
         width=350,
         border=ft.InputBorder.OUTLINE,
         border_radius=9,
-        filled=False,
-        options=temp_list,
         text_style=ft.TextStyle(font_family='Verdana'),
-        color=ft.colors.BLACK,
+        autofocus=True,
+        keyboard_type=ft.KeyboardType.NUMBER,
+        capitalization=ft.TextCapitalization.WORDS,
+        prefix_icon=ft.icons.PASSWORD_ROUNDED,
+        on_submit=on_ok,
     )
 
-    # AlertDialog
-    delete_election_dialogs1 = ft.AlertDialog(
-        modal=True,
-        title=ft.Text(
-            value="Delete Election",
+    def del_ok(e):
+        code_generate(page)
+        delete_election_dialogs1.title = ft.Text(
+            value="2-Step verification",
             font_family='Verdana',
-        ),
-        actions=[
+        )
+
+        delete_election_dialogs1.content = ft.Row(
+            [
+                code_entry
+            ],
+            width=400,
+            alignment=ft.MainAxisAlignment.CENTER,
+        )
+
+        delete_election_dialogs1.actions = [
             ft.TextButton(
-                text="Next",
-                on_click=del_ok,
+                text="Delete",
+                on_click=on_ok,
             ),
             ft.TextButton(
                 text="Cancel",
                 on_click=on_close,
             ),
+        ]
+
+        page.update()
+
+    # AlertDialog
+    delete_election_dialogs1 = ft.AlertDialog(
+        modal=True,
+        title=ft.Text(
+            value="Delete Election?",
+            font_family='Verdana',
+        ),
+        actions=[
+            ft.TextButton(
+                text="Yes",
+                on_click=del_ok,
+            ),
+            ft.TextButton(
+                text="No",
+                on_click=on_close,
+            ),
         ],
-        content=ft.Row(
-            [
-                election_dropdown
-            ],
-            width=400,
-            alignment=ft.MainAxisAlignment.CENTER,
+        content=ft.Text(
+            value="Make sure!, This election will be deleted forever.",
+            font_family='Verdana',
         ),
         actions_alignment=ft.MainAxisAlignment.END,
     )

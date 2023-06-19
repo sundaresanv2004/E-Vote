@@ -2,6 +2,7 @@ import re
 from time import sleep
 import flet as ft
 
+from Main.functions.date_time import present_year
 from Main.functions.dialogs import message_dialogs
 
 institution_name = None
@@ -216,6 +217,8 @@ def sign_up_page(page: ft.Page, content_image: ft.Container, content_column: ft.
                             sleep(1)
                             from Main.service.files.write_files import admin_data_in
                             admin_data_in([username_entry.value, mail_id_entry.value, password_entry.value, True])
+                            from Main.service.files.write_files import new_election_creation
+                            new_election_creation(f"{present_year}-Election")
                             from ..functions.snack_bar import snack_bar1
                             sleep(1)
                             content_column.clean()

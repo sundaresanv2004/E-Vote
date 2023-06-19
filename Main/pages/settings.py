@@ -157,6 +157,13 @@ class SettingsMenu:
             color=ft.colors.with_opacity(0.4, '#44CCCCCC'),
         )
 
+        if len(pd.read_csv(path + file_path["election_data"])) == 1:
+            self.delete_election.disabled = True
+            self.delete_election.tooltip = 'Disabled'
+        else:
+            self.delete_election.disabled = False
+            self.delete_election.tooltip = None
+
         return self.delete_election
 
     def change_in_data(self):
@@ -164,6 +171,12 @@ class SettingsMenu:
         self.institution_name_text.value = app_data_sys_df.values[1][1]
         settings_df3 = pd.read_json(path + file_path['settings'], orient='table')
         self.current_election_text.value = settings_df3.loc['Election'].values[0]
+        if len(pd.read_csv(path + file_path["election_data"])) == 1:
+            self.delete_election.disabled = True
+            self.delete_election.tooltip = 'Disabled'
+        else:
+            self.delete_election.disabled = False
+            self.delete_election.tooltip = None
         self.page.update()
         snack_bar1(self.page, "Successfully Updated.")
 
