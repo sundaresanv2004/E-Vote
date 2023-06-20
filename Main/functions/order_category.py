@@ -15,7 +15,7 @@ class CategoryList(ft.UserControl):
 
     def __init__(self, val):
         super().__init__()
-        self.text = ft.Text(size=20, value=None)
+        self.text = ft.Text(size=20, value=None, font_family='Verdana')
         self.val = val
 
     def on_click_cat(self, e):
@@ -72,6 +72,7 @@ def order_category_option(page: ft.Page):
                     ft.Text(
                         value="No Records",
                         size=25,
+                        font_family='Verdana',
                     )
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
@@ -102,7 +103,7 @@ def order_category_option(page: ft.Page):
 
     message_alertdialog = ft.AlertDialog(
         modal=True,
-        title=ft.Text("Chose Category Order"),
+        title=ft.Text("Chose Category Order", font_family='Verdana',),
         content=ft.Container(
             content=ft.Column(
                 controls=temp_category_data,

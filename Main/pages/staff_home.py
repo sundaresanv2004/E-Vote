@@ -19,6 +19,7 @@ search_entry = ft.TextField(
     border_color='#ddeff0',
     prefix_style=ft.TextStyle(color=ft.colors.WHITE),
     text_style=ft.TextStyle(font_family='Verdana'),
+    error_style=ft.TextStyle(font_family='Verdana'),
     prefix_icon=ft.icons.SEARCH_ROUNDED,
 )
 

@@ -168,6 +168,7 @@ def build(page: ft.Page):
         border=ft.InputBorder.OUTLINE,
         border_radius=9,
         text_style=ft.TextStyle(font_family='Verdana'),
+        error_style=ft.TextStyle(font_family='Verdana'),
         autofocus=True,
         capitalization=ft.TextCapitalization.WORDS,
         prefix_icon=ft.icons.PERSON_ROUNDED,

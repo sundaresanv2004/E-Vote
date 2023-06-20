@@ -34,6 +34,7 @@ def vote_login_page(page: ft.Page, content_image: ft.Container, content_column: 
                 sleep(2)
                 page.clean()
                 page.update()
+                ee.election_start_scr()
                 from .vote_home import vote_home_page
                 vote_home_page(page)
             else:
@@ -81,6 +82,7 @@ def vote_login_page(page: ft.Page, content_image: ft.Container, content_column: 
     vote_waring_text = ft.Text(
         size=20,
         color=ft.colors.ERROR,
+        font_family='Verdana',
     )
 
     settings_df = pd.read_json(path + file_path['settings'], orient='table')

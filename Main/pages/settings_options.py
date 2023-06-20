@@ -303,6 +303,7 @@ def delete_election_dialogs(page: ft.Page):
         border=ft.InputBorder.OUTLINE,
         border_radius=9,
         text_style=ft.TextStyle(font_family='Verdana'),
+        error_style=ft.TextStyle(font_family='Verdana'),
         autofocus=True,
         keyboard_type=ft.KeyboardType.NUMBER,
         capitalization=ft.TextCapitalization.WORDS,

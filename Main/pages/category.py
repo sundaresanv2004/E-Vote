@@ -186,6 +186,8 @@ class CategoryView(ft.UserControl):
             border_color=ft.colors.SECONDARY,
             prefix_icon=ft.icons.CATEGORY_ROUNDED,
             on_submit=edit_category,
+            text_style=ft.TextStyle(font_family='Verdana'),
+            error_style=ft.TextStyle(font_family='Verdana'),
             value=self.category_df.loc[self.index_val].values[1]
         )
 
@@ -373,6 +375,8 @@ def category_add_page(page: ft.Page, page_view):
         border_radius=9,
         border_color=ft.colors.SECONDARY,
         prefix_icon=ft.icons.SCHOOL_ROUNDED,
+        text_style=ft.TextStyle(font_family='Verdana'),
+        error_style=ft.TextStyle(font_family='Verdana'),
         on_submit=add_new_category,
     )
 
@@ -385,6 +389,8 @@ def category_add_page(page: ft.Page, page_view):
         capitalization=ft.TextCapitalization.CHARACTERS,
         border_color=ft.colors.SECONDARY,
         prefix_icon=ft.icons.CATEGORY_ROUNDED,
+        text_style=ft.TextStyle(font_family='Verdana'),
+        error_style=ft.TextStyle(font_family='Verdana'),
         on_submit=add_new_category,
         on_change=on_change_category,
     )

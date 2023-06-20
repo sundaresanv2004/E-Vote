@@ -39,7 +39,7 @@ def download_nomination(page: ft.Page):
                     [
                         ft.Row(
                             [
-                                ft.Text("Download nomination list", size=20),
+                                ft.Text("Download nomination list", size=20, font_family='Verdana'),
                                 ft.IconButton(
                                     icon=ft.icons.CLOSE_ROUNDED,
                                     icon_size=30,

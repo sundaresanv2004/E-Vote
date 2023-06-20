@@ -47,7 +47,7 @@ def passcode_election(page: ft.Page, switch_data: ft.Switch):
     )
 
     def on_next1(e):
-        message_alertdialog.title = ft.Text(value="2-Step Verification")
+        message_alertdialog.title = ft.Text(value="2-Step Verification", font_family='Verdana')
         message_alertdialog.content = ft.Column(
             [
                 entry1
@@ -69,11 +69,13 @@ def passcode_election(page: ft.Page, switch_data: ft.Switch):
         page.update()
 
     def on_next(e):
-        message_alertdialog.title = ft.Text(value="Make Sure?")
+        message_alertdialog.title = ft.Text(value="Make Sure?", font_family='Verdana')
         message_alertdialog.content = ft.Column(
             [
-                ft.Text(value=messages["code_text2"],
-                        size=15),
+                ft.Text(
+                    value=messages["code_text2"],
+                    size=15,
+                    font_family='Verdana'),
             ],
             height=100,
         )
@@ -95,12 +97,14 @@ def passcode_election(page: ft.Page, switch_data: ft.Switch):
         modal=True,
         title=ft.Text(
             value=f"2-Step Verification",
+            font_family='Verdana',
         ),
         content=ft.Column(
             [
                 ft.Text(
                     value=messages["code_text1"],
                     size=15,
+                    font_family='Verdana',
                 ),
             ],
             height=100,
@@ -161,6 +165,8 @@ def lock_unlock_data(page: ft.Page, switch_data: ft.Switch):
         prefix_icon=ft.icons.LOCK_ROUNDED,
         border_color=ft.colors.SECONDARY,
         autofocus=True,
+        text_style=ft.TextStyle(font_family='Verdana'),
+        error_style=ft.TextStyle(font_family='Verdana'),
         keyboard_type=ft.KeyboardType.NUMBER,
         capitalization=ft.TextCapitalization.WORDS,
         on_submit=save_on,
@@ -171,6 +177,7 @@ def lock_unlock_data(page: ft.Page, switch_data: ft.Switch):
         modal=True,
         title=ft.Text(
             value=f"2-Step Verification",
+            font_family='Verdana',
         ),
         content=ft.Column(
             [
@@ -219,8 +226,8 @@ def category_order(page: ft.Page):
     )
 
     def on_next(e):
-        message_alertdialog.title = ft.Text(value="Read")
-        message_alertdialog.content = ft.Text(value=messages['final_list'])
+        message_alertdialog.title = ft.Text(value="Read", font_family='Verdana')
+        message_alertdialog.content = ft.Text(value=messages['final_list'], font_family='Verdana')
         message_alertdialog.actions = [
             ft.TextButton(
                 text="Next",
@@ -236,8 +243,8 @@ def category_order(page: ft.Page):
 
     ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
     if ele_ser.loc['final_nomination'].values[0]:
-        message_alertdialog.title = ft.Text(value="Make Sure?")
-        message_alertdialog.content = ft.Text(value=messages['re_final_list'])
+        message_alertdialog.title = ft.Text(value="Make Sure?", font_family='Verdana')
+        message_alertdialog.content = ft.Text(value=messages['re_final_list'], font_family='Verdana')
         message_alertdialog.actions = [
             ft.TextButton(
                 text="Yes",
@@ -270,12 +277,14 @@ def forgot_code(page: ft.Page):
             if code_checker(code_entry.value):
                 code_entry.error_text = None
                 code_entry.update()
-                forgot_code_dialog1.title = ft.Text("Forgot code?")
-                ele_ser10 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+                forgot_code_dialog1.title = ft.Text("Forgot code?", font_family='Verdana')
+                ele_ser10 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}",
+                                         orient='table')
                 forgot_code_dialog1.content = ft.Row(
                     [
                         ft.Text(
-                            value=f"Code: {decrypter(ele_ser10.loc['code'].values[0])}"
+                            value=f"Code: {decrypter(ele_ser10.loc['code'].values[0])}",
+                            font_family='Verdana',
                         )
                     ]
                 )
@@ -300,6 +309,7 @@ def forgot_code(page: ft.Page):
         border=ft.InputBorder.OUTLINE,
         border_radius=9,
         text_style=ft.TextStyle(font_family='Verdana'),
+        error_style=ft.TextStyle(font_family='Verdana'),
         autofocus=True,
         keyboard_type=ft.KeyboardType.NUMBER,
         capitalization=ft.TextCapitalization.WORDS,
