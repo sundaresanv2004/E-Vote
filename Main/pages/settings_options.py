@@ -4,8 +4,9 @@ import pandas as pd
 
 from ..functions.dialogs import loading_dialogs, message_dialogs
 from ..functions.snack_bar import snack_bar1
+import Main.service.scr.election_scr as ee
 from ..service.scr.check_installation import path
-from ..service.scr.loc_file_scr import file_path
+from ..service.scr.loc_file_scr import file_path, file_data
 
 
 def institution_name_dialogs(page: ft.Page):
@@ -364,3 +365,90 @@ def delete_election_dialogs(page: ft.Page):
     page.dialog = delete_election_dialogs1
     delete_election_dialogs1.open = True
     page.update()
+
+
+def election_name_dialogs(page: ft.Page):
+    def on_ok(e):
+        election_name_dialogs1.open = False
+        page.update()
+
+    ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+    election_data6 = pd.read_csv(path + file_path["election_data"])
+    election_list1 = list(election_data6['name'])
+
+    def on_election_name_change(e):
+        if len(election_name_entry.value) != 0:
+            if election_name_entry.value not in election_list1:
+                election_name_entry.error_text = None
+                election_name_entry.suffix_icon = None
+            else:
+                election_name_entry.suffix_icon = ft.icons.CLOSE_ROUNDED
+                election_name_entry.error_text = 'This election name already been used.'
+        else:
+            election_name_entry.error_text = 'Enter the election name.'
+            election_name_entry.suffix_icon = ft.icons.ERROR_OUTLINE_ROUNDED
+        election_name_entry.update()
+
+    def on_save_election_name(e):
+        on_election_name_change(e)
+        if len(election_name_entry.value) != 0:
+            if election_name_entry.value not in election_list1:
+                from ..service.files.settings_write import change_election_name
+                change_election_name(election_name_entry.value)
+                election_name_dialogs1.open = False
+                page.update()
+                snack_bar1(page, "Successfully Updated.")
+            else:
+                election_name_entry.focus()
+        else:
+            election_name_entry.focus()
+        election_name_entry.update()
+
+    election_name_entry = ft.TextField(
+        hint_text="Enter the Election Name",
+        width=350,
+        border_radius=9,
+        filled=False,
+        border=ft.InputBorder.OUTLINE,
+        border_color=ft.colors.BLACK,
+        autofocus=True,
+        text_style=ft.TextStyle(font_family='Verdana'),
+        error_style=ft.TextStyle(font_family='Verdana'),
+        on_submit=on_save_election_name,
+        on_change=on_election_name_change,
+        value=ele_ser.loc['election-name'].values[0],
+    )
+
+    # AlertDialog data
+    election_name_dialogs1 = ft.AlertDialog(
+        modal=True,
+        title=ft.Text(
+            font_family='Verdana',
+            value="Institution Name",
+        ),
+        content=ft.Row(
+            [
+                election_name_entry
+            ],
+            width=400,
+            alignment=ft.MainAxisAlignment.CENTER
+        ),
+        actions=[
+            ft.TextButton(
+                text="Save",
+                on_click=on_save_election_name,
+            ),
+            ft.TextButton(
+                text="Cancel",
+                on_click=on_ok,
+            ),
+        ],
+        actions_alignment=ft.MainAxisAlignment.END,
+    )
+
+    # Open dialog
+    page.dialog = election_name_dialogs1
+    election_name_dialogs1.open = True
+    page.update()
+
+

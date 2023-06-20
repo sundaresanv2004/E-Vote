@@ -1,9 +1,10 @@
+import shutil
 import numpy as np
 import pandas as pd
-import os
 
 from ..scr.check_installation import path
-from ..scr.loc_file_scr import file_path
+from ..scr.loc_file_scr import file_path, file_data
+import Main.service.scr.election_scr as ee
 from ...functions.dialogs import loading_dialogs
 from ...functions.snack_bar import snack_bar1
 
@@ -34,10 +35,10 @@ def current_election_name(name: str, page):
     settings_df2.to_json(path + file_path['settings'], orient='table', index=True)
     loading_dialogs(page, "Changing...", 2)
     snack_bar1(page, "Successfully Changed.")
-    from ...pages.settings import update_settings_data
-    update_settings_data()
     from ..scr.election_scr import election_start_scr
     election_start_scr()
+    from ...pages.settings import update_settings_data
+    update_settings_data()
 
 
 def delete_election():
@@ -51,8 +52,23 @@ def delete_election():
     settings_df.loc['Election'] = np.NaN
     settings_df.to_json(path + file_path['settings'], orient='table', index=True)
     try:
-        os.remove(election_dir)
+        shutil.rmtree(election_dir)
     except OSError:
         pass
 
     election_data01.to_csv(path + file_path["election_data"], index=False)
+
+
+def change_election_name(title):
+    ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+    election_data = pd.read_csv(path + file_path["election_data"])
+    settings_df = pd.read_json(path + file_path['settings'], orient='table')
+    index_val = election_data[election_data.name == ele_ser.loc['election-name'].values[0]].index.values[0]
+    election_data.at[index_val, 'name'] = title
+    settings_df.loc['Election'] = title
+    ele_ser.loc['election-name'] = title
+    ele_ser.to_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
+    settings_df.to_json(path + file_path['settings'], orient='table', index=True)
+    election_data.to_csv(path + file_path["election_data"], index=False)
+    from ...pages.settings import update_settings_data
+    update_settings_data()

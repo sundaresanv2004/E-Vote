@@ -4,8 +4,10 @@ import pandas as pd
 from ..functions.snack_bar import snack_bar1
 from ..service.files.settings_write import current_election_name
 from ..service.scr.check_installation import path
-from ..service.scr.loc_file_scr import file_path
-from .settings_options import institution_name_dialogs, new_election_dialogs, help_dialogs, delete_election_dialogs
+import Main.service.scr.election_scr as ee
+from ..service.scr.loc_file_scr import file_path, file_data
+from .settings_options import institution_name_dialogs, new_election_dialogs, help_dialogs, delete_election_dialogs, \
+    election_name_dialogs
 
 var_option_data_update = None
 
@@ -16,6 +18,7 @@ class SettingsMenu:
         super().__init__()
         self.page = page
         self.delete_election = None
+        self.election_name = None
         self.help = None
         self.institution_name = None
         self.create_election = None
@@ -24,6 +27,7 @@ class SettingsMenu:
             name=ft.icons.NAVIGATE_NEXT_ROUNDED,
             size=25,
         )
+        self.election_name_text = ft.Text(font_family='Verdana')
         self.institution_name_text = ft.Text(font_family='Verdana')
         self.current_election_text = ft.Text(font_family='Verdana')
         self.current_election_dropdown = ft.Dropdown(
@@ -63,6 +67,30 @@ class SettingsMenu:
         )
 
         return self.institution_name
+
+    def election_name_option(self):
+        ele_ser1 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+        self.election_name_text.value = ele_ser1.loc['election-name'].values[0]
+        self.election_name = ft.Card(
+            ft.Container(
+                ft.ListTile(
+                    title=ft.Text(
+                        value=f"Election Name",
+                        font_family='Verdana',
+                    ),
+                    trailing=self.next_icon,
+                    subtitle=self.election_name_text,
+                    on_click=lambda _: election_name_dialogs(self.page),
+                ),
+                padding=ft.padding.symmetric(vertical=3.5),
+                blur=ft.Blur(20, 20, ft.BlurTileMode.MIRROR),
+                border_radius=10,
+            ),
+            elevation=0,
+            color=ft.colors.with_opacity(0.4, '#44CCCCCC')
+        )
+
+        return self.election_name
 
     def crate_election_option(self):
         self.create_election = ft.Card(
@@ -177,6 +205,7 @@ class SettingsMenu:
         else:
             self.delete_election.disabled = False
             self.delete_election.tooltip = None
+        self.election_name_text.value = settings_df3.loc['Election'].values[0]
         self.page.update()
         snack_bar1(self.page, "Successfully Updated.")
 
@@ -189,8 +218,9 @@ def settings_page(page: ft.Page, main_column: ft.Column):
     main_column.controls = [
         ft.Column(
             [
-
+                ft.Row(height=5),
                 option_menu.institution_name_option(),
+                option_menu.election_name_option(),
                 option_menu.crate_election_option(),
                 option_menu.current_election_option(),
                 option_menu.delete_election_option(),
