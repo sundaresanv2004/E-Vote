@@ -63,6 +63,8 @@ def menubar_page(page: ft.Page):
             page.add(add_staff_button)
         elif e == 3:
             election.icon = ft.icons.HOW_TO_VOTE
+            from .election_settings import election_settings_page
+            election_settings_page(page, main_column)
         elif e == 4:
             settings.icon = ft.icons.SETTINGS
             from .settings import settings_page

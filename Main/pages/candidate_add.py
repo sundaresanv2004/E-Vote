@@ -7,6 +7,7 @@ from time import sleep
 import flet as ft
 import pandas as pd
 
+from .category import category_add_page
 from ..service.scr.loc_file_scr import file_data
 import Main.service.scr.election_scr as ee
 import Main.service.user.login_enc as cc
@@ -21,6 +22,12 @@ alertdialog_candidate_add = None
 
 def candidate_add_page(page: ft.Page):
     global alertdialog_candidate_add
+
+    def add_cat(e):
+        alertdialog_candidate_add.open = False
+        page.update()
+        sleep(0.2)
+        category_add_page(page, 'candidate')
 
     def on_close(e):
         global list_cand_data
@@ -71,8 +78,8 @@ def candidate_add_page(page: ft.Page):
         ),
         actions=[
             ft.TextButton(
-                text="Add a new category",
-                # on_click=on_admin_permission,
+                text="Add new category",
+                on_click=add_cat,
             ),
             save_button,
         ],
@@ -119,10 +126,13 @@ def build(page: ft.Page):
         from ..service.files.write_files import add_candidate
         from ..functions.snack_bar import snack_bar1
         sleep(0.2)
-        if len(list_cand_data[1]) == 0:
-            image_data = False
+        if list_cand_data[1] is not False:
+            if len(list_cand_data[1]) == 0:
+                image_data = False
+            else:
+                image_data = list_cand_data[1]
         else:
-            image_data = list_cand_data[1]
+            image_data = False
         add_candidate([name_entry.value, category_dropdown.value, True, qualification_dropdown.value, image_data,
                        cc.teme_data[1]])
         page.splash = None

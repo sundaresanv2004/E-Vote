@@ -218,7 +218,7 @@ def settings_page(page: ft.Page, main_column: ft.Column):
     main_column.controls = [
         ft.Column(
             [
-                ft.Row(height=5),
+                ft.Row(height=3),
                 option_menu.institution_name_option(),
                 option_menu.election_name_option(),
                 option_menu.crate_election_option(),
