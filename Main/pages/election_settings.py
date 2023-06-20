@@ -3,8 +3,9 @@ import pandas as pd
 
 from .category import category_dialogs
 import Main.service.scr.election_scr as ee
-from .election_options import category_order
+from .election_options import category_order, forgot_code
 from .settings_options import help_dialogs
+from ..functions.dialogs import message_dialogs
 from ..functions.download_nomination import download_nomination
 from ..service.scr.loc_file_scr import file_data
 
@@ -19,8 +20,11 @@ class ElectionSettingsMenu:
         self.final_nomination_list = None
         self.download_nomination = None
         self.lock_election = None
+        self.forgot_passcode = None
+        self.vote_button = None
         self.help = None
         self.lock = ft.Switch(on_change=self.on_lock_click)
+        self.vote_switch = ft.Switch(on_change=self.on_vote_click)
         self.ele_ser_1 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
         self.next_icon = ft.Icon(
             name=ft.icons.NAVIGATE_NEXT_ROUNDED,
@@ -129,6 +133,61 @@ class ElectionSettingsMenu:
             self.download_nomination.disabled = False
         self.page.update()
 
+    def on_vote_click(self, e):
+        if not (self.ele_ser_1.loc['lock_data'].values[0] and self.ele_ser_1.loc['final_nomination'].values[0]):
+            message_dialogs(self.page, "Enable Vote")
+            self.vote_switch.value = False
+            self.page.update()
+        else:
+            from ..service.files.vote_settings_write import vote_on
+            vote_on(self.vote_switch.value)
+
+    def vote_option(self):
+        self.vote_button = ft.Card(
+            ft.Container(
+                ft.ListTile(
+                    title=ft.Text(
+                        font_family='Verdana',
+                        value=f"Vote",
+                    ),
+                    trailing=self.vote_switch,
+                ),
+                blur=ft.Blur(20, 20, ft.BlurTileMode.MIRROR),
+                padding=ft.padding.symmetric(vertical=3.5),
+                border_radius=10,
+            ),
+            elevation=0,
+            color=ft.colors.with_opacity(0.4, '#44CCCCCC'),
+        )
+
+        if self.ele_ser_1.loc["vote_option"].values[0]:
+            self.vote_switch.value = True
+        else:
+            self.vote_switch.value = False
+
+        return self.vote_button
+
+    def forgot_passcode_option(self):
+        self.forgot_passcode = ft.Card(
+            ft.Container(
+                ft.ListTile(
+                    title=ft.Text(
+                        value=f"Forgot code?",
+                        font_family='Verdana',
+                    ),
+                    trailing=self.next_icon,
+                    on_click=lambda _: forgot_code(self.page),
+                ),
+                border_radius=10,
+                padding=ft.padding.symmetric(vertical=3.5),
+                blur=ft.Blur(20, 20, ft.BlurTileMode.MIRROR),
+            ),
+            elevation=0,
+            color=ft.colors.with_opacity(0.4, '#44CCCCCC'),
+        )
+
+        return self.forgot_passcode
+
     def help_option(self):
         self.help = ft.Card(
             ft.Container(
@@ -185,6 +244,8 @@ def election_settings_page(page: ft.Page, main_column: ft.Column):
                 option_menu_ele.lock_election_option(),
                 option_menu_ele.final_nomination_list_option(),
                 option_menu_ele.download_nomination_option(),
+                option_menu_ele.vote_option(),
+                option_menu_ele.forgot_passcode_option(),
                 option_menu_ele.help_option(),
             ],
             expand=True,

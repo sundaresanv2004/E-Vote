@@ -1,7 +1,10 @@
 import flet as ft
 
 from ..service.scr.check_installation import start
+from .create_account import create_account_page
 import Main.service.scr.election_scr as ee
+from .login import login_page
+from .vote_login import vote_login_page
 
 cont_image = None
 cont_column = None
@@ -30,13 +33,15 @@ class MenuButtons(ft.UserControl):
 
     def on_create_account(self, e):
         self.animations(250)
-        from .create_account import create_account_page
         create_account_page(self.page, self.cont_image, self.cont_column)
 
     def on_sign_in(self, e):
         self.animations(170)
-        from .login import login_page
         login_page(self.page, self.cont_image, self.cont_column)
+
+    def vote_login(self, e):
+        self.animations(250)
+        vote_login_page(self.page, self.cont_image, self.cont_column)
 
     def build(self):
         def on_hover_color(e):
@@ -64,6 +69,8 @@ class MenuButtons(ft.UserControl):
             self.button_container.on_click = self.on_create_account
         elif self.text == "Sign In":
             self.button_container.on_click = self.on_sign_in
+        elif self.text == 'Vote':
+            self.button_container.on_click = self.vote_login
 
         return self.button_container
 

@@ -56,9 +56,9 @@ def login_page(page: ft.Page, content_image: ft.Container, content_column: ft.Co
                     from .menubar import menubar_page
                     page.clean()
                     if cc.teme_data[2] == True:
-                        menubar_page(page)
+                        menubar_page(page, True)
                     else:
-                        pass
+                        menubar_page(page, False)
                 else:
                     button_container.content = ft.Text(
                         value="Sign Up",

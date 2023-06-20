@@ -11,7 +11,7 @@ from ..service.scr.loc_file_scr import file_data
 old_data = None
 
 
-def menubar_page(page: ft.Page):
+def menubar_page(page: ft.Page, user_type: bool):
 
     main_column = ft.Column(expand=True)
 
@@ -128,13 +128,20 @@ def menubar_page(page: ft.Page):
         on_click=lambda e: on_option_click(e.control.data)
     )
 
-    row_menu_list = [
-        home,
-        candidate,
-        staff,
-        election,
-        settings,
-    ]
+    if user_type:
+        row_menu_list = [
+            home,
+            candidate,
+            staff,
+            election,
+            settings,
+        ]
+    else:
+        row_menu_list = [
+            home,
+            candidate,
+            election,
+        ]
 
     appbar = ft.Container(
         border_radius=9,

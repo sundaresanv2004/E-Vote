@@ -52,3 +52,10 @@ def final_list(list_data):
                        index=False)
     ele_ser.to_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
     update_election_set()
+
+
+def vote_on(val):
+    ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+    ele_ser.loc['vote_option'] = val
+    ele_ser.to_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
+    update_election_set()

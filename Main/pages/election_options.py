@@ -3,7 +3,10 @@ import flet as ft
 import pandas as pd
 
 import Main.service.scr.election_scr as ee
+from ..functions.dialogs import message_dialogs
+from ..service.enc.encryption import decrypter
 from ..service.scr.loc_file_scr import file_data
+from ..service.user.verification import verification_page
 
 
 def passcode_election(page: ft.Page, switch_data: ft.Switch):
@@ -122,7 +125,6 @@ def passcode_election(page: ft.Page, switch_data: ft.Switch):
 
 
 def lock_unlock_data(page: ft.Page, switch_data: ft.Switch):
-    from ..service.enc.encryption import decrypter
     from ..service.files.vote_settings_write import lock_and_unlock
 
     # Functions
@@ -135,9 +137,8 @@ def lock_unlock_data(page: ft.Page, switch_data: ft.Switch):
         page.update()
 
     def save_on(e):
-        ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
         if len(entry1.value) != 0:
-            if entry1.value == decrypter(ele_ser.loc['code'].values[0]):
+            if verification_page(entry1.value):
                 entry1.error_text = None
                 message_alertdialog.open = False
                 page.update()
@@ -197,7 +198,7 @@ def lock_unlock_data(page: ft.Page, switch_data: ft.Switch):
     page.update()
 
 
-def category_order(page):
+def category_order(page: ft.Page):
     from ..service.scr.loc_file_scr import messages
     from ..functions.order_category import order_category_option
 
@@ -254,3 +255,88 @@ def category_order(page):
     page.dialog = message_alertdialog
     message_alertdialog.open = True
     page.update()
+
+
+def forgot_code(page: ft.Page):
+    from ..service.enc.code_generator import code_checker, code_generate
+    import Main.service.user.login_enc as cc
+
+    def on_close(e):
+        forgot_code_dialog1.open = False
+        page.update()
+
+    def on_ok(e):
+        if len(code_entry.value) != 0:
+            if code_checker(code_entry.value):
+                code_entry.error_text = None
+                code_entry.update()
+                forgot_code_dialog1.title = ft.Text("Forgot code?")
+                ele_ser10 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+                forgot_code_dialog1.content = ft.Row(
+                    [
+                        ft.Text(
+                            value=f"Code: {decrypter(ele_ser10.loc['code'].values[0])}"
+                        )
+                    ]
+                )
+                forgot_code_dialog1.actions = [
+                    ft.TextButton(
+                        text="Close",
+                        on_click=on_close,
+                    ),
+                ]
+                page.update()
+            else:
+                code_entry.error_text = "Invalid Code!"
+                code_entry.focus()
+        else:
+            code_entry.error_text = "Enter the code."
+            code_entry.focus()
+        code_entry.update()
+
+    code_entry = ft.TextField(
+        hint_text="Enter the one time code.",
+        width=350,
+        border=ft.InputBorder.OUTLINE,
+        border_radius=9,
+        text_style=ft.TextStyle(font_family='Verdana'),
+        autofocus=True,
+        keyboard_type=ft.KeyboardType.NUMBER,
+        capitalization=ft.TextCapitalization.WORDS,
+        prefix_icon=ft.icons.PASSWORD_ROUNDED,
+        on_submit=on_ok,
+    )
+
+    if cc.teme_data[0] == 1:
+        code_generate(page)
+        forgot_code_dialog1 = ft.AlertDialog(
+            modal=True,
+            title=ft.Text(
+                value="2-Step verification",
+                font_family='Verdana',
+            ),
+            content=ft.Row(
+                [
+                    code_entry
+                ],
+                width=400,
+                alignment=ft.MainAxisAlignment.CENTER,
+            ),
+            actions=[
+                ft.TextButton(
+                    text="Check",
+                    on_click=on_ok,
+                ),
+                ft.TextButton(
+                    text="Cancel",
+                    on_click=on_close,
+                ),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+
+        page.dialog = forgot_code_dialog1
+        forgot_code_dialog1.open = True
+        page.update()
+    else:
+        message_dialogs(page, "Forgot Code?")
