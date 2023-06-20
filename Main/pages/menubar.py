@@ -1,8 +1,12 @@
 import flet as ft
+import pandas as pd
 
 import Main.service.user.login_enc as cc
 from .staff_add import staff_add_page
+import Main.service.scr.election_scr as ee
 from .candidate_add import candidate_add_page
+from ..functions.dialogs import message_dialogs
+from ..service.scr.loc_file_scr import file_data
 
 old_data = None
 
@@ -11,10 +15,17 @@ def menubar_page(page: ft.Page):
 
     main_column = ft.Column(expand=True)
 
+    def add_candidate_page_fun(e):
+        ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+        if not ele_ser.loc['lock_data'].values[0]:
+            candidate_add_page(page)
+        else:
+            message_dialogs(page, "Option is locked")
+
     add_candidate_button = ft.FloatingActionButton(
         icon=ft.icons.PERSON_ADD_ALT_1_ROUNDED,
         tooltip="Add new Candidate",
-        on_click=lambda _: candidate_add_page(page),
+        on_click=add_candidate_page_fun,
     )
 
     add_staff_button = ft.FloatingActionButton(

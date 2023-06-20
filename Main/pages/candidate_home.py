@@ -127,7 +127,7 @@ class ViewStaffRecord(ft.UserControl):
             from .candidate_edit import candidate_edit_page
             candidate_edit_page(self.page, self.index_val, False)
         else:
-            message_dialogs(self.page, "Option is Locked")
+            message_dialogs(self.page, "Option is locked")
 
     def profile(self, e):
         from .candidate_profile import candidate_profile_page
@@ -138,7 +138,7 @@ class ViewStaffRecord(ft.UserControl):
             from .candidate_delete import delete_candidate_dialogs
             delete_candidate_dialogs(self.page, self.index_val, False)
         else:
-            message_dialogs(self.page, "Option is Locked")
+            message_dialogs(self.page, "Option is locked")
 
     def build(self):
         if not self.candidate_data_df.loc[self.index_val].values[5]:

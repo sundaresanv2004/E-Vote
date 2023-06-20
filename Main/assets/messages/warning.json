@@ -10,6 +10,6 @@
   "No Category Recodes": "To view Category data, please add a new category. For more information on \nhow to do this, please check the 'Help' section located at the top-right \ncorner of the page.",
   "Admin Permission?": "Granting admin permission means that the recipient will have access to the admin options, including \nthe ability to create, delete, and manage election data. If a staff member does not require \nthese permissions, please choose 'No' to assign them basic options, such as adding, editing, \ndeleting, and viewing old election records, and managing some election settings. \n\nNote that we do not recommend granting admin permission to every staff member.",
   "Something went wrong": "Oops! Something went wrong. Please try again later or \nplease reach out to the election department.",
-  "Option is Locked": "To ensure the integrity of the election, certain \noptions are locked and cannot be accessed.",
+  "Option is locked": "To ensure the integrity of the election, certain \noptions are locked and cannot be accessed.",
   "Enable Vote": "To enable voting, it is necessary to generate the final nomination list. \n\nNote that to access the nomination generation feature, you must lock the data first."
 }
