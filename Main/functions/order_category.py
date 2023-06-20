@@ -2,6 +2,7 @@ from time import sleep
 import flet as ft
 import pandas as pd
 
+from Main.functions.download_nomination import download_nomination
 from Main.service.files.vote_settings_write import final_list
 from Main.service.scr.loc_file_scr import file_data
 import Main.service.scr.election_scr as ee
@@ -91,6 +92,8 @@ def order_category_option(page: ft.Page):
         final_list(list_category)
         sleep(0.2)
         loading_dialogs(page, "Saving...", 1)
+        sleep(0.2)
+        download_nomination(page)
 
     save_button = ft.TextButton(
         text="Save",
