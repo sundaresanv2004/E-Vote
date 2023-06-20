@@ -123,7 +123,11 @@ class ViewStaffRecord(ft.UserControl):
         self.candidate_image_destination = ee.current_election_path + r'\images'
 
     def edit(self, e):
-        pass
+        if not self.ele_ser.loc['lock_data'].values[0]:
+            from .candidate_edit import candidate_edit_page
+            candidate_edit_page(self.page, self.index_val, False)
+        else:
+            message_dialogs(self.page, "Option is Locked")
 
     def profile(self, e):
         from .candidate_profile import candidate_profile_page
@@ -134,7 +138,7 @@ class ViewStaffRecord(ft.UserControl):
             from .candidate_delete import delete_candidate_dialogs
             delete_candidate_dialogs(self.page, self.index_val, False)
         else:
-            message_dialogs(self.page, "Data is Locked")
+            message_dialogs(self.page, "Option is Locked")
 
     def build(self):
         if not self.candidate_data_df.loc[self.index_val].values[5]:
