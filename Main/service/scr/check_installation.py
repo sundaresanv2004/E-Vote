@@ -8,7 +8,7 @@ path = None
 os_sys = None
 if platform.system() == "Windows":
     os_sys = "Windows"
-    path = os.getenv('APPDATA') + r'\E Vote'
+    path = os.getenv('APPDATA') + r'\E-Vote'
 else:
     os_sys = platform.system()
 
