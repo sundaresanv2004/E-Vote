@@ -262,10 +262,12 @@ def category_order(page: ft.Page):
     else:
         on_next('e')
 
-    # Open dialog
-    page.dialog = message_alertdialog
-    message_alertdialog.open = True
-    page.update()
+    if ele_ser.loc["completed"].values[0]:
+        message_dialogs(page, "Option is locked")
+    else:
+        page.dialog = message_alertdialog
+        message_alertdialog.open = True
+        page.update()
 
 
 def forgot_code(page: ft.Page):
@@ -407,7 +409,7 @@ def generate_result(page: ft.Page):
 
 def result_view_dialogs(page: ft.Page):
     result_view_dialogs1 = ft.AlertDialog(
-        modal=True,
+        modal=False,
         actions_alignment=ft.MainAxisAlignment.END,
     )
 

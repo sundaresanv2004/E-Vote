@@ -153,11 +153,6 @@ class ElectionSettingsMenu:
             self.view_result.disabled = True
             self.download_result.disabled = True
 
-        if self.lock_election.disabled:
-            self.final_nomination_list.disabled = True
-        else:
-            self.final_nomination_list.disabled = False
-
         self.page.update()
 
     def on_vote_click(self, e):

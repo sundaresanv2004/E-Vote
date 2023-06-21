@@ -8,6 +8,7 @@ election_data_loc = rf'\{file_data["vote_data"]}\{file_data["election_data"]}'
 
 
 def generate_result_fun():
+    from Main.pages.election_settings import update_election_set
     election_data3 = pd.read_json(ee.current_election_path + election_data_loc, orient='table')
     candidate_df = pd.read_json(
         ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["final_nomination"]}',
@@ -27,3 +28,4 @@ def generate_result_fun():
 
     temp_df1.to_json(ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["result"]}',
                      orient='table', index=False)
+    update_election_set()
