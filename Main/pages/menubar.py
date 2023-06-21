@@ -42,7 +42,7 @@ def menubar_page(page: ft.Page, user_type: bool):
             main_column.clean()
             page.update()
             if old_data == 0:
-                container.image_src = "Main/assets/images/background-3.png"
+                container.image_src = "/images/background-3.png"
                 home.icon = None
             elif old_data == 1:
                 page.remove(add_candidate_button)
@@ -58,7 +58,7 @@ def menubar_page(page: ft.Page, user_type: bool):
         page.update()
 
         if e == 0:
-            container.image_src = "Main/assets/images/background-2.png"
+            container.image_src = "/images/background-2.png"
             home.icon = ft.icons.HOME_ROUNDED
             from .home import home_page
             home_page(page, main_column)
@@ -187,7 +187,7 @@ def menubar_page(page: ft.Page, user_type: bool):
 
     container = ft.Container(
         image_fit=ft.ImageFit.COVER,
-        image_src="Main/assets/images/background-2.png",
+        image_src="/images/background-2.png",
         margin=-10,
         expand=True,
         content=ft.Column(

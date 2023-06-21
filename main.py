@@ -1,5 +1,6 @@
 import flet as ft
 
+from Main.assets.loc_file_path import local_assets_path
 from Main.functions.theme import start_theme
 from Main.functions.window_actions import window_at_start, window_on_resize
 from Main.service.scr.check_installation import installation_requirement
@@ -26,7 +27,7 @@ def main(page: ft.Page):
     start_theme(page)
 
     content_image = ft.Container(
-        image_src='Main/assets/images/content_image-1.png',
+        image_src='/images/content_image-1.png',
         image_fit=ft.ImageFit.FIT_HEIGHT,
         height=370,
         animate=ft.Animation(600, ft.AnimationCurve.DECELERATE)
@@ -38,7 +39,7 @@ def main(page: ft.Page):
     )
 
     bg_container = ft.Container(
-        image_src="Main/assets/images/Background-1.png",
+        image_src="/images/Background-1.png",
         image_fit=ft.ImageFit.COVER,
         margin=-10,
         alignment=ft.alignment.center,
@@ -68,4 +69,5 @@ if __name__ == '__main__':
     installation_requirement()
     ft.app(
         target=main,
+        assets_dir=local_assets_path,
     )

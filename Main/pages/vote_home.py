@@ -51,7 +51,7 @@ def vote_start_page(page: ft.Page):
     )
     container = ft.Container(
         image_fit=ft.ImageFit.COVER,
-        image_src="Main/assets/images/background-4.png",
+        image_src="/images/background-4.png",
         margin=-10,
         expand=True,
         content=ft.Column(
