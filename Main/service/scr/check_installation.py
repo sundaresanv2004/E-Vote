@@ -22,7 +22,6 @@ def installation_requirement():
             os.makedirs(path + r'\data\e')
             os.makedirs(path + r'\data\s')
             os.makedirs(path + r'\backup')
-            os.makedirs(path + r'\versions')
         ser1 = pd.Series(default_setting_data)
         ser1.to_json(path + file_path['settings'], orient='table', index=True)
 
