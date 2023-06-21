@@ -63,9 +63,6 @@ def main(page: ft.Page):
     page.add(bg_container)
     menu_page(page, content_image, content_column)
 
-    # from Main.pages.vote_home import vote_start_page
-    # vote_start_page(page)
-
 
 if __name__ == '__main__':
     installation_requirement()

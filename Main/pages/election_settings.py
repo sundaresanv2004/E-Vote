@@ -5,6 +5,7 @@ from .category import category_dialogs
 import Main.service.scr.election_scr as ee
 from .election_options import category_order, forgot_code, generate_result, result_view_dialogs
 from .settings_options import help_dialogs
+from .summary_view import summary_view_page
 from ..functions.dialogs import message_dialogs
 from ..functions.download import download_nomination, download_result
 from ..service.scr.loc_file_scr import file_data
@@ -22,6 +23,7 @@ class ElectionSettingsMenu:
         self.download_result = None
         self.download_nomination = None
         self.view_result = None
+        self.summary_view_result = None
         self.lock_election = None
         self.forgot_passcode = None
         self.vote_button = None
@@ -149,9 +151,11 @@ class ElectionSettingsMenu:
         if self.ele_ser_1.loc["result"].values[0]:
             self.view_result.disabled = False
             self.download_result.disabled = False
+            self.summary_view_result.disabled = False
         else:
             self.view_result.disabled = True
             self.download_result.disabled = True
+            self.summary_view_result.disabled = True
 
         self.page.update()
 
@@ -227,6 +231,28 @@ class ElectionSettingsMenu:
         )
 
         return self.view_result
+
+    def summary_view_result_option(self):
+
+        self.summary_view_result = ft.Card(
+            ft.Container(
+                ft.ListTile(
+                    title=ft.Text(
+                        value=f"Summary view result",
+                        font_family='Verdana',
+                    ),
+                    trailing=self.next_icon,
+                    on_click=lambda _: summary_view_page(self.page),
+                ),
+                border_radius=10,
+                padding=ft.padding.symmetric(vertical=3.5),
+                blur=ft.Blur(20, 20, ft.BlurTileMode.MIRROR),
+            ),
+            elevation=0,
+            color=ft.colors.with_opacity(0.4, '#44CCCCCC'),
+        )
+
+        return self.summary_view_result
 
     def download_result_option(self):
 
@@ -331,6 +357,7 @@ def election_settings_page(page: ft.Page, main_column: ft.Column):
                     option_menu_ele.vote_option(),
                     option_menu_ele.generate_result_option(),
                     option_menu_ele.view_result_option(),
+                    option_menu_ele.summary_view_result_option(),
                     option_menu_ele.download_result_option(),
                     option_menu_ele.forgot_passcode_option(),
                     option_menu_ele.help_option(),

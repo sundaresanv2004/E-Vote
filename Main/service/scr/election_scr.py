@@ -3,8 +3,7 @@ import pandas as pd
 from .loc_file_scr import file_path
 from ..scr.check_installation import path
 
-# election_data = pd.read_csv(path + file_path["election_data"])
-current_election_path = None  # election_data.values[0][1]
+current_election_path = None
 
 
 def election_start_scr():
