@@ -181,7 +181,7 @@ def menubar_page(page: ft.Page, user_type: bool):
             alignment=ft.MainAxisAlignment.END,
             height=50
         ),
-        margin=5,
+        margin=ft.margin.only(left=5, top=5, right=5),
 
     )
 
