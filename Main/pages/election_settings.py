@@ -370,6 +370,14 @@ def election_settings_page(page: ft.Page, main_column: ft.Column):
             option_menu_ele.summary_view_result_option(),
             option_menu_ele.help_option(),
         ]
+        t = [
+            option_menu_ele.forgot_passcode_option(),
+            option_menu_ele.download_result_option(),
+            option_menu_ele.vote_option(),
+            option_menu_ele.generate_result_option(),
+            option_menu_ele.lock_election_option(),
+            option_menu_ele.final_nomination_list_option(),
+        ]
 
     main_column.controls = [
         ft.Container(
