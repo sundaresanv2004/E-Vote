@@ -1,9 +1,5 @@
 from time import sleep
 import flet as ft
-import pandas as pd
-
-from Main.service.scr.loc_file_scr import file_data
-import Main.service.scr.election_scr as ee
 
 
 def vote_exit(page: ft.Page):

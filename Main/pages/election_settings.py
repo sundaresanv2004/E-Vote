@@ -3,7 +3,7 @@ import pandas as pd
 
 from .category import category_dialogs
 import Main.service.scr.election_scr as ee
-from .election_options import category_order, forgot_code
+from .election_options import category_order, forgot_code, generate_result
 from .settings_options import help_dialogs
 from ..functions.dialogs import message_dialogs
 from ..functions.download_nomination import download_nomination
@@ -18,6 +18,7 @@ class ElectionSettingsMenu:
         super().__init__()
         self.page = page
         self.final_nomination_list = None
+        self.generate_result = None
         self.download_nomination = None
         self.lock_election = None
         self.forgot_passcode = None
@@ -60,11 +61,6 @@ class ElectionSettingsMenu:
             color=ft.colors.with_opacity(0.4, '#44CCCCCC'),
         )
 
-        if not self.ele_ser_1.loc['lock_data'].values[0]:
-            self.lock.value = False
-        else:
-            self.lock.value = True
-
         return self.lock_election
 
     def final_nomination_list_option(self):
@@ -86,11 +82,6 @@ class ElectionSettingsMenu:
             elevation=0,
             color=ft.colors.with_opacity(0.4, '#44CCCCCC'),
         )
-        
-        if not self.ele_ser_1.loc['lock_data'].values[0]:
-            self.final_nomination_list.disabled = True
-        else:
-            self.final_nomination_list.disabled = False
 
         return self.final_nomination_list
 
@@ -114,24 +105,50 @@ class ElectionSettingsMenu:
             color=ft.colors.with_opacity(0.4, '#44CCCCCC'),
         )
 
-        if not self.ele_ser_1.loc['final_nomination'].values[0]:
-            self.download_nomination.disabled = True
-        else:
-            self.download_nomination.disabled = False
-
         return self.download_nomination
 
     def update_in_data(self):
         self.ele_ser_1 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+
         if not self.ele_ser_1.loc['lock_data'].values[0]:
-            self.final_nomination_list.disabled = True
-            self.on_vote_click('e')
+            self.lock.value = False
         else:
-            self.final_nomination_list.disabled = False
+            self.lock.value = True
+
         if not self.ele_ser_1.loc['final_nomination'].values[0]:
             self.download_nomination.disabled = True
         else:
             self.download_nomination.disabled = False
+
+        if pd.isna(self.ele_ser_1.loc['code'].values[0]):
+            self.forgot_passcode.disabled = True
+        else:
+            self.forgot_passcode.disabled = False
+
+        if not self.ele_ser_1.loc['lock_data'].values[0]:
+            self.vote_button.disabled = True
+            self.final_nomination_list.disabled = True
+        else:
+            self.vote_button.disabled = False
+            self.final_nomination_list.disabled = False
+
+        if self.ele_ser_1.loc["vote_option"].values[0]:
+            self.vote_switch.value = True
+        else:
+            self.vote_switch.value = False
+
+        if self.ele_ser_1.loc["completed"].values[0]:
+            self.lock_election.disabled = True
+            self.generate_result.disabled = False
+        else:
+            self.generate_result.disabled = True
+            self.lock_election.disabled = False
+
+        if self.lock_election.disabled:
+            self.final_nomination_list.disabled = True
+        else:
+            self.final_nomination_list.disabled = False
+
         self.page.update()
 
     def on_vote_click(self, e):
@@ -161,12 +178,29 @@ class ElectionSettingsMenu:
             color=ft.colors.with_opacity(0.4, '#44CCCCCC'),
         )
 
-        if self.ele_ser_1.loc["vote_option"].values[0]:
-            self.vote_switch.value = True
-        else:
-            self.vote_switch.value = False
-
         return self.vote_button
+
+    def generate_result_option(self):
+
+        self.generate_result = ft.Card(
+            ft.Container(
+                ft.ListTile(
+                    title=ft.Text(
+                        value=f"Generate result",
+                        font_family='Verdana',
+                    ),
+                    on_click=lambda _: generate_result(self.page),
+                    trailing=self.next_icon,
+                ),
+                padding=ft.padding.symmetric(vertical=3.5),
+                blur=ft.Blur(20, 20, ft.BlurTileMode.MIRROR),
+                border_radius=10,
+            ),
+            elevation=0,
+            color=ft.colors.with_opacity(0.4, '#44CCCCCC'),
+        )
+
+        return self.generate_result
 
     def forgot_passcode_option(self):
         self.forgot_passcode = ft.Card(
@@ -246,6 +280,7 @@ def election_settings_page(page: ft.Page, main_column: ft.Column):
                 option_menu_ele.final_nomination_list_option(),
                 option_menu_ele.download_nomination_option(),
                 option_menu_ele.vote_option(),
+                option_menu_ele.generate_result_option(),
                 option_menu_ele.forgot_passcode_option(),
                 option_menu_ele.help_option(),
             ],
@@ -256,6 +291,7 @@ def election_settings_page(page: ft.Page, main_column: ft.Column):
 
     page.splash = None
     page.update()
+    option_menu_ele.update_in_data()
 
 
 def update_election_set():

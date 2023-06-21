@@ -19,10 +19,9 @@ def lock_and_unlock():
     ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
     if ele_ser.loc['lock_data'].values[0]:
         ele_ser.loc['lock_data'] = False
-        ele_ser.loc['vote'] = False
+        ele_ser.loc['vote_option'] = False
     else:
         ele_ser.loc['lock_data'] = True
-        ele_ser.loc['registration'] = False
 
     ele_ser.to_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
     update_election_set()

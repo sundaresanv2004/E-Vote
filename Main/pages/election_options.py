@@ -4,9 +4,10 @@ import flet as ft
 import pandas as pd
 
 import Main.service.scr.election_scr as ee
-from ..functions.dialogs import message_dialogs
+from ..functions.dialogs import message_dialogs, loading_dialogs
 from ..service.enc.encryption import decrypter
 from ..service.scr.loc_file_scr import file_data
+from ..service.scr.loc_file_scr import messages
 from ..service.user.verification import verification_page
 
 
@@ -207,7 +208,6 @@ def lock_unlock_data(page: ft.Page, switch_data: ft.Switch):
 
 
 def category_order(page: ft.Page):
-    from ..service.scr.loc_file_scr import messages
     from ..functions.order_category import order_category_option
 
     def on_ok(e):
@@ -354,3 +354,52 @@ def forgot_code(page: ft.Page):
         page.update()
     else:
         message_dialogs(page, "Forgot Code?")
+
+
+def generate_result(page: ft.Page):
+    from ..service.files.result import generate_result_fun
+
+    def on_close(e):
+        generate_result_alertdialog.open = False
+        page.update()
+
+    def on_ok(e):
+        generate_result_alertdialog.open = False
+        page.update()
+        generate_result_fun()
+        loading_dialogs(page, "Generating...", 1)
+
+    # AlertDialog data
+    generate_result_alertdialog = ft.AlertDialog(
+        modal=True,
+        title=ft.Text(
+            value=f"Make sure?",
+            font_family='Verdana',
+        ),
+        content=ft.Text(
+            value=f"{messages['re_result']}",
+            font_family='Verdana',
+        ),
+        actions=[
+            ft.TextButton(
+                text="Yes",
+                on_click=on_ok,
+            ),
+            ft.TextButton(
+                text="No",
+                on_click=on_close,
+            ),
+        ],
+        actions_alignment=ft.MainAxisAlignment.END,
+    )
+
+    ele_ser_2 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+    if ele_ser_2.loc['result'].values[0]:
+        page.dialog = generate_result_alertdialog
+        generate_result_alertdialog.open = True
+        page.update()
+    else:
+        ele_ser_2.loc['result'] = True
+        ele_ser_2.to_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
+        generate_result_fun()
+        loading_dialogs(page, "Generating...", 1)

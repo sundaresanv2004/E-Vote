@@ -21,6 +21,22 @@ page_text = ft.Text(
 )
 curr_data = 0
 temp_list = []
+image_not_found = ft.Column(
+    [
+        ft.Icon(
+            name=ft.icons.ACCOUNT_CIRCLE_ROUNDED,
+            size=40,
+        ),
+        ft.Text(
+            value="Image not found",
+            font_family='Verdana',
+        ),
+    ],
+    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+    alignment=ft.MainAxisAlignment.CENTER,
+    height=250,
+    width=200,
+)
 
 
 def vote_start_page(page: ft.Page):
@@ -122,7 +138,7 @@ def vote_content_page(page: ft.Page, appbar: ft.Container, main_column: ft.Colum
 
     if len(election_data2) == 1:
         ele_ser12.loc['completed'] = True
-        ele_ser12.to_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table', index=False)
+        ele_ser12.to_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
 
     main_column.controls = [
         ft.Column(
@@ -261,7 +277,18 @@ class VoteUser(ft.UserControl):
 
     def build(self):
         can_data = self.candidate_df[self.candidate_df.id == self.can_id].values[0]
-        img_can = self.candidate_image_destination + rf'\{can_data[5]}'
+
+        img_container = ft.Container(
+            width=240,
+            height=290,
+            blur=ft.Blur(20, 20, ft.BlurTileMode.MIRROR),
+            border_radius=ft.border_radius.only(top_left=10, top_right=10),
+            image_fit=ft.ImageFit.COVER,
+        )
+        if can_data[5] is False:
+            img_container.content = image_not_found
+        else:
+            img_container.image_src = self.candidate_image_destination + rf'\{can_data[5]}'
 
         def on_hover_animate(e):
             e.control.scale = 1.1 if e.data == "true" else 1
@@ -276,14 +303,7 @@ class VoteUser(ft.UserControl):
             border_radius=10,
             content=ft.Column(
                 [
-                    ft.Container(
-                        width=240,
-                        height=290,
-                        blur=ft.Blur(20, 20, ft.BlurTileMode.MIRROR),
-                        border_radius=ft.border_radius.only(top_left=10, top_right=10),
-                        image_src=img_can,
-                        image_fit=ft.ImageFit.COVER,
-                    ),
+                    img_container,
                     ft.Row(
                         [
                             ft.Text(
