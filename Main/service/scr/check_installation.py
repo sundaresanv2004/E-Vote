@@ -15,7 +15,7 @@ else:
 
 def installation_requirement():
     if not os.path.exists(path + file_path['settings']):
-        if not os.path.exists(path):
+        if not os.path.exists(path + r'\data'):
             os.makedirs(path + r'\data')
             os.makedirs(path + r'\data\a')
             os.makedirs(path + r'\data\c')
