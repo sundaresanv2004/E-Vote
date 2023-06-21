@@ -3,10 +3,10 @@ import pandas as pd
 
 from .category import category_dialogs
 import Main.service.scr.election_scr as ee
-from .election_options import category_order, forgot_code, generate_result
+from .election_options import category_order, forgot_code, generate_result, result_view_dialogs
 from .settings_options import help_dialogs
 from ..functions.dialogs import message_dialogs
-from ..functions.download_nomination import download_nomination
+from ..functions.download import download_nomination, download_result
 from ..service.scr.loc_file_scr import file_data
 
 ele_option_data_update = None
@@ -19,7 +19,9 @@ class ElectionSettingsMenu:
         self.page = page
         self.final_nomination_list = None
         self.generate_result = None
+        self.download_result = None
         self.download_nomination = None
+        self.view_result = None
         self.lock_election = None
         self.forgot_passcode = None
         self.vote_button = None
@@ -144,6 +146,13 @@ class ElectionSettingsMenu:
             self.generate_result.disabled = True
             self.lock_election.disabled = False
 
+        if self.ele_ser_1.loc["result"].values[0]:
+            self.view_result.disabled = False
+            self.download_result.disabled = False
+        else:
+            self.view_result.disabled = True
+            self.download_result.disabled = True
+
         if self.lock_election.disabled:
             self.final_nomination_list.disabled = True
         else:
@@ -201,6 +210,50 @@ class ElectionSettingsMenu:
         )
 
         return self.generate_result
+
+    def view_result_option(self):
+
+        self.view_result = ft.Card(
+            ft.Container(
+                ft.ListTile(
+                    title=ft.Text(
+                        font_family='Verdana',
+                        value=f"View result",
+                    ),
+                    trailing=self.next_icon,
+                    on_click=lambda _: result_view_dialogs(self.page),
+                ),
+                border_radius=10,
+                padding=ft.padding.symmetric(vertical=3.5),
+                blur=ft.Blur(20, 20, ft.BlurTileMode.MIRROR),
+            ),
+            elevation=0,
+            color=ft.colors.with_opacity(0.4, '#44CCCCCC'),
+        )
+
+        return self.view_result
+
+    def download_result_option(self):
+
+        self.download_result = ft.Card(
+            ft.Container(
+                ft.ListTile(
+                    title=ft.Text(
+                        font_family='Verdana',
+                        value=f"Download result",
+                    ),
+                    trailing=self.next_icon,
+                    on_click=lambda _: download_result(self.page),
+                ),
+                blur=ft.Blur(20, 20, ft.BlurTileMode.MIRROR),
+                border_radius=10,
+                padding=ft.padding.symmetric(vertical=3.5),
+            ),
+            elevation=0,
+            color=ft.colors.with_opacity(0.4, '#44CCCCCC'),
+        )
+
+        return self.download_result
 
     def forgot_passcode_option(self):
         self.forgot_passcode = ft.Card(
@@ -272,20 +325,26 @@ def election_settings_page(page: ft.Page, main_column: ft.Column):
     )
 
     main_column.controls = [
-        ft.Column(
-            [
-                ft.Row(height=3),
-                category_option,
-                option_menu_ele.lock_election_option(),
-                option_menu_ele.final_nomination_list_option(),
-                option_menu_ele.download_nomination_option(),
-                option_menu_ele.vote_option(),
-                option_menu_ele.generate_result_option(),
-                option_menu_ele.forgot_passcode_option(),
-                option_menu_ele.help_option(),
-            ],
+        ft.Container(
+            content=ft.Column(
+                [
+                    ft.Row(height=3),
+                    category_option,
+                    option_menu_ele.lock_election_option(),
+                    option_menu_ele.final_nomination_list_option(),
+                    option_menu_ele.download_nomination_option(),
+                    option_menu_ele.vote_option(),
+                    option_menu_ele.generate_result_option(),
+                    option_menu_ele.view_result_option(),
+                    option_menu_ele.download_result_option(),
+                    option_menu_ele.forgot_passcode_option(),
+                    option_menu_ele.help_option(),
+                ],
+                expand=True,
+                scroll=ft.ScrollMode.ADAPTIVE
+            ),
+            margin=ft.margin.only(left=5, right=5),
             expand=True,
-            scroll=ft.ScrollMode.ADAPTIVE
         )
     ]
 

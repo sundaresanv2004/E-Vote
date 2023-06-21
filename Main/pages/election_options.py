@@ -403,3 +403,94 @@ def generate_result(page: ft.Page):
         ele_ser_2.to_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
         generate_result_fun()
         loading_dialogs(page, "Generating...", 1)
+
+
+def result_view_dialogs(page: ft.Page):
+    result_view_dialogs1 = ft.AlertDialog(
+        modal=True,
+        actions_alignment=ft.MainAxisAlignment.END,
+    )
+
+    def on_close(e):
+        result_view_dialogs1.open = False
+        page.update()
+
+    result_df = pd.read_json(ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["result"]}',
+                             orient='table')
+    # Table
+    result_view_table = ft.DataTable(
+        column_spacing=20,
+        expand=True,
+        columns=[
+            ft.DataColumn(ft.Text("#")),
+            ft.DataColumn(ft.Text("Candidate Name")),
+            ft.DataColumn(ft.Text("Category")),
+            ft.DataColumn(ft.Text("Qualification")),
+            ft.DataColumn(ft.Text("No.of Votes"))
+        ],
+    )
+
+    result_view_row = []
+    for i in range(len(result_df)):
+        result_view_row.append(
+            ft.DataRow(
+                cells=[
+                    ft.DataCell(ft.Text(value=f"{i + 1}")),
+                    ft.DataCell(ft.Text(value=f"{result_df.loc[i].values[1]}")),
+                    ft.DataCell(ft.Text(value=f"{result_df.loc[i].values[2]}")),
+                    ft.DataCell(ft.Text(value=f"{result_df.loc[i].values[3]}")),
+                    ft.DataCell(ft.Text(value=f"{result_df.loc[i].values[5]}")),
+                ],
+            )
+        )
+
+    result_view_table.rows = result_view_row
+    data_list1: list = [
+        ft.Row(
+            [
+                result_view_table,
+            ],
+        )
+    ]
+
+    # AlertDialog data
+    result_view_dialogs1.content = ft.Column(
+        [
+            ft.Row(
+                [
+                    ft.Row(
+                        [
+                            ft.Text(
+                                value="Result",
+                                weight=ft.FontWeight.BOLD,
+                                size=25,
+                                font_family='Verdana',
+                            ),
+                        ],
+                        expand=True,
+                    ),
+                    ft.Row(
+                        [
+                            ft.IconButton(
+                                icon=ft.icons.CLOSE_ROUNDED,
+                                tooltip="Close",
+                                on_click=on_close,
+                            )
+                        ]
+                    )
+                ],
+                width=800,
+            ),
+            ft.Column(
+                controls=data_list1,
+            )
+        ],
+        scroll=ft.ScrollMode.ADAPTIVE,
+        height=550,
+        width=800,
+    )
+
+    # Open dialog
+    page.dialog = result_view_dialogs1
+    result_view_dialogs1.open = True
+    page.update()
