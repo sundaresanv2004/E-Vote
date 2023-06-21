@@ -9,6 +9,7 @@ from .summary_view import summary_view_page
 from ..functions.dialogs import message_dialogs
 from ..functions.download import download_nomination, download_result
 from ..service.scr.loc_file_scr import file_data
+import Main.service.user.login_enc as cc
 
 ele_option_data_update = None
 
@@ -345,23 +346,35 @@ def election_settings_page(page: ft.Page, main_column: ft.Column):
         color=ft.colors.with_opacity(0.4, '#44CCCCCC'),
     )
 
+    if cc.teme_data[2] == True:
+        settings_options = [
+            ft.Row(height=3),
+            category_option,
+            option_menu_ele.lock_election_option(),
+            option_menu_ele.final_nomination_list_option(),
+            option_menu_ele.download_nomination_option(),
+            option_menu_ele.vote_option(),
+            option_menu_ele.generate_result_option(),
+            option_menu_ele.view_result_option(),
+            option_menu_ele.summary_view_result_option(),
+            option_menu_ele.download_result_option(),
+            option_menu_ele.forgot_passcode_option(),
+            option_menu_ele.help_option(),
+        ]
+    else:
+        settings_options = [
+            ft.Row(height=3),
+            category_option,
+            option_menu_ele.download_nomination_option(),
+            option_menu_ele.view_result_option(),
+            option_menu_ele.summary_view_result_option(),
+            option_menu_ele.help_option(),
+        ]
+
     main_column.controls = [
         ft.Container(
             content=ft.Column(
-                [
-                    ft.Row(height=3),
-                    category_option,
-                    option_menu_ele.lock_election_option(),
-                    option_menu_ele.final_nomination_list_option(),
-                    option_menu_ele.download_nomination_option(),
-                    option_menu_ele.vote_option(),
-                    option_menu_ele.generate_result_option(),
-                    option_menu_ele.view_result_option(),
-                    option_menu_ele.summary_view_result_option(),
-                    option_menu_ele.download_result_option(),
-                    option_menu_ele.forgot_passcode_option(),
-                    option_menu_ele.help_option(),
-                ],
+                controls=settings_options,
                 expand=True,
                 scroll=ft.ScrollMode.ADAPTIVE
             ),
