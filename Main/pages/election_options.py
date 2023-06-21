@@ -1,3 +1,4 @@
+import os
 from time import sleep
 import flet as ft
 import pandas as pd
@@ -216,6 +217,9 @@ def category_order(page: ft.Page):
     def on_next1(e):
         message_alertdialog.open = False
         page.update()
+        election_data_loc = rf'\{file_data["vote_data"]}\{file_data["election_data"]}'
+        if os.path.exists(ee.current_election_path + election_data_loc):
+            os.remove(ee.current_election_path + election_data_loc)
         sleep(0.1)
         order_category_option(page)
 

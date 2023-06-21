@@ -23,7 +23,10 @@ def window_at_start(page: ft.Page):
 
 
 def window_on_resize(page: ft.Page):
-    ser1 = pd.read_json(path + file_path['settings'], orient='table')
-
-    if page.window_maximized != ser1.loc['maximized'].values[0]:
-        window_resize_change(page.window_maximized)
+    try:
+        ser1 = pd.read_json(path + file_path['settings'], orient='table')
+        if page.window_maximized != ser1.loc['maximized'].values[0]:
+            window_resize_change(page.window_maximized)
+        page.update()
+    except ValueError:
+        pass

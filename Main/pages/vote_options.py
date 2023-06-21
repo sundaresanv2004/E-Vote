@@ -1,4 +1,9 @@
+from time import sleep
 import flet as ft
+import pandas as pd
+
+from Main.service.scr.loc_file_scr import file_data
+import Main.service.scr.election_scr as ee
 
 
 def vote_exit(page: ft.Page):
@@ -11,6 +16,9 @@ def vote_exit(page: ft.Page):
         exit_confirm_dialog.open = False
         page.update()
         page.clean()
+        page.window_full_screen = False
+        page.update()
+        sleep(0.2)
         from main import main
         main(page)
 
@@ -36,30 +44,22 @@ def vote_exit(page: ft.Page):
     page.update()
 
 
-def vote_done(page: ft.Page):
+def vote_done(page: ft.Page, appbar, main_column):
 
     def on_no(e):
         exit_confirm_dialog.open = False
         page.update()
-
-    def on_yes(e):
-        exit_confirm_dialog.open = False
-        page.update()
-        page.clean()
-        from main import main
-        main(page)
+        main_column.clean()
+        from Main.pages.vote_home import vote_content_page
+        vote_content_page(page, appbar, main_column)
 
     exit_confirm_dialog = ft.AlertDialog(
-        modal=False,
-        title=ft.Text("Suc"),
-        content=ft.Text("Are you sure do you want to exit?", font_family='Verdana'),
+        modal=True,
+        title=ft.Text("Successfully Done"),
+        content=ft.Text("Thank you for voting! Your data has been securely saved.", font_family='Verdana'),
         actions=[
             ft.TextButton(
-                "Yes",
-                on_click=on_yes,
-            ),
-            ft.TextButton(
-                "No",
+                "Ok",
                 on_click=on_no,
             ),
         ],

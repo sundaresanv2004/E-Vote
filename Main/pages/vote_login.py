@@ -42,6 +42,8 @@ def vote_login_page(page: ft.Page, content_image: ft.Container, content_column: 
                 if not os.path.exists(ee.current_election_path + election_data_loc):
                     election_data1 = pd.DataFrame(columns=list(final_category_data1['category']))
                     election_data1.to_json(ee.current_election_path + election_data_loc, orient='table', index=False)
+                page.window_full_screen = True
+                page.update()
                 from .vote_home import vote_start_page
                 vote_start_page(page)
             else:

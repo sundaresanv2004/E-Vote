@@ -125,6 +125,7 @@ class ElectionSettingsMenu:
         self.ele_ser_1 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
         if not self.ele_ser_1.loc['lock_data'].values[0]:
             self.final_nomination_list.disabled = True
+            self.on_vote_click('e')
         else:
             self.final_nomination_list.disabled = False
         if not self.ele_ser_1.loc['final_nomination'].values[0]:

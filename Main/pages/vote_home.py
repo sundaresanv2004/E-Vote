@@ -2,7 +2,7 @@ import flet as ft
 import pandas as pd
 
 import Main.service.scr.election_scr as ee
-from Main.pages.vote_options import vote_exit
+from Main.pages.vote_options import vote_exit, vote_done
 from Main.service.scr.check_installation import path
 from Main.service.scr.loc_file_scr import file_data, file_path
 
@@ -86,6 +86,7 @@ def vote_content_page(page: ft.Page, appbar: ft.Container, main_column: ft.Colum
 
     app_data_df = pd.read_json(path + file_path['app_data'], orient='table')
     election_data2 = pd.read_json(ee.current_election_path + election_data_loc, orient='table')
+    ele_ser12 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
 
     appbar.content = ft.Row(
         [
@@ -119,12 +120,16 @@ def vote_content_page(page: ft.Page, appbar: ft.Container, main_column: ft.Colum
         height=60,
     )
 
+    if len(election_data2) == 1:
+        ele_ser12.loc['completed'] = True
+        ele_ser12.to_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table', index=False)
+
     main_column.controls = [
         ft.Column(
             [
                 ft.Container(
-                    width=300,
-                    height=260,
+                    width=550,
+                    height=300,
                     border_radius=15,
                     bgcolor='#44CCCCCC',
                     blur=ft.Blur(30, 15, ft.BlurTileMode.MIRROR),
@@ -132,10 +137,17 @@ def vote_content_page(page: ft.Page, appbar: ft.Container, main_column: ft.Colum
                     content=ft.Column(
                         [
                             ft.Text(
+                                value=ele_ser12.loc['election-name'].values[0],
+                                size=30,
+                                font_family='Verdana',
+                                color='#172554',
+                                weight=ft.FontWeight.W_800,
+                            ),
+                            ft.Text(
                                 value=f"Vote No: {len(election_data2) + 1}",
                                 size=30,
                                 font_family='Verdana',
-                                color='#0c4a6e',
+                                color='#172554',
                                 weight=ft.FontWeight.W_800,
                             ),
                             ft.Row(height=10),
@@ -151,7 +163,7 @@ def vote_content_page(page: ft.Page, appbar: ft.Container, main_column: ft.Colum
                                     size=20,
                                     color=ft.colors.WHITE,
                                     font_family='Verdana',
-                                    weight=ft.FontWeight.W_400,
+                                    weight=ft.FontWeight.W_500,
                                 ),
                                 on_click=on_vote_click,
                                 animate=ft.animation.Animation(100, ft.AnimationCurve.DECELERATE)
@@ -228,7 +240,6 @@ class VoteUser(ft.UserControl):
             ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["final_nomination"]}',
             orient='table')
         self.candidate_image_destination = ee.current_election_path + r'\images'
-        self.election_data3 = pd.read_json(ee.current_election_path + election_data_loc, orient='table')
         final_category_data2 = pd.read_csv(
             ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["final_category"]}')
         self.category_list1 = list(final_category_data2['category'])
@@ -241,8 +252,12 @@ class VoteUser(ft.UserControl):
             curr_data += 1
             user_vote_start(self.page, self.appbar, self.main_column)
         else:
-            print(temp_list)
-            print("Done")
+            election_data3 = pd.read_json(ee.current_election_path + election_data_loc, orient='table')
+            election_data3.loc['a'] = temp_list
+            election_data3.to_json(ee.current_election_path + election_data_loc, orient='table', index=False)
+            curr_data = 0
+            temp_list = []
+            vote_done(self.page, self.appbar, self.main_column)
 
     def build(self):
         can_data = self.candidate_df[self.candidate_df.id == self.can_id].values[0]
