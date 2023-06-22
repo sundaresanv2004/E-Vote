@@ -1,3 +1,4 @@
+from time import sleep
 import flet as ft
 import pandas as pd
 
@@ -266,6 +267,8 @@ class VoteUser(ft.UserControl):
         if len(temp_list) != len(self.category_list1):
             self.main_column.clean()
             curr_data += 1
+            sleep(0.1)
+            self.main_column.clean()
             user_vote_start(self.page, self.appbar, self.main_column)
         else:
             election_data3 = pd.read_json(ee.current_election_path + election_data_loc, orient='table')
@@ -273,6 +276,7 @@ class VoteUser(ft.UserControl):
             election_data3.to_json(ee.current_election_path + election_data_loc, orient='table', index=False)
             curr_data = 0
             temp_list = []
+            self.main_column.clean()
             vote_done(self.page, self.appbar, self.main_column)
 
     def build(self):
