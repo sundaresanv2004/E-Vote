@@ -262,7 +262,7 @@ def build(page: ft.Page, index_val, page_view):
     if len(list_cand_data_edit[3]) != 0:
         category_dropdown.value = list_cand_data_edit[3]
 
-    if list_cand_data_edit[1] is not False:
+    if list_cand_data_edit[1] != False:
         if len(list_cand_data_edit[1]) != 0:
             container.image_src = candidate_image_destination + rf'\{list_cand_data_edit[1]}'
             container.content = None
