@@ -12,6 +12,7 @@ from ..service.scr.loc_file_scr import file_data
 import Main.service.user.login_enc as cc
 
 ele_option_data_update = None
+election_data_loc = rf'\{file_data["vote_data"]}\{file_data["election_data"]}'
 
 
 class ElectionSettingsMenu:
@@ -32,6 +33,7 @@ class ElectionSettingsMenu:
         self.lock = ft.Switch(on_change=self.on_lock_click)
         self.vote_switch = ft.Switch(on_change=self.on_vote_click)
         self.ele_ser_1 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+        self.tot_no_vote = ft.Text(value="Total no.of votes: 0", font_family='Verdana')
         self.next_icon = ft.Icon(
             name=ft.icons.NAVIGATE_NEXT_ROUNDED,
             size=25,
@@ -143,6 +145,8 @@ class ElectionSettingsMenu:
             self.vote_switch.value = False
 
         if self.ele_ser_1.loc["completed"].values[0]:
+            ele_data1 = pd.read_json(ee.current_election_path + election_data_loc, orient='table')
+            self.tot_no_vote.value = f"Total no.of votes: {len(ele_data1)}"
             self.lock_election.disabled = True
             self.generate_result.disabled = False
         else:
@@ -220,6 +224,7 @@ class ElectionSettingsMenu:
                         font_family='Verdana',
                         value=f"View result",
                     ),
+                    subtitle=self.tot_no_vote,
                     trailing=self.next_icon,
                     on_click=lambda _: result_view_dialogs(self.page),
                 ),

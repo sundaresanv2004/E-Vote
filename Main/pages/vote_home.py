@@ -294,6 +294,7 @@ class VoteUser(ft.UserControl):
             curr_data = 0
             temp_list = []
             self.main_column.clean()
+            sleep(0.1)
             vote_done(self.page, self.appbar, self.main_column)
 
     def build(self):
