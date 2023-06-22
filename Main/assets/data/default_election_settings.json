@@ -1,6 +1,6 @@
 {
   "name": "Election-Settings",
-  "version": "2.01",
+  "version": "3.01",
   "election-name": null,
   "vote_option": false,
   "completed": false,

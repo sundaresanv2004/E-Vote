@@ -3,6 +3,8 @@ import flet as ft
 import pandas as pd
 
 import Main.service.scr.election_scr as ee
+from Main.functions.error_message import error_message_dialogs
+from Main.functions.troubleshooting import election_data_missing
 from Main.pages.vote_options import vote_exit, vote_done
 from Main.service.scr.check_installation import path
 from Main.service.scr.loc_file_scr import file_data, file_path
@@ -102,7 +104,15 @@ def vote_content_page(page: ft.Page, appbar: ft.Container, main_column: ft.Colum
         user_vote_start(page, appbar, main_column)
 
     app_data_df = pd.read_json(path + file_path['app_data'], orient='table')
-    election_data2 = pd.read_json(ee.current_election_path + election_data_loc, orient='table')
+    election_data2 = None
+    try:
+        election_data2 = pd.read_json(ee.current_election_path + election_data_loc, orient='table')
+    except pd.errors.ParserError as e:
+        error_message_dialogs(page, str(e))
+    except pd.errors.EmptyDataError as e:
+        error_message_dialogs(page, str(e))
+    except Exception as e:
+        error_message_dialogs(page, str(e))
     ele_ser12 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
 
     appbar.content = ft.Row(
@@ -271,9 +281,16 @@ class VoteUser(ft.UserControl):
             self.main_column.clean()
             user_vote_start(self.page, self.appbar, self.main_column)
         else:
-            election_data3 = pd.read_json(ee.current_election_path + election_data_loc, orient='table')
-            election_data3.loc['a'] = temp_list
-            election_data3.to_json(ee.current_election_path + election_data_loc, orient='table', index=False)
+            try:
+                election_data3 = pd.read_json(ee.current_election_path + election_data_loc, orient='table')
+                election_data3.loc['a'] = temp_list
+                election_data3.to_json(ee.current_election_path + election_data_loc, orient='table', index=False)
+            except pd.errors.ParserError as e:
+                error_message_dialogs(self.page, str(e))
+            except pd.errors.EmptyDataError as e:
+                error_message_dialogs(self.page, str(e))
+            except Exception as e:
+                error_message_dialogs(self.page, str(e))
             curr_data = 0
             temp_list = []
             self.main_column.clean()

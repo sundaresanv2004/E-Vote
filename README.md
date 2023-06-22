@@ -2,6 +2,20 @@
 
 E-Vote is an election application designed for desktop and laptop computers. Built on the `flet` library in the Python programming language, it allows users to conduct elections quickly and easily. The application is primarily designed for use in schools and colleges, but it can also be used in other fields that require elections.
 
+
+### Installation
+
+To install E-Vote, follow these simple steps:
+
+Note: You need python-3.10 or later version installed in your system
+This app only runs on Windows-10 or later
+
+1. Clone the repository to your local machine.
+2. Run the Install.exe file (Wait till you see successful message the installation takes place in background)
+3. Run the E-Vote.exe file to run the app.
+Now your ready to go.
+
+
 ### Features
 
 - Simple and easy setup: E-Vote offers a user-friendly interface for easy setup and operation.
@@ -19,18 +33,6 @@ To use E-Vote, you will need a desktop or laptop with the following specificatio
 - Python 3 installed on your system
 - The `flet`, `pandas`, `cryptography` librarys installed on your system
 - An active internet connection
-
-### Installation
-
-To install E-Vote, follow these simple steps:
-
-1. Clone the repository to your local machine.
-2. Install following library (using "pip install library_name" command).
-- `flet`
-- `pandas`
-- `cryptography`
-3. Open the command prompt/terminal and navigate to the directory where the application is stored.
-4. Run the `main.py` file to launch the application.
 
 ### Usage
 

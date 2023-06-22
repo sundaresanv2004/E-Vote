@@ -1,6 +1,6 @@
 {
   "name": "messages",
-  "version": "2.01",
+  "version": "3.01",
   "Forgot Password?": "Contact your domain admin for help.",
   "Read Me!": "We would like you to enter admin details. \nThereby ensuring that no one else can access your account. \n\nAt the same time, the admin is the only one in control of all options and data.\nEntering a solid password is essential. Which ensures a safe and secure login.\nLater you can login using same details.\n\nNote: \"Ensure your password to be confidential\"",
   "Restart Required": "App need to be restarted.",
