@@ -14,7 +14,7 @@ def main(page: ft.Page):
     page.window_title_bar_hidden = True
     page.window_skip_task_bar = True
     page.window_focused = True
-    page.window_always_on_top = True
+    page.window_always_on_top = False
     page.window_frameless = True
     page.window_height = 300
     page.window_width = 500
