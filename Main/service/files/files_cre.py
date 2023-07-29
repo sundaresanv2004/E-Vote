@@ -9,7 +9,7 @@ from ..scr.loc_file_scr import file_path, app_data, file_data, default_election_
 
 # folders creations
 def start_folder():
-    if not os.path.exists(path + r'\data\s\abxyzc'):
+    if not os.path.exists(path + r'/data/s/abxyzc'):
         os.makedirs(path + file_path['admin_file'])
         os.makedirs(path + file_path['candidate_data'])
         dictionary = {
@@ -19,7 +19,7 @@ def start_folder():
             "enc": True
         }
 
-        with open(path + r'\data\s\abxyzc', "w") as outfile:
+        with open(path + r'/data/s/abxyzc', "w") as outfile:
             json.dump(dictionary, outfile)
 
 
@@ -62,20 +62,20 @@ def app_start(app_start_data_list1):
 
 def new_election_creation_folder(title: str, folder_path):
 
-    election_path = path + file_path['candidate_data'] + rf'\{folder_path}'
+    election_path = path + file_path['candidate_data'] + rf'/{folder_path}'
     os.makedirs(election_path)
-    os.makedirs(election_path + r'\images')
-    os.makedirs(election_path + rf'\{file_data["vote_data"]}')
+    os.makedirs(election_path + r'/images')
+    os.makedirs(election_path + rf'/{file_data["vote_data"]}')
     ser1 = pd.Series(default_election_setting_data)
     ser1.loc["election-name"] = title
     ser1.loc["created-date"] = f'{datetime.date.today()}'
     ser1.loc["created-time"] = datetime.datetime.now().strftime("%H:%M:%S")
-    ser1.to_json(election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
+    ser1.to_json(election_path + fr"/{file_data['election_settings']}", orient='table', index=True)
 
     category_df = pd.DataFrame(columns=["id", "category", 'qualification'])
     candidate_df = pd.DataFrame(
         columns=['id', 'candidate_name', 'category', 'verification', 'qualification', 'image', 'date-time',
                  'created_by']
     )
-    candidate_df.to_json(election_path + rf'\{file_data["candidate_data"]}', index=False, orient='table')
-    category_df.to_csv(election_path + rf'\{file_data["category_data"]}', index=False)
+    candidate_df.to_json(election_path + rf'/{file_data["candidate_data"]}', index=False, orient='table')
+    category_df.to_csv(election_path + rf'/{file_data["category_data"]}', index=False)

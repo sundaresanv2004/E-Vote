@@ -43,7 +43,7 @@ def new_election_creation(title: str):
     source = string.ascii_letters + string.digits
     rand = ''.join((random.choice(source)) for i in range(8))
     folder_name = rand + title
-    election_data.loc['a'] = [title, path + file_path['candidate_data'] + rf'\{folder_name}']
+    election_data.loc['a'] = [title, path + file_path['candidate_data'] + rf'/{folder_name}']
     election_data.to_csv(path + file_path["election_data"], index=False)
     new_election_creation_folder(title, folder_name)
 
@@ -76,7 +76,7 @@ def category_add_new(list_data: list):
     from ..scr.loc_file_scr import file_data
     import Main.service.scr.election_scr as ee
 
-    category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
+    category_df = pd.read_csv(ee.current_election_path + rf'/{file_data["category_data"]}')
     index_val = category_df['id'].max()
 
     if index_val is np.nan:
@@ -85,14 +85,14 @@ def category_add_new(list_data: list):
         index_val += 1
 
     category_df.loc['a'] = [index_val, list_data[0], list_data[1]]
-    category_df.to_csv(ee.current_election_path + rf'\{file_data["category_data"]}', index=False)
+    category_df.to_csv(ee.current_election_path + rf'/{file_data["category_data"]}', index=False)
 
 
 def add_candidate(list1_data: list):
     from ..scr.loc_file_scr import file_data
     import Main.service.scr.election_scr as ee
 
-    candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+    candidate_data_df = pd.read_json(ee.current_election_path + rf'/{file_data["candidate_data"]}', orient='table')
 
     index_val = candidate_data_df['id'].max()
 
@@ -104,7 +104,7 @@ def add_candidate(list1_data: list):
     candidate_data_df.loc['a'] = [index_val, list1_data[0], list1_data[1], list1_data[2], list1_data[3],
                                   list1_data[4], f'{datetime.date.today()}', list1_data[5]]
 
-    candidate_data_df.to_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table',
+    candidate_data_df.to_json(ee.current_election_path + rf'/{file_data["candidate_data"]}', orient='table',
                               index=False)
 
 
@@ -112,17 +112,17 @@ def delete_candidate(index_val):
     from ..scr.loc_file_scr import file_data
     import Main.service.scr.election_scr as ee
 
-    candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+    candidate_data_df = pd.read_json(ee.current_election_path + rf'/{file_data["candidate_data"]}', orient='table')
     user_data = candidate_data_df.loc[index_val].values
     if user_data[5] != False:
-        candidate_image_destination = ee.current_election_path + r'\images'
+        candidate_image_destination = ee.current_election_path + r'/images'
         try:
-            os.remove(candidate_image_destination + fr'\{user_data[5]}')
+            os.remove(candidate_image_destination + fr'/{user_data[5]}')
         except FileNotFoundError:
             pass
 
     candidate_data_df.drop(index_val, axis=0, inplace=True)
-    candidate_data_df.to_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table',
+    candidate_data_df.to_json(ee.current_election_path + rf'/{file_data["candidate_data"]}', orient='table',
                               index=False)
 
 
@@ -130,14 +130,14 @@ def candidate_edit(list_data: list, index_val):
     from ..scr.loc_file_scr import file_data
     import Main.service.scr.election_scr as ee
 
-    candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+    candidate_data_df = pd.read_json(ee.current_election_path + rf'/{file_data["candidate_data"]}', orient='table')
 
     candidate_data_df.at[index_val, 'candidate_name'] = list_data[0]
     candidate_data_df.at[index_val, 'category'] = list_data[1]
     candidate_data_df.at[index_val, 'qualification'] = list_data[2]
     if list_data[3] != False:
         candidate_data_df.at[index_val, 'image'] = list_data[3]
-    candidate_data_df.to_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table',
+    candidate_data_df.to_json(ee.current_election_path + rf'/{file_data["candidate_data"]}', orient='table',
                               index=False)
 
 
@@ -145,16 +145,16 @@ def category_edit(list_data: list, index_val):
     import Main.service.scr.election_scr as ee
     from ..scr.loc_file_scr import file_data
 
-    category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
+    category_df = pd.read_csv(ee.current_election_path + rf'/{file_data["category_data"]}')
     category_df.loc[index_val, 'category'] = list_data[0]
     category_df.loc[index_val, 'qualification'] = list_data[1]
-    category_df.to_csv(ee.current_election_path + rf'\{file_data["category_data"]}', index=False)
+    category_df.to_csv(ee.current_election_path + rf'/{file_data["category_data"]}', index=False)
 
 
 def delete_category(index_val):
     import Main.service.scr.election_scr as ee
     from ..scr.loc_file_scr import file_data
 
-    category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
+    category_df = pd.read_csv(ee.current_election_path + rf'/{file_data["category_data"]}')
     category_df.drop(index_val, axis=0, inplace=True)
-    category_df.to_csv(ee.current_election_path + rf'\{file_data["category_data"]}', index=False)
+    category_df.to_csv(ee.current_election_path + rf'/{file_data["category_data"]}', index=False)

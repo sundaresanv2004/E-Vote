@@ -60,14 +60,14 @@ def delete_election():
 
 
 def change_election_name(title):
-    ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+    ele_ser = pd.read_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table')
     election_data = pd.read_csv(path + file_path["election_data"])
     settings_df = pd.read_json(path + file_path['settings'], orient='table')
     index_val = election_data[election_data.name == ele_ser.loc['election-name'].values[0]].index.values[0]
     election_data.at[index_val, 'name'] = title
     settings_df.loc['Election'] = title
     ele_ser.loc['election-name'] = title
-    ele_ser.to_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
+    ele_ser.to_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table', index=True)
     settings_df.to_json(path + file_path['settings'], orient='table', index=True)
     election_data.to_csv(path + file_path["election_data"], index=False)
     from ...pages.settings import update_settings_data
