@@ -162,7 +162,7 @@ def sign_up_page(page: ft.Page, content_image: ft.Container, content_column: ft.
         username_entry.update()
 
     # Valid Mail checker
-    mail_check = r'/b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+/.[A-Z|a-z]{2,}/b'
+    mail_check = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
     def check_mail_id_entry(e):
         if len(mail_id_entry.value) != 0:
