@@ -4,7 +4,7 @@ import os
 import shutil
 from time import sleep
 
-command = 'pip install flet==0.7.4'
+command = 'pip33 install flet==0.7.4'
 subprocess.run(command, shell=True)
 
 import flet as ft
@@ -43,7 +43,7 @@ def main(page: ft.Page):
         page.update()
         page.add(column)
         sleep(10)
-        command1 = 'pip install -r requirements.txt'
+        command1 = 'pip3 install -r requirements.txt'
         subprocess.run(command1, shell=True)
         os.makedirs(path + r'\versions')
         shutil.move(source, destination)
@@ -83,7 +83,7 @@ def main(page: ft.Page):
             page.update()
             page.add(column)
             sleep(10)
-            command1 = 'pip install -r requirements.txt'
+            command1 = 'pip3 install -r requirements.txt'
             subprocess.run(command1, shell=True)
             os.makedirs(path + r'\versions')
             shutil.move(source, destination)
@@ -176,6 +176,10 @@ if __name__ == '__main__':
         path = os.getenv('APPDATA') + r'\E-Vote'
 
         ft.app(target=main)
+    elif platform.system() == "Darwin":
+        print("-----This file only works on Windows-----")
+        print("-----Kindly read 'README.md' file to run this app on MAC OS.-----")
+        exit()
     else:
         print("-----This app only supports on Windows-----")
         print("-----We are working on your os-----")

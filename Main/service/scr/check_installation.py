@@ -4,7 +4,6 @@ import pandas as pd
 
 from .loc_file_scr import file_path, default_setting_data
 
-print(os.path.expanduser('~'))
 
 path = None
 os_sys = None

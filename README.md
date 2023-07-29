@@ -7,13 +7,14 @@ E-Vote is an election application designed for desktop and laptop computers. Bui
 
 To install E-Vote, follow these simple steps:
 
-Note: You need python-3.10 or later version installed in your system
-This app only runs on Windows-10 or later
+Note: You need python-3.10 or later version installed in your system.
+This app only runs on Mac and Windows-10 or later
 
 1. Clone the repository to your local machine.
-2. Run the Install.exe file (Wait till you see successful message the installation takes place in background)
-3. Run the E-Vote.exe file to run the app.
-Now your ready to go.
+2. Install the libraries from requirements.txt file.
+3. Run the main.py file.
+
+Note: Install.py and E-Vote.py works only on Windows.
 
 
 ### Features
