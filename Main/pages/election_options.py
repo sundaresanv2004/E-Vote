@@ -307,7 +307,10 @@ def forgot_code(page: ft.Page):
         else:
             code_entry.error_text = "Enter the code."
             code_entry.focus()
-        code_entry.update()
+        try:
+            code_entry.update()
+        except AssertionError:
+            pass
 
     code_entry = ft.TextField(
         hint_text="Enter the one time code.",
