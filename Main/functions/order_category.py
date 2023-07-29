@@ -50,7 +50,7 @@ class CategoryList(ft.UserControl):
 
 
 def order_category_option(page: ft.Page):
-    candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+    candidate_data_df = pd.read_json(ee.current_election_path + rf'/{file_data["candidate_data"]}', orient='table')
     df1 = candidate_data_df[candidate_data_df.verification == True].sort_values(by='category')
 
     def on_reset(e):

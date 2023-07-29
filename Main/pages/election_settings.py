@@ -12,7 +12,7 @@ from ..service.scr.loc_file_scr import file_data
 import Main.service.user.login_enc as cc
 
 ele_option_data_update = None
-election_data_loc = rf'\{file_data["vote_data"]}\{file_data["election_data"]}'
+election_data_loc = rf'/{file_data["vote_data"]}/{file_data["election_data"]}'
 
 
 class ElectionSettingsMenu:
@@ -32,7 +32,7 @@ class ElectionSettingsMenu:
         self.help = None
         self.lock = ft.Switch(on_change=self.on_lock_click)
         self.vote_switch = ft.Switch(on_change=self.on_vote_click)
-        self.ele_ser_1 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+        self.ele_ser_1 = pd.read_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table')
         self.tot_no_vote = ft.Text(value="Total no.of votes: 0", font_family='Verdana')
         self.next_icon = ft.Icon(
             name=ft.icons.NAVIGATE_NEXT_ROUNDED,
@@ -115,7 +115,7 @@ class ElectionSettingsMenu:
         return self.download_nomination
 
     def update_in_data(self):
-        self.ele_ser_1 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+        self.ele_ser_1 = pd.read_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table')
 
         if not self.ele_ser_1.loc['lock_data'].values[0]:
             self.lock.value = False

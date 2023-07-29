@@ -11,8 +11,8 @@ index_val, ver_val = None, None
 def candidate_profile_page(page: ft.Page, id_val):
     global index_val
 
-    candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
-    candidate_image_destination = ee.current_election_path + r'\images'
+    candidate_data_df = pd.read_json(ee.current_election_path + rf'/{file_data["candidate_data"]}', orient='table')
+    candidate_image_destination = ee.current_election_path + r'/images'
 
     def on_close(e):
         alertdialog.open = False
@@ -183,7 +183,7 @@ def candidate_profile_page(page: ft.Page, id_val):
         tooltip='Delete',
         on_click=delete_on_click,
     )
-    ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+    ele_ser = pd.read_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table')
     if ele_ser.loc['lock_data'].values[0]:
         edit_button.disabled = True
         delete_button.disabled = True

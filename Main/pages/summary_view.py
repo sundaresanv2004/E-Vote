@@ -4,17 +4,17 @@ import pandas as pd
 import Main.service.scr.election_scr as ee
 from Main.service.scr.loc_file_scr import file_data
 
-election_data_loc = rf'\{file_data["vote_data"]}\{file_data["election_data"]}'
+election_data_loc = rf'/{file_data["vote_data"]}/{file_data["election_data"]}'
 index_v = None
 
 
 def summary_view_page(page: ft.Page):
     global index_v
-    candidate_image_destination = ee.current_election_path + r'\images'
+    candidate_image_destination = ee.current_election_path + r'/images'
     final_category_data2 = pd.read_csv(
-        ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["final_category"]}')
+        ee.current_election_path + rf'/{file_data["vote_data"]}/{file_data["final_category"]}')
     category_list2 = list(final_category_data2['category'])
-    result = pd.read_json(ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["result"]}',
+    result = pd.read_json(ee.current_election_path + rf'/{file_data["vote_data"]}/{file_data["result"]}',
                           orient='table')
 
     temp_sum_df = pd.DataFrame(columns=['id', 'candidate_name', 'category', 'qualification', 'image', "no_of_votes"])

@@ -16,7 +16,7 @@ def menubar_page(page: ft.Page, user_type: bool):
     main_column = ft.Column(expand=True)
 
     def add_candidate_page_fun(e):
-        ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+        ele_ser = pd.read_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table')
         if not ele_ser.loc['lock_data'].values[0]:
             candidate_add_page(page)
         else:

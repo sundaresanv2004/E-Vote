@@ -373,7 +373,7 @@ def election_name_dialogs(page: ft.Page):
         election_name_dialogs1.open = False
         page.update()
 
-    ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+    ele_ser = pd.read_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table')
     election_data6 = pd.read_csv(path + file_path["election_data"])
     election_list1 = list(election_data6['name'])
 

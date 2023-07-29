@@ -53,7 +53,7 @@ def candidate_home_page(page: ft.Page, main_column: ft.Column):
 
 def search_display_candidate(page: ft.Page):
     # file
-    candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+    candidate_data_df = pd.read_json(ee.current_election_path + rf'/{file_data["candidate_data"]}', orient='table')
     name_enc = list(candidate_data_df['candidate_name'].values)
     cat_enc = list(candidate_data_df['category'].unique())
 
@@ -82,7 +82,7 @@ def search_display_candidate(page: ft.Page):
 def display_candidate(page):
     global column_1
     # file
-    candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+    candidate_data_df = pd.read_json(ee.current_election_path + rf'/{file_data["candidate_data"]}', orient='table')
 
     row_can_data_list = []
 
@@ -117,10 +117,10 @@ class ViewStaffRecord(ft.UserControl):
         self.page = page
         self.index_val = index_val
         self.column = column
-        self.candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}',
+        self.candidate_data_df = pd.read_json(ee.current_election_path + rf'/{file_data["candidate_data"]}',
                                               orient='table')
-        self.ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
-        self.candidate_image_destination = ee.current_election_path + r'\images'
+        self.ele_ser = pd.read_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table')
+        self.candidate_image_destination = ee.current_election_path + r'/images'
 
     def edit(self, e):
         if not self.ele_ser.loc['lock_data'].values[0]:

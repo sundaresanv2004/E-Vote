@@ -36,7 +36,7 @@ def candidate_add_page(page: ft.Page):
         if list_cand_data[1] is not False:
             if len(list_cand_data[1]) != 0:
                 try:
-                    os.remove(fr'{ee.current_election_path}\images\{list_cand_data[1]}')
+                    os.remove(fr'{ee.current_election_path}/images/{list_cand_data[1]}')
                 except FileNotFoundError:
                     pass
         list_cand_data = ['', '', '', '', '']
@@ -144,8 +144,8 @@ def build(page: ft.Page):
 
     save_button.on_click = save
 
-    category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
-    candidate_image_destination = ee.current_election_path + r'\images'
+    category_df = pd.read_csv(ee.current_election_path + rf'/{file_data["category_data"]}')
+    candidate_image_destination = ee.current_election_path + r'/images'
 
     def on_qualification_change():
         temp_list3: list = []
@@ -238,17 +238,17 @@ def build(page: ft.Page):
         category_dropdown.value = list_cand_data[3]
 
     if len(list_cand_data[1]) != 0:
-        container.image_src = candidate_image_destination + rf'\{list_cand_data[1]}'
+        container.image_src = candidate_image_destination + rf'/{list_cand_data[1]}'
         container.content = None
 
     def pick_files_result(e: ft.FilePickerResultEvent):
         global list_cand_data
         from ..functions.dialogs import error_dialogs
-        candidate_image_destination1 = ee.current_election_path + r'\images'
+        candidate_image_destination1 = ee.current_election_path + r'/images'
 
         if list_cand_data[1] is not False:
             if len(list_cand_data[1]) != 0:
-                candidate_image_destination1 += rf'\{list_cand_data[1]}'
+                candidate_image_destination1 += rf'/{list_cand_data[1]}'
                 try:
                     os.remove(candidate_image_destination1)
                 except FileNotFoundError:
@@ -260,7 +260,7 @@ def build(page: ft.Page):
         candidate_selected_file_path = ", ".join(map(lambda f: f.path, e.files)) if e.files else False
         list_cand_data[1] = candidate_selected_image_name
         if candidate_selected_image_name is not False:
-            candidate_image_destination1 = ee.current_election_path + r'\images' + rf'\{candidate_selected_image_name}'
+            candidate_image_destination1 = ee.current_election_path + r'/images' + rf'/{candidate_selected_image_name}'
             try:
                 if not os.path.exists(candidate_image_destination1):
                     for jpgfile in glob.iglob(os.path.join(candidate_selected_file_path, candidate_selected_file_path)):

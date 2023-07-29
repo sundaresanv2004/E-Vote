@@ -6,8 +6,7 @@ from ..service.files.settings_write import current_election_name
 from ..service.scr.check_installation import path
 import Main.service.scr.election_scr as ee
 from ..service.scr.loc_file_scr import file_path, file_data
-from .settings_options import institution_name_dialogs, new_election_dialogs, help_dialogs, delete_election_dialogs, \
-    election_name_dialogs
+from .settings_options import institution_name_dialogs, new_election_dialogs, help_dialogs, delete_election_dialogs, election_name_dialogs
 
 var_option_data_update = None
 
@@ -69,7 +68,7 @@ class SettingsMenu:
         return self.institution_name
 
     def election_name_option(self):
-        ele_ser1 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+        ele_ser1 = pd.read_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table')
         self.election_name_text.value = ele_ser1.loc['election-name'].values[0]
         self.election_name = ft.Card(
             ft.Container(

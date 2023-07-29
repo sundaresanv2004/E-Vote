@@ -217,7 +217,7 @@ def category_order(page: ft.Page):
     def on_next1(e):
         message_alertdialog.open = False
         page.update()
-        election_data_loc = rf'\{file_data["vote_data"]}\{file_data["election_data"]}'
+        election_data_loc = rf'/{file_data["vote_data"]}/{file_data["election_data"]}'
         if os.path.exists(ee.current_election_path + election_data_loc):
             os.remove(ee.current_election_path + election_data_loc)
         sleep(0.1)
@@ -245,7 +245,7 @@ def category_order(page: ft.Page):
 
         page.update()
 
-    ele_ser = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+    ele_ser = pd.read_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table')
     if ele_ser.loc['final_nomination'].values[0]:
         message_alertdialog.title = ft.Text(value="Make Sure?", font_family='Verdana')
         message_alertdialog.content = ft.Text(value=messages['re_final_list'], font_family='Verdana')
@@ -284,7 +284,7 @@ def forgot_code(page: ft.Page):
                 code_entry.error_text = None
                 code_entry.update()
                 forgot_code_dialog1.title = ft.Text("Forgot code?", font_family='Verdana')
-                ele_ser10 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}",
+                ele_ser10 = pd.read_json(ee.current_election_path + fr"/{file_data['election_settings']}",
                                          orient='table')
                 forgot_code_dialog1.content = ft.Row(
                     [
@@ -395,14 +395,14 @@ def generate_result(page: ft.Page):
         actions_alignment=ft.MainAxisAlignment.END,
     )
 
-    ele_ser_2 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+    ele_ser_2 = pd.read_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table')
     if ele_ser_2.loc['result'].values[0]:
         page.dialog = generate_result_alertdialog
         generate_result_alertdialog.open = True
         page.update()
     else:
         ele_ser_2.loc['result'] = True
-        ele_ser_2.to_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
+        ele_ser_2.to_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table', index=True)
         generate_result_fun()
         loading_dialogs(page, "Generating...", 1)
 
@@ -417,7 +417,7 @@ def result_view_dialogs(page: ft.Page):
         result_view_dialogs1.open = False
         page.update()
 
-    result_df = pd.read_json(ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["result"]}',
+    result_df = pd.read_json(ee.current_election_path + rf'/{file_data["vote_data"]}/{file_data["result"]}',
                              orient='table')
     # Table
     result_view_table = ft.DataTable(

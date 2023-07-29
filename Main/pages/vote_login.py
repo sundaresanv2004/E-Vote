@@ -36,9 +36,9 @@ def vote_login_page(page: ft.Page, content_image: ft.Container, content_column: 
                 page.clean()
                 page.update()
                 ee.election_start_scr()
-                election_data_loc = rf'\{file_data["vote_data"]}\{file_data["election_data"]}'
+                election_data_loc = rf'/{file_data["vote_data"]}/{file_data["election_data"]}'
                 final_category_data1 = pd.read_csv(
-                    ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["final_category"]}')
+                    ee.current_election_path + rf'/{file_data["vote_data"]}/{file_data["final_category"]}')
                 if not os.path.exists(ee.current_election_path + election_data_loc):
                     election_data1 = pd.DataFrame(columns=list(final_category_data1['category']))
                     election_data1.to_json(ee.current_election_path + election_data_loc, orient='table', index=False)
@@ -95,7 +95,7 @@ def vote_login_page(page: ft.Page, content_image: ft.Container, content_column: 
     )
 
     settings_df = pd.read_json(path + file_path['settings'], orient='table')
-    ele_ser_10 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+    ele_ser_10 = pd.read_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table')
 
     if not pd.isna(settings_df.loc['Election'].values[0]):
         if not ele_ser_10.loc['vote_option'].values[0]:

@@ -70,7 +70,7 @@ def vote_start_page(page: ft.Page):
     vote_content_page(page, appbar, main_column)
 
 
-election_data_loc = rf'\{file_data["vote_data"]}\{file_data["election_data"]}'
+election_data_loc = rf'/{file_data["vote_data"]}/{file_data["election_data"]}'
 
 
 def vote_content_page(page: ft.Page, appbar: ft.Container, main_column: ft.Column):
@@ -113,7 +113,7 @@ def vote_content_page(page: ft.Page, appbar: ft.Container, main_column: ft.Colum
         error_message_dialogs(page, str(e))
     except Exception as e:
         error_message_dialogs(page, str(e))
-    ele_ser12 = pd.read_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table')
+    ele_ser12 = pd.read_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table')
 
     appbar.content = ft.Row(
         [
@@ -149,7 +149,7 @@ def vote_content_page(page: ft.Page, appbar: ft.Container, main_column: ft.Colum
 
     if len(election_data2) == 1:
         ele_ser12.loc['completed'] = True
-        ele_ser12.to_json(ee.current_election_path + fr"\{file_data['election_settings']}", orient='table', index=True)
+        ele_ser12.to_json(ee.current_election_path + fr"/{file_data['election_settings']}", orient='table', index=True)
 
     main_column.controls = [
         ft.Column(
@@ -217,9 +217,9 @@ def vote_content_page(page: ft.Page, appbar: ft.Container, main_column: ft.Colum
 def user_vote_start(page: ft.Page, appbar: ft.Container, main_column: ft.Column):
     global category_text, page_text, curr_data
     final_category_data1 = pd.read_csv(
-        ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["final_category"]}')
+        ee.current_election_path + rf'/{file_data["vote_data"]}/{file_data["final_category"]}')
     candidate_df = pd.read_json(
-        ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["final_nomination"]}',
+        ee.current_election_path + rf'/{file_data["vote_data"]}/{file_data["final_nomination"]}',
         orient='table')
     category_list = list(final_category_data1['category'])
 
@@ -264,11 +264,11 @@ class VoteUser(ft.UserControl):
         self.appbar = appbar
         self.main_column = main_column
         self.candidate_df = pd.read_json(
-            ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["final_nomination"]}',
+            ee.current_election_path + rf'/{file_data["vote_data"]}/{file_data["final_nomination"]}',
             orient='table')
-        self.candidate_image_destination = ee.current_election_path + r'\images'
+        self.candidate_image_destination = ee.current_election_path + r'/images'
         final_category_data2 = pd.read_csv(
-            ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["final_category"]}')
+            ee.current_election_path + rf'/{file_data["vote_data"]}/{file_data["final_category"]}')
         self.category_list1 = list(final_category_data2['category'])
 
     def on_user_click(self, e):
@@ -310,7 +310,7 @@ class VoteUser(ft.UserControl):
         if can_data[5] is False:
             img_container.content = image_not_found
         else:
-            img_container.image_src = self.candidate_image_destination + rf'\{can_data[5]}'
+            img_container.image_src = self.candidate_image_destination + rf'/{can_data[5]}'
 
         def on_hover_animate(e):
             e.control.scale = 1.1 if e.data == "true" else 1

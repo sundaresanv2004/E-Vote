@@ -23,7 +23,7 @@ def delete_candidate_dialogs(page: ft.Page, index_df, view):
         snack_bar1(page, "Successfully Deleted.")
         page.update()
         display_candidate(page)
-        candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+        candidate_data_df = pd.read_json(ee.current_election_path + rf'/{file_data["candidate_data"]}', orient='table')
         list1 = candidate_data_df.index.values
         if view is True:
             from .candidate_profile import candidate_profile_page

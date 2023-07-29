@@ -44,7 +44,7 @@ def vote_exit(page: ft.Page):
     page.update()
 
 
-election_data_loc = rf'\{file_data["vote_data"]}\{file_data["election_data"]}'
+election_data_loc = rf'/{file_data["vote_data"]}/{file_data["election_data"]}'
 
 
 def vote_done(page: ft.Page, appbar, main_column):
@@ -52,7 +52,7 @@ def vote_done(page: ft.Page, appbar, main_column):
         exit_confirm_dialog.open = False
         page.update()
         file_path = ee.current_election_path + election_data_loc
-        file_destination = path + r'\backup\vdABCb2Y'
+        file_destination = path + r'/backup/vdABCb2Y'
         shutil.copy(file_path, file_destination)
         from Main.pages.vote_home import vote_content_page
         vote_content_page(page, appbar, main_column)

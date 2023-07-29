@@ -14,7 +14,7 @@ def download_nomination(page: ft.Page):
         path_download = path1 + ".csv"
         if path_download is not False:
             candidate_data_df = pd.read_json(
-                ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["final_nomination"]}',
+                ee.current_election_path + rf'/{file_data["vote_data"]}/{file_data["final_nomination"]}',
                 orient='table')
             new_df = candidate_data_df[['candidate_name', 'category', 'qualification']]
             try:
@@ -87,7 +87,7 @@ def download_result(page: ft.Page):
         path1 = e.path if e.path else False
         path_download = path1 + ".csv"
         if path_download is not False:
-            result_df1 = pd.read_json(ee.current_election_path + rf'\{file_data["vote_data"]}\{file_data["result"]}',
+            result_df1 = pd.read_json(ee.current_election_path + rf'/{file_data["vote_data"]}/{file_data["result"]}',
                                       orient='table')
             new_df = result_df1[['candidate_name', 'category', 'qualification', 'no_of_votes']]
             try:

@@ -21,7 +21,7 @@ alertdialog_candidate_edit = None
 
 def candidate_edit_page(page: ft.Page, index_val, page_view):
     global alertdialog_candidate_edit
-    candidate_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+    candidate_df = pd.read_json(ee.current_election_path + rf'/{file_data["candidate_data"]}', orient='table')
     candidate_data = candidate_df.loc[index_val].values
 
     def on_close_edit(e):
@@ -32,7 +32,7 @@ def candidate_edit_page(page: ft.Page, index_val, page_view):
             if len(list_cand_data_edit[1]) != 0:
                 if list_cand_data_edit[1] != candidate_data[5]:
                     try:
-                        os.remove(fr'{ee.current_election_path}\images\{list_cand_data_edit[1]}')
+                        os.remove(fr'{ee.current_election_path}/images/{list_cand_data_edit[1]}')
                     except FileNotFoundError:
                         pass
         list_cand_data_edit = ['', '', '', '', '']
@@ -88,7 +88,7 @@ def candidate_edit_page(page: ft.Page, index_val, page_view):
 
 def build(page: ft.Page, index_val, page_view):
     global list_cand_data_edit
-    candidate_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+    candidate_df = pd.read_json(ee.current_election_path + rf'/{file_data["candidate_data"]}', orient='table')
     candidate_data = candidate_df.loc[index_val].values
     list_cand_data_edit[0] = candidate_data[1]
     list_cand_data_edit[1] = candidate_data[5]
@@ -146,7 +146,7 @@ def build(page: ft.Page, index_val, page_view):
         if candidate_data[5] is not False:
             if list_cand_data_edit[1] != candidate_data[5]:
                 try:
-                    os.remove(fr'{ee.current_election_path}\images\{candidate_data[5]}')
+                    os.remove(fr'{ee.current_election_path}/images/{candidate_data[5]}')
                 except FileNotFoundError:
                     pass
         if list_cand_data_edit[1] is not False:
@@ -169,8 +169,8 @@ def build(page: ft.Page, index_val, page_view):
 
     save_button.on_click = save
 
-    category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
-    candidate_image_destination = ee.current_election_path + r'\images'
+    category_df = pd.read_csv(ee.current_election_path + rf'/{file_data["category_data"]}')
+    candidate_image_destination = ee.current_election_path + r'/images'
 
     def on_qualification_change():
         temp_list3: list = []
@@ -264,7 +264,7 @@ def build(page: ft.Page, index_val, page_view):
 
     if list_cand_data_edit[1] != False:
         if len(list_cand_data_edit[1]) != 0:
-            container.image_src = candidate_image_destination + rf'\{list_cand_data_edit[1]}'
+            container.image_src = candidate_image_destination + rf'/{list_cand_data_edit[1]}'
             container.content = None
 
     def pick_files_result(e: ft.FilePickerResultEvent):
@@ -277,7 +277,7 @@ def build(page: ft.Page, index_val, page_view):
         candidate_selected_file_path = ", ".join(map(lambda f: f.path, e.files)) if e.files else False
         list_cand_data_edit[1] = candidate_selected_image_name
         if candidate_selected_image_name is not False:
-            candidate_image_destination1 = ee.current_election_path + r'\images' + rf'\{candidate_selected_image_name}'
+            candidate_image_destination1 = ee.current_election_path + r'/images' + rf'/{candidate_selected_image_name}'
             try:
                 if not os.path.exists(candidate_image_destination1):
                     for jpgfile in glob.iglob(os.path.join(candidate_selected_file_path, candidate_selected_file_path)):

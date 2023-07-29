@@ -23,7 +23,7 @@ def category_dialogs(page: ft.Page):
         category_add_page(page, 'category')
 
     # Read category data
-    category_data_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
+    category_data_df = pd.read_csv(ee.current_election_path + rf'/{file_data["category_data"]}')
 
     # Table
     category_data_table = ft.DataTable(
@@ -131,7 +131,7 @@ class CategoryView(ft.UserControl):
         self.page = page
         self.index_val = index_val
         self.dialogs = dialogs
-        self.category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
+        self.category_df = pd.read_csv(ee.current_election_path + rf'/{file_data["category_data"]}')
 
     def edit(self, e):
         self.dialogs.open = False
@@ -332,7 +332,7 @@ def category_add_page(page: ft.Page, page_view):
             from Main.pages.candidate_add import candidate_add_page
             candidate_add_page(page)
 
-    category_df = pd.read_csv(ee.current_election_path + rf'\{file_data["category_data"]}')
+    category_df = pd.read_csv(ee.current_election_path + rf'/{file_data["category_data"]}')
     category_list = category_df['category'].values
 
     def add_new_category(e):

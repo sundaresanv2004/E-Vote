@@ -45,7 +45,7 @@ def staff_add_page(page: ft.Page):
             name_entry.suffix_icon = ft.icons.ERROR_OUTLINE_ROUNDED
         name_entry.update()
 
-    mail_check = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    mail_check = r'/b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+/.[A-Z|a-z]{2,}/b'
 
     def mail_id_checker(e):
         global mail_id, val_list_staff

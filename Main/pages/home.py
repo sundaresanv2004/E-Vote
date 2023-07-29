@@ -10,7 +10,7 @@ import Main.service.scr.election_scr as ee
 def home_page(page: ft.Page, main_column: ft.Column):
     import Main.service.user.login_enc as cc
 
-    candidate_data_df = pd.read_json(ee.current_election_path + rf'\{file_data["candidate_data"]}', orient='table')
+    candidate_data_df = pd.read_json(ee.current_election_path + rf'/{file_data["candidate_data"]}', orient='table')
     student_container = ft.Container(
         width=300,
         height=150,
