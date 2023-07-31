@@ -126,10 +126,7 @@ def new_election_dialogs(page: ft.Page):
                 new_election_entry.focus()
         else:
             new_election_entry.focus()
-        try:
-            new_election_entry.update()
-        except AssertionError:
-            pass
+        new_election_entry.update()
 
     new_election_entry = ft.TextField(
         hint_text="Enter the election name",

@@ -116,10 +116,7 @@ def build(page: ft.Page):
                 save_button.disabled = True
         else:
             save_button.disabled = True
-        try:
-            save_button.update()
-        except AssertionError:
-            pass
+        save_button.update()
 
     def save(e):
         global list_cand_data, alertdialog_candidate_add
